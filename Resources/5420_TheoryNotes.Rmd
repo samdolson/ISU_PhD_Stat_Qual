@@ -2,7 +2,6 @@
 title: "Theory Notes"
 output:
   pdf_document: default
-  html_document: default
 ---
 
 ```{r setup, include=FALSE}

@@ -7,7 +7,7 @@ output: pdf_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-Note: Finished Week 6
+Note: Finished Week 8
 
 # Introduction 
 
@@ -1345,7 +1345,7 @@ $$
   - A natural partitioning of sums of squares into
     *“interesting”* components and *“everything else”*
 
-## ANOVA Multiple Comparisons
+## Multiple Comparisons
 
 **Pairwise Comparisons**
 
@@ -1464,3 +1464,657 @@ $$
 The Bonferroni method is conservative, especially when $m$ is large and the tests are not independent, resulting in an experiment-wise Type I error rate less than $\alpha$.
 
 The number of comparisons $m$ must be specified in advance.
+
+## False Discovery Rate (FDR) 
+
+- FDR (or pFDR = positive FDR) is an alternative error rate that can be useful for RNA-seq experiments or other genomic studies.
+
+- **Table of Outcomes for $m$ Tests**
+
+| Hypothesis         | Accept Null | Reject Null | Total |
+|-------------------|------------:|------------:|------:|
+| Null true         | $U$         | $V$         | $m_0$  |
+| Alternative true  | $T$         | $S$         | $m_1$  |
+| Total             | $W$         | $R$         | $m$    |
+
+- FDR (Benjamini and Hochberg, 1995)
+
+$$
+\mathrm{FDR} \;=\; E\!\left(\left.\frac{V}{R}\,\right|\, R>0\right)\Pr(R>0).
+$$
+
+**Conceptually** 
+
+- Suppose a scientist conducts 100 independent RNA-seq experiments.
+
+- For each experiment, the scientist produces a list of genes declared to be differentially expressed by testing a null hypothesis for each gene.
+
+- For each list consider the ratio of the number of false positive results to the total number of genes on the list (set this ratio to $0$ if the list contains no genes).
+
+- The FDR is approximated by the average of the ratios described above.
+
+## Blocking 
+
+Variation within Groups: **Problem**
+
+- When $\sigma^2$ is large compared to differences between means  
+  - Fail to reject $H_0$ of equal means even when differences between means exist.
+
+- Why would $\sigma^2$ be large?  
+  - Response variable has large amount of variation.  
+  - Experimental units are not homogeneous with respect to response variable.
+
+Variation within Groups: **Solution**
+
+- Choose more homogeneous experimental units.  
+  - Reduces variation in response variable — more likely to produce significant result.  
+  - Reduces generalizability of experimental results.
+
+- Use more heterogeneous experimental units.  
+  - Increases variation in response variable — less likely to produce significant result.  
+  - Increases generalizability of experimental results.
+
+**Block**
+
+A group of experimental units that, prior to treatment, are expected to be more like one another (with respect to response variables) than experimental units in general.
+
+In simple words, blocks are groups of similar experimental units.
+
+### Types of Blocking
+
+**Sorting**
+
+- You are interested in the effect of two different instructional methods on achievement in mathematics of 8th graders.
+- Sort students by their Iowa Test math scores from 7th grade.
+- Students within each block will have similar Iowa Test math scores.
+
+**Subdividing**
+
+- You are interested in the yield of three varieties of soy beans.
+- You have 12 fields across Iowa that you can use.
+- Divide each field into 3 sections and plant one variety on each section.
+
+**Reusing**
+
+- You are interested in determining which of two brands of golf balls travels the furthest when hit with a five iron.
+- Have each person hit both types of golf ball (reuse each person).
+
+**Matching**
+
+- You are interested in determining which of two brands of golf balls travels the furthest when hit with a five iron.
+- Pair two golfers with the same skill level.
+- Have one person hit one brand of golf ball and the other person hit the other brand of golf ball.
+
+### Matched Pairs
+
+**Experiments with Two Treatments**
+
+- Experiments with two treatments
+- Blocks have one or two experimental units  
+  - **One unit (reuse)**  
+    - Receives both treatments  
+    - Order of treatments is random  
+
+  - **Two units (match)**  
+    - Two treatments randomly assigned to pair  
+    - One unit receives one treatment  
+    - Other unit receives other treatment  
+
+**Hypothesis Test**
+
+- $H_0: \mu_d = 0 \quad \text{vs.} \quad H_a: \mu_d \neq 0$
+
+- **Test Statistic:**
+
+$$
+t \;=\; \frac{\bar{D}}{s_d / \sqrt{n}}
+$$
+
+- **p-value:**
+
+$$
+2 \times P\!\left(t_{n-1} > |t|\right)
+$$
+
+**Confidence Interval**
+
+$100(1-\alpha)\%$ Confidence Interval for $\mu_d$:
+
+$$
+\bar{D} \;\pm\; t_{n-1,\,1-\alpha/2}\,\frac{s_d}{\sqrt{n}}
+$$
+
+
+#### Diagnosing Assumptions
+
+**Model assumptions are:**
+
+- Blocks are independent $\;\Rightarrow\;$ differences are independent
+- $D_i$ are i.i.d. $N(\mu_d = \mu_1 - \mu_2,\;\sigma_d^2)$  
+
+where
+
+$$
+\sigma_d^2 \;=\; \sigma_1^2 + \sigma_2^2 - 2\rho\sigma_1\sigma_2
+$$
+
+**Independence of Differences**
+
+- Examine study to determine if responses from one block could affect responses from any other block.
+- Critical problem if this fails.
+- Observations from the same block will usually be positively correlated.
+
+**Normal Distribution for Differences**
+
+- Normal probability plot for differences
+- Effects of non-normality:
+  - t-test sensitive to outliers
+  - t-test sensitive to skewness of the distribution of possible differences
+  - If sample size is large, t-test is fairly robust to these problems
+
+**If Smaller Sample Sizes with Non-Normal Differences**
+
+- Wilcoxon signed rank test
+- Sign test
+
+
+### RCBD 
+
+**Block**
+
+A group of experimental units that, prior to treatment, are expected to be more like one another (with respect to one or more response variables) than experimental units in general.
+
+(In simple words, groups of similar experimental units.)
+
+**Randomized Complete Block Design (RCBD)**
+
+Experimental design in which separate and completely randomized treatment assignments are made for each of multiple blocks in such a way that all treatments have at least one experimental unit in each block.
+
+**Typical RCBD Set-up**
+
+- $J$ treatments
+- $n$ blocks with $J$ units in each block  
+  - Units within each block are similar  
+  - Within each block, randomly assign $J$ treatments to the units so that one experimental unit receives each treatment  
+  - Each block is essentially a repetition of the experiment
+
+**Model (experiments with one unit per treatment per block)**
+
+$$
+Y_{ij} = \mu + \beta_i + \tau_j + \varepsilon_{ij}
+$$
+
+- $i = 1, \ldots, n$ indexes blocks  
+- $j = 1, \ldots, J$ indexes treatments  
+- $\tau_j$ are fixed treatment effects (with $\sum_{j=1}^J \tau_j = 0$)  
+- $\beta_i$ are block effects  
+  - Could be fixed effects with $\sum_{i=1}^n \beta_i = 0$  
+  - Could be random effects with $\beta_i \sim N(0, \sigma_\beta^2)$  
+- Additive model (same treatment effects in each block)  
+- $\varepsilon_{ij} \sim N(0, \sigma_e^2)$
+
+**ANOVA Table**
+
+| Source of variation | Degrees of freedom | Sums of squares |
+|--------------------|-------------------:|-----------------|
+| Blocks     | $n - 1$ | $J \sum_{i=1}^n (\bar{Y}_{i.} - \bar{Y}_{..})^2$ |
+| Treatments | $J - 1$ | $n \sum_{j=1}^J (\bar{Y}_{.j} - \bar{Y}_{..})^2$ |
+| Error      | $(n - 1)(J - 1)$ | $\sum_{i=1}^n \sum_{j=1}^J (Y_{ij} - \bar{Y}_{i.} - \bar{Y}_{.j} + \bar{Y}_{..})^2$ |
+| Total      | $nJ - 1$ | $\sum_{i=1}^n \sum_{j=1}^J (Y_{ij} - \bar{Y}_{..})^2$ |
+
+**Expectations for Mean Squares**
+
+- Residual (error) Mean Square:
+
+$$
+E(MS_{\text{error}}) = \sigma_e^2
+$$
+
+- Fixed Treatment Effects (with $\bar{\tau} = \sum_{j=1}^J \tau_j$):
+
+$$
+E(MS_{\text{treatments}}) = \sigma_e^2 + \frac{n}{J - 1} \sum_{j=1}^J (\tau_j - \bar{\tau})^2
+$$
+
+- Fixed Blocks (with $\bar{\beta} = \sum_{i=1}^n \beta_i$):
+
+$$
+E(MS_{\text{blocks}}) = \sigma_e^2 + \frac{J}{n - 1} \sum_{i=1}^n (\beta_i - \bar{\beta})^2
+$$
+
+- Random Blocks:
+
+$$
+E(MS_{\text{blocks}}) = \sigma_e^2 + J \sigma_\beta^2
+$$
+
+**Tests for Treatment Effects**
+
+- Test the null hypothesis of no treatment effects:
+
+$$
+H_0: \tau_1 = \tau_2 = \cdots = \tau_J
+$$
+
+against the alternative that at least one mean is different.
+
+- Reject $H_0$ if
+
+$$
+F = \frac{MS_{\text{treatments}}}{MS_{\text{error}}}
+\;\ge\;
+F_{(J-1,\,(n-1)(J-1)),\,1-\alpha}.
+$$
+
+## Efficiency and Diagnostics 
+
+### Efficiency 
+
+**Is RCBD Better than CRD?**
+
+- If the experiment was repeated on similar experimental units (e.u.’s), should you block?
+- Not a question about how to analyze the observed data.  
+  Analysis should match the design.
+
+**How to Measure “Better”?**
+
+- Consider the **error variance** for each design:
+
+$$
+\sigma^2_{\text{CRD}} \quad \text{versus} \quad \sigma^2_{\text{RCBD}}
+$$
+
+- **Efficiency of RCBD relative to CRD** is
+
+$$
+\text{Efficiency} \;=\; \frac{\sigma^2_{\text{CRD}}}{\sigma^2_{\text{RCBD}}}.
+$$
+
+- Efficiency $> 1 \;\Rightarrow\;$ RCBD provides more precise estimates of treatment mean contrasts.
+
+**Efficiency in Terms of Sample Sizes**
+
+- The variance of a difference in treatment means is
+
+$$
+\operatorname{Var}\!\left(\bar{Y}_{.j} - \bar{Y}_{.k}\right)
+\;=\;
+\sigma_e^2 \left(\frac{2}{n}\right).
+$$
+
+- To have $\operatorname{Var}(\bar{Y}_{.j} - \bar{Y}_{.k})$ the same for both designs, we need
+
+$$
+\sigma^2_{\text{CRD}}\left(\frac{2}{n_{\text{CRD}}}\right)
+=
+\sigma^2_{\text{RCBD}}\left(\frac{2}{n_{\text{RCBD}}}\right).
+$$
+
+- Therefore,
+
+$$
+\text{Efficiency}
+=
+\frac{\sigma^2_{\text{CRD}}}{\sigma^2_{\text{RCBD}}}
+=
+\frac{n_{\text{CRD}}}{n_{\text{RCBD}}}.
+$$
+
+- For example, **Efficiency = 1.5** implies that the CRD requires **50% more units per treatment** than the RCBD.
+
+**Fisher’s Adjustment for Degrees of Freedom**
+
+- Fisher used the *relative amount of information*, an adjusted efficiency:
+
+$$
+\frac{(df_{\text{RCBD}} + 1)(df_{\text{CRD}} + 3)\,\hat{\sigma}^2_{\text{CRD}}}
+     {(df_{\text{RCBD}} + 3)(df_{\text{CRD}} + 1)\,\hat{\sigma}^2_{\text{RCBD}}},
+$$
+
+to account for differing degrees of freedom.
+
+**Practical Notes**
+
+- Typical values of efficiency depend on the subject matter.
+- Values between **1.10 and 1.30** are common  
+  (i.e., blocking often reduces the number of units needed by **10–30%**).
+
+### Diagnostics 
+
+Assumptions *(treatments used equally often in each block, i.e., balanced)*
+
+- Independence of errors  
+- Homogeneous error variance  
+- Normality of errors  
+- Block and treatment effects are additive (no interaction)
+
+Diagnose Assumption: **Additive Model**
+
+- **Additivity**: treatment effect is the same within each block.
+
+**Additive Model:**
+$$
+Y_{ij} = \mu + \beta_i + \tau_j + \varepsilon_{ij}
+$$
+
+- **Non-additivity**: treatment effect varies depending on block.
+
+**Non-Additive Model:**
+$$
+Y_{ij} = \mu + \beta_i + \tau_j + (\beta\tau)_{ij} + \varepsilon_{ij}
+$$
+
+- Unless there are replicates of treatments within blocks, we cannot test for significance of the interaction $(\beta\tau)_{ij}$.
+
+Diagnose Assumption: **Tukey’s Test for Non-Additivity**
+
+- Used when there are no replicates of treatments within blocks.
+- Detects one specific pattern of non-additivity: **multiplicative interaction** between block and treatment effects.
+
+**Tukey Model:**
+$$
+Y_{ij} = \mu + \beta_i + \tau_j + \kappa\,\beta_i\tau_j + \varepsilon_{ij}
+$$
+
+- Tukey constructed an $F$-test for
+
+$$
+H_0:\ \kappa = 0
+\quad \text{vs.} \quad
+H_a:\ \kappa \neq 0.
+$$
+
+## Latin Squares
+
+**Latin Squares Design**
+
+- Two blocking variables
+- Number of levels for each blocking factor = number of treatments (or its multiple)
+  - 3 treatments: each block has three levels (or 6, 9, 12, etc.)
+  - 4 treatments: each block has four levels (or 8, 12, 16, etc.)
+- Each block contains only one unit for each treatment
+- Each level of each blocking variable gets all treatments
+
+**Advantages**
+
+- Can estimate treatment effects in a small study
+- Can use two blocking factors to reduce variability
+
+**Limitations**
+
+- Levels of each blocking variable must equal (or be a multiple of) the number of treatments
+- Analysis assumes no interactions between blocking factors and treatments  
+  - Critical, because each block contains only one unit for each treatment
+- Few degrees of freedom for error  
+  - Can increase by using multiple Latin squares
+
+**Model**
+
+$$
+Y_{ijk} = \mu + \beta_i + \gamma_j + \tau_k + \varepsilon_{ijk}
+$$
+
+where $i,j,k = 1,2,\ldots,r$,
+
+- $\beta_i$: first blocking factor effect  
+- $\gamma_j$: second blocking factor effect  
+- $\tau_k$: fixed treatment effect  
+- $k$ is the treatment and is determined by $(i,j)$  
+- $\varepsilon_{ijk} \sim N(0,\sigma^2)$
+
+**ANOVA**
+
+| Source     | d.f. | SS |
+|------------|------:|----|
+| Block 1    | $r - 1$ | $r \sum_i (\bar{Y}_{i..} - \bar{Y}_{...})^2$ |
+| Block 2    | $r - 1$ | $r \sum_j (\bar{Y}_{.j.} - \bar{Y}_{...})^2$ |
+| Treatment  | $r - 1$ | $r \sum_k (\bar{Y}_{..k} - \bar{Y}_{...})^2$ |
+| Error      | $(r - 1)(r - 2)$ | $SS_{\text{error}}$ |
+| Total      | $r^2 - 1$ | $\sum_i \sum_j (Y_{ij.} - \bar{Y}_{...})^2$ |
+
+## Multi-factor Designs
+
+**Factor & Levels**
+
+- A **factor** is an explanatory variable studied in an investigation.
+- The different values of a factor are called **levels**.
+- Often correspond to treatments in an experiment.
+
+**Factorial Experimental Design**
+
+- **Factorial designs** use combinations of levels of two or more factors as treatments.
+
+Example
+
+- Factor A: 3 levels $(a_1, a_2, a_3)$  
+- Factor B: 2 levels $(b_1, b_2)$  
+- Combinations of A and B $\Rightarrow$ 6 treatments:
+
+$$
+(a_1b_1,\ a_1b_2,\ a_2b_1,\ a_2b_2,\ a_3b_1,\ a_3b_2)
+$$
+
+**Terminology**
+
+- **Complete (full) factorial**: all possible combinations of factor levels are used.
+- **Fractional factorial**: only a subset of the possible combinations is used.
+
+**Notation: Cell Means Model**
+
+$$
+Y_{ijk} = \mu_{ij} + \varepsilon_{ijk},
+\qquad
+\varepsilon_{ijk} \text{ are i.i.d. } N(0,\sigma^2)
+$$
+
+- $\mu_{ij}$ = mean response to level $i$ of factor A and level $j$ of factor B
+- $\bar{\mu}_{i\cdot} = \dfrac{1}{b}\sum_j \mu_{ij}$  
+  = mean response of factor A at level $i$, averaging across the levels of factor B
+- $\bar{\mu}_{\cdot j} = \dfrac{1}{a}\sum_i \mu_{ij}$  
+  = mean response of factor B at level $j$, averaging across the levels of factor A
+- $\bar{\mu}_{\cdot\cdot} = \dfrac{1}{ab}\sum_i\sum_j \mu_{ij}$  
+  = overall mean response, averaging across the levels of both factors
+- $\sigma^2$ = variance of responses in level $i$ of factor A and level $j$ of factor B
+
+**Research Questions**
+
+- Are the 6 response means $(\mu_{ij})$ the same?
+- Are mean responses to copper levels the same, averaging over zinc levels?
+
+$$
+\bar{\mu}_{1\cdot} = \bar{\mu}_{2\cdot}\ ?
+$$
+
+- Are mean responses to zinc levels the same, averaging over copper levels?
+
+$$
+\bar{\mu}_{\cdot 1} = \bar{\mu}_{\cdot 2} = \bar{\mu}_{\cdot 3}\ ?
+$$
+
+- Are differences in mean responses between copper levels the same across zinc levels?
+
+$$
+(\mu_{11} - \mu_{21})
+=
+(\mu_{12} - \mu_{22})
+=
+(\mu_{13} - \mu_{23})\ ?
+$$
+
+
+### Factors and Levels
+
+**Factor & Levels**
+
+- A **factor** is an explanatory variable studied in an investigation.  
+- The different values of a factor are called **levels**.  
+- Often correspond to **treatments** in an experiment.
+
+**Factorial Experimental Design**
+
+- **Factorial designs** use combinations of levels of two or more factors as treatments.
+
+Example
+
+- Factor A: 3 levels $(a_1, a_2, a_3)$  
+- Factor B: 2 levels $(b_1, b_2)$  
+
+Combinations of A and B $\Rightarrow 6$ treatments:
+$$
+(a_1 b_1,\; a_1 b_2,\; a_2 b_1,\; a_2 b_2,\; a_3 b_1,\; a_3 b_2)
+$$
+
+**Terminology**
+
+- **Complete (full) factorial**: all possible combinations of factor levels are used.  
+- **Fractional factorial**: only a subset of combinations is used.
+
+**Notation: Cell Means Model**
+
+$$
+Y_{ijk} = \mu_{ij} + \varepsilon_{ijk},
+\qquad \varepsilon_{ijk} \stackrel{\text{i.i.d.}}{\sim} N(0,\sigma^2)
+$$
+
+- $\mu_{ij}$: mean response at level $i$ of factor A and level $j$ of factor B  
+
+Marginal means:
+$$
+\bar{\mu}_{i\cdot} = \frac{1}{b}\sum_j \mu_{ij}
+$$
+
+$$
+\bar{\mu}_{\cdot j} = \frac{1}{a}\sum_i \mu_{ij}
+$$
+
+$$
+\bar{\mu}_{\cdot\cdot} = \frac{1}{ab}\sum_i\sum_j \mu_{ij}
+$$
+
+- $\sigma^2$: variance of responses within cell $(i,j)$
+
+**Research Questions**
+
+- Are the $ab$ response means $\mu_{ij}$ the same?  
+
+- Are mean responses to factor A the same, averaging over factor B?
+$$
+\bar{\mu}_{1\cdot} = \bar{\mu}_{2\cdot} = \cdots
+$$
+
+- Are mean responses to factor B the same, averaging over factor A?
+$$
+\bar{\mu}_{\cdot1} = \bar{\mu}_{\cdot2} = \cdots
+$$
+
+- Are differences between levels of factor A the same across levels of factor B?
+$$
+(\mu_{11}-\mu_{21}) = (\mu_{12}-\mu_{22}) = (\mu_{13}-\mu_{23}) \; ?
+$$
+
+**Factor Effects**
+
+- **Main effect**: difference (contrast) between levels of one factor averaged over all levels of the other factor(s).
+
+- **Simple effect**: difference (contrast) between levels of one factor at a specific level of the other factor.
+
+- **Interaction** exists when simple effects are not the same:
+  - Equivalent to non-parallel lines in a plot of means.
+  - Can differ in magnitude or direction.
+
+**Two-Way ANOVA Table**
+
+| Source | df | Sum of Squares |
+|------|----|----------------|
+| Factor A | $a-1$ | $nb\sum_i(\bar{Y}_{i\cdot\cdot}-\bar{Y}_{\cdot\cdot\cdot})^2$ |
+| Factor B | $b-1$ | $na\sum_j(\bar{Y}_{\cdot j\cdot}-\bar{Y}_{\cdot\cdot\cdot})^2$ |
+| Interaction AB | $(a-1)(b-1)$ | $n\sum_i\sum_j(\bar{Y}_{ij\cdot}-\bar{Y}_{i\cdot\cdot}-\bar{Y}_{\cdot j\cdot}+\bar{Y}_{\cdot\cdot\cdot})^2$ |
+| Error | $ab(n-1)$ | $\sum_i\sum_j\sum_k (Y_{ijk}-\bar{Y}_{ij\cdot})^2$ |
+| Total | $abn-1$ | $\sum_i\sum_j\sum_k (Y_{ijk}-\bar{Y}_{\cdot\cdot\cdot})^2$ |
+
+**Expected Mean Squares**
+
+$$
+E(MS_{\text{error}}) = \sigma^2
+$$
+
+$$
+E(MS_A) = \sigma^2 + \frac{nb}{a-1}\sum_i(\bar{\mu}_{i\cdot}-\bar{\mu}_{\cdot\cdot})^2
+$$
+
+$$
+E(MS_B) = \sigma^2 + \frac{na}{b-1}\sum_j(\bar{\mu}_{\cdot j}-\bar{\mu}_{\cdot\cdot})^2
+$$
+
+$$
+E(MS_{AB}) = \sigma^2 + \frac{n}{(a-1)(b-1)}
+\sum_i\sum_j(\mu_{ij}-\bar{\mu}_{i\cdot}-\bar{\mu}_{\cdot j}+\bar{\mu}_{\cdot\cdot})^2
+$$
+
+**F-tests**
+
+*Overall Treatment Effects*
+
+$$
+H_0:\; \mu_{ij} \text{ equal for all } i,j
+$$
+
+$$
+F = \frac{MS_{\text{model}}}{MS_{\text{error}}}
+$$
+
+*Factor A Main Effect*
+
+$$
+H_0:\; \bar{\mu}_{1\cdot} = \bar{\mu}_{2\cdot} = \cdots = \bar{\mu}_{a\cdot}
+$$
+
+$$
+F = \frac{MS_A}{MS_{\text{error}}}
+$$
+
+*Factor B Main Effect*
+
+$$
+H_0:\; \bar{\mu}_{\cdot1} = \bar{\mu}_{\cdot2} = \cdots = \bar{\mu}_{\cdot b}
+$$
+
+$$
+F = \frac{MS_B}{MS_{\text{error}}}
+$$
+
+*Interaction Effect*
+
+$$
+H_0:\; (\mu_{ij}-\mu_{kj}) = (\mu_{ir}-\mu_{kr})
+\quad \forall\, i \neq k,\; j \neq r
+$$
+
+$$
+F = \frac{MS_{AB}}{MS_{\text{error}}}
+$$
+
+**Interpretation Considerations**
+
+No Interaction Effect
+
+- Marginal means are straightforward to interpret.
+- Main effects summarize average differences across the other factor.
+
+Interaction Effect Present
+
+- Main effects may be misleading.
+- Simple effects are conditional on the other factor.
+- Consider:
+  - Whether effects are additive on another scale
+  - Practical significance of the interaction
+  - Reporting simple effects rather than marginal means
+
+## Two-way ANOVA  
+
+### Effects 
+
+### Diagnostics 
+
+### Additional Factorial Designs 
+
