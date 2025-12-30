@@ -7,7 +7,7 @@ output: pdf_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-Note: Finished Week 3
+Note: Finished Week 6
 
 # Introduction 
 
@@ -753,3 +753,714 @@ $$
 - Common to use power values of 80%, 90%, or 95%, just as arbitrary as using $\alpha = 5\%$.
 
 - Can adapt to a one-sided alternative by replacing $\alpha/2$ with $\alpha$ in the formulas.
+
+## Inference Diagnostics 
+
+### Assessing Equal Variances 
+
+**Graphical Method**
+
+- Construct residual plots, histograms, or boxplots of values for each group/population  
+- Look for:
+  - Outliers in each sample  
+  - Differences in IQR, range  
+  - Differences in shape of sample distributions  
+
+**Summary Statistics**
+
+- Check the ratio of sample standard deviations
+
+$$
+\frac{\max\{S_1, S_2\}}{\min\{S_1, S_2\}}
+$$
+
+- Interpretation guidelines:
+  - Between 1 and 2 — little impact  
+  - Between 2 and 3 — potential impact  
+  - Greater than 3 — likely impact  
+
+**F-test**
+
+- Reject $H_0 : \sigma_1^2 = \sigma_2^2$ if
+
+$$
+F_{\max} = \frac{\max\{S_1^2, S_2^2\}}{\min\{S_1^2, S_2^2\}} \ge F_{(a,b),\,1-\alpha/2}
+$$
+
+- where  
+  - $a = n_1 - 1,\; b = n_2 - 1$ if $S_1^2 > S_2^2$  
+  - $a = n_2 - 1,\; b = n_1 - 1$ if $S_2^2 > S_1^2$  
+
+- Notes:
+  - Very sensitive to normal distribution assumption  
+  - Not recommended as the only check  
+
+**Brown–Forsythe Test**
+
+- Conduct a two-sample $t$-test on the absolute deviations from the sample medians to assess homogeneous variability
+
+#### Remedies to Unequal Variance 
+
+**Welch Approximation**
+
+- Very similar results to two-sample inference when sample sizes are nearly equal
+- Better performance with unequal sample sizes **and** unequal variances
+
+**Transformation**
+
+- Replace $Y_{ij}$ with $X_{ij} = h(Y_{ij})$
+- Perform inference on the $X_{ij}$’s $\rightarrow$ e.g., compare $\bar{X}_1$ with $\bar{X}_2$
+- Back-transform estimates to get conclusions on the $Y$ scale  
+  - only approximate conclusions about population means on the $Y$ scale
+
+**Transformation Cont.**
+
+- Choosing the transformation
+  - Trial and error: transform and check histogram
+  - Rules of thumb:
+    - Data are all positive — use $\log(Y)$
+    - Data are proportions — use $\arcsin(\sqrt{Y})$
+    - Data are counts — use $\sqrt{Y}$
+  - Use transformation based on science  
+    (square root of area, cube root of volume)
+  - Adjust for a variance–mean relationship  
+    (common for variance to increase with the mean)
+
+### Assessing Normality 
+
+**Graphical Methods**
+
+- Histogram of values within each group/population  
+  - Look for symmetric, bell shape  
+
+- Normal probability plot within each group/population  
+  - Compare empirical cumulative distribution function (CDF) to CDF for theoretical normal distribution  
+  - Most commonly done using quantiles (Q–Q plot):  
+    plot empirical quantiles against expected quantiles from normal distribution  
+
+**Normal Q–Q Plot**
+
+- Order residuals from smallest to largest  
+  (say $X_{(1)}, \ldots, X_{(n)}$)
+
+- Compute expected quantiles $(q_{(1)}, \ldots, q_{(n)})$ from a standard normal distribution
+  - Expected quantiles can be calculated with tables
+  - General approximation:
+    $$
+    q_i = \Phi^{-1}\!\left(\frac{i}{n+1}\right)
+    $$
+  - Blom approximation:
+    $$
+    q_i = \Phi^{-1}\!\left(\frac{i - .375}{n + .25}\right)
+    $$
+  - For $i = 5$, $n = 9$, $q_5 = \Phi^{-1}\!\left(\frac{5}{10}\right) = 0$
+
+- Scatterplot of $X_{(i)}$ vs $q_i$ should be close to a straight line with slope $\sigma$
+
+- Curved patterns indicate non-normal distributions (or presence of outliers)
+
+**Numerical Summaries**
+
+- For any normal distribution:
+  - Mean and median should be equal
+  - Skewness $= E(Y - \mu)^3 / \sigma^3 = 0$  
+    (Skewness measures the asymmetry)
+  - Kurtosis $= E(Y - \mu)^4 / \sigma^4 = 3$
+  - Excess kurtosis $=$ kurtosis $- 3$  
+    (estimated by the *univariate* procedure in SAS)
+  - The sample kurtosis measures the heaviness of the tails of the data distribution
+  - Positive value: long-tail; negative value: short-tail
+
+**Tests**
+
+- Many proposed tests for normality
+- Tests based on empirical CDFs: Kolmogorov–Smirnov, Anderson–Darling, etc.
+- Tests based on skewness or kurtosis
+- Chi-square goodness-of-fit tests
+- Tests based on normal probability plots: Shapiro–Wilk, correlation tests
+- Normality is almost always rejected for large sample sizes
+
+**Consequences of Non-Normality**
+
+- Large samples $\rightarrow$ few consequences (Central Limit Theorem)
+- Small samples:
+  - Sample distributions have same shape and
+    - equal sample sizes $\rightarrow$ very little impact
+    - different sample sizes $\rightarrow$ potential impact if distributions are skewed
+  - Sample distributions have different shapes $\rightarrow$ impact
+
+**Remedy for Non-Normality**
+
+- Transformation (especially for skewness)
+- Discussed earlier (under remedies for unequal variances)
+- Detect and eliminate outliers
+- Non-parametric tests
+
+#### Non Parametric Tests
+
+**Wilcoxon Rank–Sum Test**
+
+- Independence
+
+- Null hypothesis: two populations have the same distribution  
+  - Distribution is not required to be normal  
+  - Implies equal medians, percentiles, means, and variances  
+
+- Can test against one- or two-sided alternative
+
+- Can compute “exact” p-values based on the null distribution of the ranks
+
+**Wilcoxon Rank–Sum Test (Procedure)**
+
+- Order the combined $n_1 + n_2$ observations (small to large)
+
+- Assign ranks  
+  - Smallest gets rank $= 1$, second smallest gets rank $= 2$, etc.  
+  - For tied observations, average the ranks  
+
+- Compute the sum of the ranks for one group (call it $W$)
+
+- Assuming $H_0$ is true, compute:
+$$
+E_0(W) = \frac{n_1 (n_1 + n_2 + 1)}{2}
+\qquad \text{and} \qquad
+V_0(W) = \frac{n_1 n_2 (n_1 + n_2 + 1)}{12}
+$$
+
+- Large sample $Z$-test:
+$$
+z = \frac{|W - E_0(W)| - 0.5}{\sqrt{V_0(W)}}
+$$
+
+- Approximate p-value:
+$$
+2 \times P(Z > |z|)
+$$
+
+# Unit 2 ANOVA
+
+## Motivation
+
+- Do the populations or treatment groups have the same mean values for the variable?
+
+- Two sources of variation:
+  - Variability among observations within each treatment group  
+    (or within each population)
+  - Variability among mean responses for treatments  
+    (or between populations)
+
+- Question:
+  - Are differences among group means large relative to variation within groups?
+  - Do all populations have the same mean?
+
+**Analysis of Variance (ANOVA)**
+
+- Calculate three variations based on observations $Y_{ij}$:
+  - Variation due to group means
+  - Variation due to residuals
+  - Total variation
+
+- These are called the **sums of squares (SS)**
+
+## Cell Means Model
+
+**Linear Model Form** 
+
+$$
+Y_{ij} = \mu_i + \varepsilon_{ij}
+$$
+
+- Each observation $Y_{ij}$ can be described by two components:
+  - Fixed mean value $\mu_i$
+  - Random error term $\varepsilon_{ij}$
+
+- Gives an equation for each of the
+$$
+N = \sum_{i=1}^r n_i
+$$
+  observations
+
+**Matrix Form**
+
+$$
+\mathbf{Y} = \mathbf{X}\boldsymbol{\beta} + \boldsymbol{\varepsilon}
+$$
+
+- The vector $\mathbf{Y}$ is length $N$ and is the vector of observations.
+
+- The matrix $\mathbf{X}$ is size $N \times r$ and is called the design matrix.  
+  It relates the observations to the parameters according to the model.  
+  It is fixed (non-random).
+
+- The vector $\boldsymbol{\beta}$ is length $r$ and is the vector of parameter values.
+
+- The vector $\boldsymbol{\varepsilon}$ is length $N$ and is the vector of random error terms.
+
+## Basic ANOVA 
+
+**Variation due to Group Means**
+
+$$
+SS_{\text{among groups}}
+= \sum_{i=1}^r \sum_{j=1}^{n_i} (\bar{Y}_{i\cdot} - \bar{Y}_{\cdot\cdot})^2
+= \sum_{i=1}^r n_i (\bar{Y}_{i\cdot} - \bar{Y}_{\cdot\cdot})^2
+$$
+
+- Also called $SS_{\text{model}}$
+- If the population means are the same (different), this value should be small (large)
+
+**Variation due to Residuals**
+
+$$
+SS_{\text{within groups}}
+= \sum_{i=1}^r \sum_{j=1}^{n_i} (Y_{ij} - \bar{Y}_{i\cdot})^2
+$$
+
+$$
+= \sum_{i=1}^r (n_i - 1) S_i^2
+$$
+
+$$
+= \sum_{i=1}^r \sum_{j=1}^{n_i} e_{ij}^2
+$$
+
+- Also called $SS_{\text{error}}$ or $SS_{\text{residuals}}$
+
+**Total Variation**
+
+$$
+SS_{\text{total}}
+= \sum_{i=1}^r \sum_{j=1}^{n_i} (Y_{ij} - \bar{Y}_{\cdot\cdot})^2
+= SS_{\text{model}} + SS_{\text{error}}
+$$
+
+**ANOVA Table**
+
+| Source of variation | Degrees of freedom | Sums of squares | Mean square | $F$ |
+|--------------------|-------------------|----------------|-------------|-----|
+| Model | $r - 1$ | $SS_{\text{model}}$ | $MS_{\text{model}} = \dfrac{SS_{\text{model}}}{r - 1}$ | $\dfrac{MS_{\text{model}}}{MS_{\text{error}}}$ |
+| Error | $N - r$ | $SS_{\text{error}}$ | $MS_{\text{error}} = \dfrac{SS_{\text{error}}}{N - r}$ | |
+| Total | $N - 1$ | $SS_{\text{total}}$ | | |
+
+**Note:**  
+$$
+MS_{\text{error}} = S_p^2
+$$`
+
+**Model Assumptions**
+
+- Assumptions on random error terms:
+  - $\varepsilon_{ij}$ are i.i.d. from a normal distribution with mean $0$ and variance $\sigma^2$
+  - $\boldsymbol{\varepsilon}$ is multivariate normal with mean $\mathbf{0}$ and variance $\sigma^2 \mathbf{I}$
+
+- This implies that:
+  - $Y_{ij}$ are i.i.d. from a normal distribution with mean $\mu_i$ and variance $\sigma^2$
+  - $\mathbf{Y}$ is multivariate normal with mean $\mathbf{X}\boldsymbol{\beta}$ and variance $\sigma^2 \mathbf{I}$
+
+- In addition, we assume groups are independent of each other
+
+**ANOVA F-test**
+
+- Null hypothesis:
+$$
+H_0 : \mu_1 = \mu_2 = \cdots = \mu_r
+$$
+
+- Alternative hypothesis:
+$$
+H_a : \text{at least one } \mu_i \text{ is different for } i = 1, \ldots, r
+$$
+
+- Test statistic:
+$$
+F = \frac{MS_{\text{model}}}{MS_{\text{error}}}
+$$
+
+- P-value:
+$$
+P\!\left(F_{r-1,\,N-r} > F\right)
+$$
+
+## Effects Model 
+
+**Linear Effects Model**
+
+$$
+Y_{ij} = \mu + \alpha_i + \varepsilon_{ij}
+$$
+
+- Each observation $Y_{ij}$ can be described by two components:
+  - **Fixed mean value:** $\mu_i = \mu + \alpha_i$
+    - Overall mean value: $\mu$
+    - Treatment effects compared with overall mean: $\alpha_i$
+    - Goal: find which $\alpha_i$’s are different from $0$
+  - **Random error term:** $\varepsilon_{ij}$
+
+**Identifiability Issues**
+
+- Model has too many parameters: estimates $r$ means with $r+1$ parameters
+- Design matrix $\mathbf{X}$ is not full column rank
+- The usual inverse $(\mathbf{X}^\top \mathbf{X})^{-1}$ does not exist
+- There are infinitely many least squares estimators
+
+**Solution:** impose constraints on the parameters
+- Set $\alpha_r = 0$ (baseline constraint), or
+- Set
+$$
+\sum_{i=1}^r \alpha_i = 0
+$$
+  (sum-to-zero constraint)
+
+**Least Squares Estimator of $\boldsymbol{\beta}$**
+
+When
+$$
+\sum_{i=1}^r \alpha_i = 0,
+$$
+
+$$
+\hat{\boldsymbol{\beta}}
+= (\mathbf{X}^\top \mathbf{X})^{-1}\mathbf{X}^\top \mathbf{Y}
+=
+\begin{pmatrix}
+\frac{1}{r}\sum_{i=1}^r \bar{Y}_{i\cdot} \\
+\bar{Y}_{1\cdot} - \frac{1}{r}\sum_{i=1}^r \bar{Y}_{i\cdot} \\
+\bar{Y}_{2\cdot} - \frac{1}{r}\sum_{i=1}^r \bar{Y}_{i\cdot} \\
+\vdots \\
+\bar{Y}_{(r-1)\cdot} - \frac{1}{r}\sum_{i=1}^r \bar{Y}_{i\cdot}
+\end{pmatrix}
+=
+\begin{pmatrix}
+\hat{\mu} \\
+\hat{\alpha}_1 \\
+\hat{\alpha}_2 \\
+\vdots \\
+\hat{\alpha}_{r-1}
+\end{pmatrix}.
+$$
+
+**Cautions**
+
+- The above two types of constraints are not the only ways to model the means
+- The choice of constraint affects the least squares estimator $\hat{\boldsymbol{\beta}}$
+- You must determine which constraint was applied before interpreting parameter estimates
+- The interpretation of parameters (elements of $\boldsymbol{\beta}$) depends on the parametrization
+
+### Fixed vs. Random Effects
+
+**Fixed Effects**
+
+$$
+Y_{ij} = \mu + \alpha_i + \varepsilon_{ij}
+$$
+
+- The $r$ treatments (or groups) examined in the study are the only ones under consideration
+- Research questions concern treatment means or differences in means
+  - e.g., two drugs, four pesticides
+
+**Random Effects**
+
+$$
+Y_{ij} = \mu + \alpha_i + \varepsilon_{ij}
+$$
+
+- The $r$ treatments (or groups) are a random sample from a larger population of possible treatments (or groups)
+- Research questions concern variability among sets of treatments (or groups) that could be selected for different studies
+- Additional assumptions:
+$$
+\alpha_i \sim N(0, \sigma_\alpha^2),
+$$
+and $\alpha_i$ is independent of $\varepsilon_{ij}$
+
+## ANOVA Diagnostics and Remedies 
+
+**ANOVA Assumptions**
+
+- $\varepsilon_{ij}$ are i.i.d. $N(0,\sigma^2)$
+
+- Independence of groups and observations
+
+- Homogeneous (equal) variance:
+$$
+\sigma_1^2 = \sigma_2^2 = \cdots = \sigma_r^2 = \sigma^2
+$$
+
+- Normal distribution:
+  - Random error terms are normally distributed
+
+**Model Diagnostics**
+
+- Many results from two-sample model diagnostics apply:
+  - Independence: critical aspect
+  - Equal variances: important
+  - Normality: only a concern for small sample sizes or very skewed distributions
+  - Outliers: results not robust
+
+- Use residuals to assess model assumptions:
+$$
+e_{ij} = Y_{ij} - \bar{Y}_{i\cdot}
+$$
+
+**Independence Assumption**
+
+**Data collection:**
+- Random sample(s) from multiple populations
+- Observations from multiple independent groups
+
+- Study designed to produce independent responses
+
+**Equal Variance Assumption (Graphical Checks)**
+
+- Construct histograms of residuals for each group
+- Construct boxplots of residuals for each group
+- Plot residuals versus predicted values (there should be no trend)
+  - Beware of interpretation if $n_i$’s are very unequal
+  - Expect larger range of $e_{ij}$ if $n_i$ is larger
+
+- Study ratio of sample standard deviations:
+  $$
+  \frac{\max\{S_i\}}{\min\{S_i\}}
+  $$
+
+**Equal Variance Assumption (Formal Tests)**
+
+- Tests for equality of variances:
+  - Brown–Forsythe test
+  - Levene’s test
+  - etc.
+
+- Consequences of unequal variances on the $F$-test:
+  - Minor if sample sizes are the same
+  - Large distortion of $\alpha$ level if sample sizes are very unequal
+  - Decreased power
+
+**Normality Assumption**
+
+- Histogram of residuals
+- Normal probability plot of residuals
+- Numerical summaries:
+  - Skewness
+  - Kurtosis
+
+- Tests for normality:
+  - Shapiro–Wilk
+  - Kolmogorov–Smirnov
+  - Cramér–von Mises
+  - Anderson–Darling
+
+### Non-Parametric
+
+**Kruskal–Wallis Test**
+
+- Combine the data into a single data set
+- Order the $N$ observations from smallest to largest
+- Assign ranks $R_{ij}$:
+  - Smallest observation gets rank $1$, second smallest gets rank $2$, etc.
+  - For tied observations, average the ranks
+
+- Calculate $\bar{R}_{i\cdot}$ = mean rank of observations in group $i$
+
+- Test statistic:
+$$
+H = (N-1)
+\frac{\sum_{i=1}^r n_i(\bar{R}_{i\cdot}-\bar{R})^2}
+     {\sum_{i=1}^r \sum_{j=1}^{n_i}(R_{ij}-\bar{R})^2}
+$$
+  where
+$$
+\bar{R} = \frac{N+1}{2}
+$$
+
+- If $H_0$ is true, $H$ has an approximate $\chi^2$ distribution with $r-1$ degrees of freedom
+- Approximation is best when $n_i \ge 5$ for all $i$
+- $p$-value:
+$$
+P(\chi^2_{r-1} > H)
+$$
+
+## ANOVA Contrasts 
+
+**Motivation**
+
+- Inference for a single population mean  
+- Linear combinations of means, including contrasts  
+- Pairwise comparisons  
+
+**Inference for Single Population Mean**
+
+- $100(1-\alpha)\%$ confidence interval for a single group mean:
+$$
+\bar{Y}_{i\cdot} \;\pm\; t_{N-r,\,1-\alpha/2}
+\sqrt{\frac{MS_{\text{error}}}{n_i}}
+$$
+
+- Notes:
+  - $MS_{\text{error}}$ is the estimate of the population variance $\sigma^2$
+  - Degrees of freedom for the $t$ distribution: $N - r$
+  - Valid for inference on a *single* population mean  
+    (not used for comparison between means)
+
+**Contrast**
+
+- A **contrast** is a linear combination of the population means with
+$\sum_{i=1}^r c_i = 0$:
+$$
+\gamma = \sum_{i=1}^r c_i \mu_i
+$$
+
+**Orthogonal Contrasts**
+
+- Two contrasts
+$$
+\gamma_1 = \sum_i c_i \mu_i,
+\qquad
+\gamma_2 = \sum_i b_i \mu_i
+$$
+are **orthogonal** if
+$$
+\sum_i \frac{b_i c_i}{n_i} = 0
+$$
+
+- If $\gamma_1$ and $\gamma_2$ are orthogonal:
+  - They represent statistically unrelated pieces of information
+  - One contrast conveys no information about the other
+  - Estimates $\hat{\gamma}_1$ and $\hat{\gamma}_2$ are uncorrelated
+  - Hypothesis tests for $\gamma_1$ and $\gamma_2$ are independent  
+    (i.e., results of one test do not affect results of the other)
+  - Confidence intervals for $\gamma_1$ and $\gamma_2$ are independent
+
+**Why Are Orthogonal Contrasts Useful?**
+
+- The $F$-test from the ANOVA table:
+  - Tests whether all groups have the same mean
+  - We do not always care about the omnibus $F$-test
+
+- Contrasts:
+  - Focus attention on specific scientific questions
+  - Require the researcher to explicitly specify those questions
+
+- Orthogonality implies:
+  - Independence of test results
+  - Tests for contrasts can be interpreted individually
+  - A natural partitioning of sums of squares into
+    *“interesting”* components and *“everything else”*
+
+## ANOVA Multiple Comparisons
+
+**Pairwise Comparisons**
+
+Each pairwise comparison has Type I error level $\alpha$, or confidence level $100(1-\alpha)\%$.
+
+When there are $r$ groups, we perform
+$$
+\binom{r}{2}
+$$
+pairwise comparisons.
+
+If $r$ is large, some significant differences are expected by chance even if all of the population means are the same.
+
+**Comparison-wise Type I Error Rate**
+
+The comparison-wise Type I error rate is defined as
+$$
+P\bigl(\text{reject } H_0 \text{ for one test} \mid H_0 \text{ is true for that test}\bigr).
+$$
+
+**Experiment-wise Type I Error Rate**
+
+The experiment-wise Type I error rate is defined as
+$$
+P\bigl(\text{reject at least one of the } H_0\text{’s} \mid \text{all } H_0\text{’s are true}\bigr).
+$$
+
+**Multiple Comparisons Adjustment**
+
+Multiple comparisons adjustments are used to avoid too many false significant findings. The goal is to make the experiment-wise Type I error rate reasonably small.
+
+These adjustments are equivalent to constructing simultaneous confidence intervals; that is, all confidence intervals in a set include their individual targets with a specified probability.
+
+**Basic Approach**
+
+Adjust the critical value $t_{N-r,1-\alpha/2}$ used in individual $100(1-\alpha)\%$ confidence intervals or individual $\alpha$-level $t$-tests.
+
+The cost of this approach is lower power, meaning it is less likely to detect a non-zero effect.
+
+The benefit is that the experiment-wise Type I error rate is no larger than the specified $\alpha$.
+
+**Least Significant Difference (LSD)**
+
+(Note: This is a Comparison-wise adjustment)
+
+First conduct the overall $F$-test of
+$$
+H_0:\ \mu_1 = \mu_2 = \cdots = \mu_r
+$$
+at the $\alpha$ level.
+
+If $H_0$ is not rejected, then declare all means the same. In this case, the chance of any false declaration of a significant difference is less than $\alpha$.
+
+If $H_0$ is rejected, then calculate confidence intervals or conduct hypothesis tests for pairwise comparisons.
+
+This method is commonly used, but there can be substantial loss of power when only a few groups have different means.
+
+(Note: What follows are examples of Experiment-wise adjustments) 
+
+**Scheffé’s Method**
+
+Scheffé’s method works for any number of linear contrasts, including all possible linear contrasts.
+
+It is the most conservative multiple comparison procedure, but it is relatively easy to apply.
+
+In place of $t_{N-r,1-\alpha/2}$, use
+$$
+\sqrt{(r-1)F_{r-1,N-r,1-\alpha}}.
+$$
+
+Declare a significant difference between groups $i$ and $j$ if
+$$
+\bigl|\bar{Y}_i - \bar{Y}_j\bigr|
+\ge
+\sqrt{(r-1)F_{r-1,N-r,1-\alpha}}
+\sqrt{MS_{\text{error}}\left(\frac{1}{n_i}+\frac{1}{n_j}\right)}.
+$$
+
+**Tukey–Kramer Honest Significant Difference (HSD)**
+
+The Tukey–Kramer procedure is based on the distribution of the studentized range.
+
+The studentized range statistic is
+$$
+q_{(r,N-r)} =
+\frac{\max_i \bar{Y}_i - \min_i \bar{Y}_i}{S_p/\sqrt{n}}.
+$$
+
+For confidence intervals, use the critical value
+$$
+\frac{1}{\sqrt{2}} q_{(r,N-r,1-\alpha)}.
+$$
+
+For hypothesis tests, declare a significant difference if
+$$
+\bigl|\bar{Y}_i - \bar{Y}_j\bigr|
+\ge
+\frac{1}{\sqrt{2}} q_{(r,N-r,1-\alpha)}
+\sqrt{MS_{\text{error}}\left(\frac{1}{n}+\frac{1}{n}\right)}.
+$$
+
+**Bonferroni Method**
+
+If we conduct $m$ tests (or confidence intervals), replace $\alpha$ with $\alpha/m$ for each test (or confidence interval).
+
+This method is easy to implement.
+
+Declare a significant difference if
+$$
+\bigl|\bar{Y}_i - \bar{Y}_j\bigr|
+\ge
+t_{N-r,1-\alpha/(2m)}
+\sqrt{MS_{\text{error}}\left(\frac{1}{n_i}+\frac{1}{n_j}\right)}.
+$$
+
+The Bonferroni method is conservative, especially when $m$ is large and the tests are not independent, resulting in an experiment-wise Type I error rate less than $\alpha$.
+
+The number of comparisons $m$ must be specified in advance.
