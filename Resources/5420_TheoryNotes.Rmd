@@ -11,7 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 Note: Finished Lecture 5 
 
-## Introduction 
+# Introduction 
 
 - **Probability** is a branch of mathematics concerned with the study of *random phenomenon* (e.g., experiments, models of populations).
 
@@ -476,7 +476,7 @@ holding does **not** imply that $A_1, \ldots, A_n$ are independent.
 
 The assumption of independence of events allows the computation of joint occurrences of events through simple calculations.
 
-## Random Variables 
+# Random Variables 
 
 **Definition:** A **random variable** (r.v.) $X$ is a function defined on a sample space $S$ that associates a real number with each outcome in $S$.
 
@@ -504,7 +504,7 @@ $$
 
 $P_X(\cdot)$ satisfies the axioms and is therefore a legitimate probability function.
 
-### CDF 
+## CDF 
 
 **Definition.**  
 The **cumulative distribution function** (cdf) of a random variable $X$, denoted by $F(\cdot)$, is defined by
@@ -532,3 +532,537 @@ $$
 \lim_{x \downarrow x_0} F(x) = F(x_0)
 \quad \text{for any } x_0 \in \mathbb{R}.
 $$
+
+### Discrete Random Variables
+
+**Definition.**  
+If a cdf $F$ is a step function (with jumps at a countable collection of points $x_i \in \mathbb{R}$), then we say the distribution described by $F$ is **discrete** (with support or range $x_i \in \mathbb{R}$).
+
+If a random variable $X$ has a cdf $F = F_X$ which is a step function, then we say $X$ is a **discrete random variable**.
+
+Besides the cdf, there are other (equivalent) ways to state the probability distribution for a discrete distribution / discrete r.v. $X$.
+
+1. **Probability mass function (pmf).**  
+   The pmf of a discrete random variable $X$ is given by
+$$
+f(x) = P(X = x) \ge 0, \quad \text{for any } x \in \mathbb{R}.
+$$
+
+2. **Equivalent characterization via the cdf.**  
+   The pmf of a discrete r.v. $X$ can also be written as
+$$
+f(x) = P(X \le x) - P(X < x)
+    = F(x) - \lim_{y \to x^-} F(y).
+$$
+
+### Continuous Random Variables and Probability Density Functions
+
+- If a cdf $F$ is such that there exists a nonnegative function $f$ satisfying
+$$
+F(x) = \int_{-\infty}^{x} f(t)\,dt, \quad \text{for any } x \in \mathbb{R},
+$$
+  then the distribution described by $F$ is said to be (absolutely) **continuous** with **probability density function (pdf)** $f$.
+
+A random variable $X$ with an (absolutely) continuous cdf $F$, or a pdf $f$, is said to be a **continuous random variable**.
+
+- If $F$ is (absolutely) continuous, then its derivative at $x \in \mathbb{R}$ is its pdf $f(x)$:
+$$
+F'(x) = \frac{dF(x)}{dx} = f(x).
+$$
+
+- If $X$ is a continuous random variable, then
+$$
+P(X = x) = 0 \quad \text{for any } x \in \mathbb{R}.
+$$
+
+For $a < b$,
+$$
+P(a < X < b)
+= P(a \le X \le b)
+= P(a \le X < b)
+= P(a < X \le b)
+= F(b) - F(a)
+= \int_a^b f(t)\,dt.
+$$
+
+
+### Properties of Probability Density or Mass Functions
+
+A function $f(x)$ is a pdf (or pmf) for some random variable if and only if
+
+1. $f(x) \ge 0$ for any $x \in \mathbb{R}$
+
+2. 
+$$
+\int_{-\infty}^{\infty} f(x)\,dx = 1 
+\quad \text{(or } \sum_x f(x) = 1 \text{)}
+$$
+
+Any nonnegative function having a finite integral (or sum) can be turned into a pdf (or pmf) $f$ by dividing by its integral (or sum).
+
+We will write $X \sim f_X(x)$ (or $X \sim F_X(x)$) to denote that $X$ has a distribution given by $f$ (or $F$).
+
+**Computing Probabilities Using a pmf or pdf**
+
+To find general probabilities using a pmf or pdf, note that for $A \subset \mathbb{R}$,
+
+**Discrete case (using pmf):**
+$$
+P(X \in A)
+= \sum_{x \in A} f_X(x)
+= \sum_{x \in A,\; f_X(x) > 0} f_X(x)
+$$
+
+**Continuous case (using pdf):**
+$$
+P(X \in A)
+= \int_A f_X(x)\,dx
+$$
+
+## Relating the CDF to the PMF / PDF
+
+**Discrete random variable case**
+
+$$
+P(a < X \le b) = F(b) - F(a)
+$$
+
+$$
+P(a \le X \le b) = F(b) - F(a) + f(a)
+$$
+
+$$
+P(a \le X < b) = F(b) - F(a) + f(a) - f(b)
+$$
+
+$$
+P(a < X < b) = F(b) - F(a) - f(b)
+$$
+
+**Continuous random variable case**
+
+$$
+P(a < X \le b) = F(b) - F(a)
+$$
+
+$$
+P(a \le X \le b) = F(b) - F(a)
+$$
+
+$$
+P(a \le X < b) = F(b) - F(a)
+$$
+
+$$
+P(a < X < b) = F(b) - F(a)
+$$
+
+Equivalently,
+
+$$
+P(a < X < b) = \int_a^b f(x)\,dx.
+$$
+
+# Functions of a Random Variable
+
+**Introduction**
+
+- Consider a random variable $X \sim F_X(\cdot)$ and a function
+$$
+g : \mathbb{R} \to \mathbb{R}.
+$$
+(Here, $X$ is a random variable and $g$ may be *any* function.)
+
+- Then
+$$
+Y = g(X)
+$$
+is also a random variable, having its own cdf $F_Y(\cdot)$.
+
+Since $Y$ is a function of $X$, we can describe the probabilistic behavior of $Y$ in terms of that of $X$.
+
+- Formally, there is also an inverse mapping $g^{-1}$ defined by
+$$
+g^{-1}(A)
+= \{ x \in \mathbb{R} : g(x) \in A \},
+\qquad \text{for any } A \subset \mathbb{R}.
+$$
+
+**Distribution of a Function of a Random Variable**
+
+- The distribution of $Y = g(X)$ is completely determined by the distribution of $X$ and the function $g$.
+
+For any set $A \subset \mathbb{R}$,
+$$
+P_Y(Y \in A)
+= P_X(g(X) \in A)
+= P_X(X \in g^{-1}(A)).
+$$
+
+That is, the distribution of $Y$ depends on the cdf (or pdf/pmf) $F_X$ of $X$ together with the function $g$.
+
+**Support (Range) Under Transformations**
+
+- If $X$ has pdf/pmf $f_X(x)$, then the **range (support)** of $X$ is
+$$
+\mathcal{X}
+= \{ x \in \mathbb{R} : f_X(x) > 0 \}.
+$$
+
+- If $Y = g(X)$ has pdf/pmf $f_Y(y)$, then the **range (support)** of $Y$ is
+$$
+\mathcal{Y}
+= \{ y \in \mathbb{R} : f_Y(y) > 0 \}
+= \{ g(x) : x \in \mathcal{X} \}.
+$$
+
+## Discrete Case
+
+**Result.**  
+If $X$ is a discrete random variable with pmf $f_X(x)$ (i.e., $X$ has range
+$$
+\mathcal{X} = \{ x \in \mathbb{R} : f_X(x) > 0 \},
+$$
+which is either finite or countably infinite), then
+$$
+Y = g(X)
+$$
+is also a discrete random variable with pmf
+$$
+f_Y(y) = P(Y = y)
+=
+\begin{cases}
+\displaystyle \sum_{x \in g^{-1}(\{y\})} f_X(x)
+= \sum_{x \in \mathcal{X} : g(x) = y} f_X(x),
+& y \in \mathcal{Y}, \\[1em]
+0, & y \notin \mathcal{Y},
+\end{cases}
+$$
+where the range (support) of $Y$ is
+$$
+\mathcal{Y}
+= \{ g(x) : x \in \mathcal{X} \}
+= \{ y \in \mathbb{R} : f_Y(y) > 0 \}.
+$$
+
+## Continuous Case
+
+For a continuous random variable $X$, the random variable
+$$
+Y = g(X)
+$$
+will *typically* (but not always) be continuous.
+
+To determine the distribution of $Y$, one can use either of the following two approaches.
+
+### CDF Method
+
+Compute the cdf $F_Y(\cdot)$ of $Y$:
+$$
+\begin{aligned}
+F_Y(y)
+&= P(Y \le y) \\
+&= P(g(X) \le y) \\
+&= P(\{ x \in \mathbb{R} : g(x) \le y \}) \\
+&= \int_{\{x \in \mathbb{R} : g(x) \le y\}} f_X(x)\,dx.
+\end{aligned}
+$$
+
+This is a general approach, but its success depends on being able to evaluate the integral.
+
+### PDF (Transformation) Method
+
+Alternatively, one may compute the pdf $f_Y(\cdot)$ directly using a transformation technique.
+
+This method is **only valid** when the function $g$ is **monotone** or **piecewise monotone**.
+
+### Key Result 
+
+**Theorem 2.1.5 (Monotone Transformation)**
+
+If $X$ has pdf $f_X(x)$ and
+$$
+Y = g(X),
+$$
+where the function $g(\cdot)$ has either a **strictly positive** or a **strictly negative** derivative on
+$$
+\mathcal{X} = \{ x \in \mathbb{R} : f_X(x) > 0 \},
+$$
+then the pdf of $Y$ has support
+$$
+\mathcal{Y} = \{ g(x) : x \in \mathcal{X} \},
+$$
+and is given by
+$$
+f_Y(y)
+= f_X\!\left(g^{-1}(y)\right)
+\left| \frac{d g^{-1}(y)}{dy} \right|
+> 0,
+\quad \text{for } y \in \mathcal{Y},
+$$
+with
+$$
+f_Y(y) = 0, \quad \text{for } y \notin \mathcal{Y}.
+$$
+
+Note that unless $g$ is **strictly monotone** (or at least there is a way to break up
+$$
+\mathcal{X} = \{ x \in \mathbb{R} : f_X(x) > 0 \}
+$$
+into several intervals on each of which $g$ is strictly increasing or strictly decreasing),  
+$X$ being a continuous random variable does **not** necessarily imply that
+$$
+Y = g(X)
+$$
+will be a continuous random variable.
+
+## Probability Integral Transform (PIT)
+
+This is a famous (and for some purposes very useful) transformation connected with continuous cdfs.
+
+If $F$ is a continuous cdf, then
+$$
+F(x) = \int_{-\infty}^{x} f(t)\,dt, \quad t \in \mathbb{R}.
+$$
+
+If $X$ has a continuous cdf $F(\cdot)$, then the random variable
+$$
+Y = F(X)
+$$
+is uniformly distributed on $(0,1)$.
+
+That is, $Y$ has pdf
+$$
+f_Y(y) =
+\begin{cases}
+1, & 0 < y < 1, \\
+0, & \text{otherwise},
+\end{cases}
+$$
+and cdf
+$$
+F_Y(y) =
+\begin{cases}
+0, & y \le 0, \\
+y, & 0 \le y \le 1, \\
+1, & y \ge 1.
+\end{cases}
+$$
+
+## Expected Value of a Function of a Random Variable
+
+**Definition.**  
+The expected value (or mean) of a random variable $g(X)$, denoted by
+$\mathrm{E}g(X)$, $\mathrm{E}[g(X)]$, or $\mathrm{E}(g(X))$, is defined as follows.
+
+**Discrete case:**
+$$
+\mathrm{E}g(X) = \sum_x g(x)\, f_X(x).
+$$
+
+**Continuous case:**
+$$
+\mathrm{E}g(X) = \int_{-\infty}^{\infty} g(x)\, f_X(x)\,dx.
+$$
+
+**Existence of the Expectation**
+
+The expectation $\mathrm{E}g(X)$ is defined **provided that**
+
+**Discrete case:**
+$$
+\sum_x |g(x)|\, f_X(x) < \infty,
+$$
+
+**Continuous case:**
+$$
+\int_{-\infty}^{\infty} |g(x)|\, f_X(x)\,dx < \infty.
+$$
+
+(That is, we require $\mathrm{E}[g(X)]$ to be a real, finite number.)
+
+**Nonexistence of the Expectation**
+
+We say that the expected value (or mean) $\mathrm{E}g(X)$ **does not exist** if
+
+**Discrete case:**
+$$
+\sum_x |g(x)|\, f_X(x) = \infty,
+$$
+
+**Continuous case:**
+$$
+\int_{-\infty}^{\infty} |g(x)|\, f_X(x)\,dx = \infty.
+$$
+
+### Theorem 2.2.5 (Properties of Expectation)
+
+**Theorem.**  
+Suppose $X$ is a random variable such that
+$$
+\mathrm{E}|g_1(X)| < \infty
+\quad \text{and} \quad
+\mathrm{E}|g_2(X)| < \infty,
+$$
+and let $a, b, c \in \mathbb{R}$ be fixed constants. Then:
+
+1. 
+$$
+\mathrm{E}[a g_1(X) + b] = a\,\mathrm{E}g_1(X) + b.
+$$
+
+2. 
+$$
+\mathrm{E}[a g_1(X) + b g_2(X) + c]
+= a\,\mathrm{E}g_1(X) + b\,\mathrm{E}g_2(X) + c.
+$$
+
+3. If $g_1(x) \ge a$ for all $x$, then
+$$
+\mathrm{E}g_1(X) \ge a.
+$$
+
+4. If $g_1(x) \le b$ for all $x$, then
+$$
+\mathrm{E}g_1(X) \le b.
+$$
+
+5. If $g_1(x) \ge g_2(x)$ for all $x$, then
+$$
+\mathrm{E}g_1(X) \ge \mathrm{E}g_2(X).
+$$
+
+**Invariance of Expectation Under Transformation**
+
+Expectations are invariant under transformation.
+
+If
+$$
+Y = g(X),
+$$
+then
+$$
+\mathrm{E}Y
+= \sum_y y\,f_Y(y)
+= \sum_y y\,P(Y = y)
+= \sum_x g(x)\,f_X(x)
+= \mathrm{E}g(X)
+$$
+in the discrete case.
+
+(In the continuous case, replace sums with integrals.)
+
+That is,
+$$
+\mathrm{E}(Y)
+= \int_{-\infty}^{\infty} y\,f_Y(y)\,dy
+= \int_{-\infty}^{\infty} g(x)\,f_X(x)\,dx
+= \mathrm{E}g(X).
+$$
+
+## Variance
+
+An important instance of the $\mathrm{E}g(X)$ notation arises when
+$$
+g(X) = (X - \mathrm{E}X)^2.
+$$
+
+**Definition.**  
+The **variance** of a random variable $X$, denoted $\mathrm{Var}(X)$ or $\sigma_X^2$, is
+$$
+\mathrm{Var}(X)
+= \sigma_X^2
+= \mathrm{E}[X - \mathrm{E}X]^2
+= \mathrm{E}\big[(X - \mathrm{E}X)^2\big],
+$$
+the expected squared distance between $X$ and its mean $\mathrm{E}X$.
+
+### Two Important Variance Facts
+
+1. For any real numbers $a, b$,
+$$
+\mathrm{Var}(a + bX) = b^2 \mathrm{Var}(X).
+$$
+
+2. 
+$$
+\mathrm{Var}(X) = \mathrm{E}X^2 - (\mathrm{E}X)^2.
+$$
+
+## Other Moments and Distributional Summaries
+
+Moments are an important summary of a distribution.
+
+1. 
+$$
+\mu = \mu_X = \mathrm{E}X
+$$
+is often called the **mean**.
+
+2. 
+$$
+\mu_n' = \mathrm{E}X^n
+$$
+is the $n$th (raw) moment, provided $\mathrm{E}X^n$ exists, i.e.,
+
+**Discrete case:**
+$$
+\sum_x |x^n| f_X(x) < \infty,
+$$
+
+**Continuous case:**
+$$
+\int_{-\infty}^{\infty} |x^n| f_X(x)\,dx < \infty.
+$$
+
+3. 
+$$
+\mu_n = \mathrm{E}\big[(X - \mu)^n\big]
+$$
+is the $n$th **central moment**, provided $\mathrm{E}X^n$ exists.
+
+(a) 
+$$
+\mathrm{Var}(X) = \sigma_X^2 = \mathrm{E}\big[(X - \mu)^2\big] = \mu_2
+$$
+is the **variance**.
+
+(b) 
+$$
+\sigma_X = \sqrt{\mathrm{Var}(X)}
+$$
+is the **standard deviation**.
+
+(c) 
+$$
+\mu_3
+$$
+is **skewness** (i.e., measures distributional balance around $\mu$).
+
+(d) 
+$$
+\mu_4
+$$
+is **kurtosis** (i.e., a measure of how long the distributional tails are).
+
+**Regarding Moments**
+
+1. If $\mathrm{E}X^r$ exists for some $r > 0$, then $\mathrm{E}X^s$ exists for all
+$$
+0 \le s \le r.
+$$
+
+2. If $\mathrm{E}X^r$ does not exist for some $r > 0$, then $\mathrm{E}X^s$ will not exist for any
+$$
+s > r.
+$$
+
+3. 
+$$
+\mathrm{E}X^2 \text{ exists if and only if } \mathrm{Var}(X) \text{ exists}.
+$$
+
+4. For $r > 0$, the existence of $\mathrm{E}X^r$ is a matter of the distribution of $X$ not having **heavy tails**,  
+i.e., $X$ does not assume large values with large probability.
+
+
