@@ -9,7 +9,7 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-Note: Finished Lecture 5 
+Note: Finished Lecture 20 
 
 # Introduction 
 
@@ -82,7 +82,7 @@ $$
 
 - **empty set**: $\varnothing$
 
-## **Algebraic Laws**
+## Algebraic Laws
 
   - **commutativity**:
   
@@ -1065,4 +1065,1049 @@ $$
 4. For $r > 0$, the existence of $\mathrm{E}X^r$ is a matter of the distribution of $X$ not having **heavy tails**,  
 i.e., $X$ does not assume large values with large probability.
 
+### Convergence (more on this later)
 
+- Suppose a random variable $X$ has mgf $M_X(t)$ and suppose $X_1, X_2, \ldots$ are a sequence of random variables, where $X_n$ has mgf $M_{X_n}(t)$ for each $n \ge 1$.
+
+If
+
+$$
+\lim_{n \to \infty} M_{X_n}(t) = M_X(t)
+$$
+
+holds for all $t \in (-h, h)$ for some $h > 0$, then the sequence $X_1, X_2, \ldots$ converges (in distribution) to $X$.
+
+### Moment Generating Functions
+
+**Other Generating Functions**
+
+There is nothing particularly illuminating about mgfs: these are just a technical device that are sometimes useful for proving theorems. In fact, they are not the only transforms for technical purposes or even the most useful (e.g., Fourier transforms / characteristic functions are often more useful in STAT 642).
+
+Recall that the moment generating function (mgf) is defined as
+
+$$
+M_X(t) = \mathbb{E}[e^{tX}].
+$$
+
+**Cumulant Generating Function**
+
+The function $\log M_X(t)$ is called the **cumulant generating function**.
+
+The $n$th cumulant is given by
+
+$$
+\left. \frac{d^n}{dt^n} \log M_X(t) \right|_{t=0}.
+$$
+
+- The **first cumulant** is $\mathbb{E}[X]$
+- The **second cumulant** is $\operatorname{Var}(X)$
+
+**Factorial Moment Generating Function**
+
+The function
+
+$$
+\mathbb{E}[t^X]
+$$
+
+is called the **factorial moment generating function (fmgf)**.
+
+The $n$th factorial moment is given by
+
+$$
+\left. \frac{d^n}{dt^n} \mathbb{E}[t^X] \right|_{t=1}
+= \mathbb{E}\big[ X (X - 1) \cdots (X - n + 1) \big].
+$$
+
+For a discrete random variable, the fmgf is also called the **probability generating function**.
+
+**Interchanging Orders of Limits**
+
+We have several times in lecture up to this point interchanged “orders of limits”
+(i.e., switching the order of derivatives and expectations, or derivatives and summations, or derivatives and integrals).
+
+This interchange is also implicit in using mgfs to compute moments:
+
+$$
+\begin{aligned}
+\left. \frac{d^n}{dt^n} M_X(t) \right|_{t=0}
+&= \left. \frac{d^n}{dt^n} \mathbb{E}[e^{tX}] \right|_{t=0} \\
+&= \mathbb{E}\!\left( \left. \frac{d^n}{dt^n} e^{tX} \right|_{t=0} \right) \\
+&= \mathbb{E}\!\left( X^n e^{tX} \bigg|_{t=0} \right) \\
+&= \mathbb{E}[X^n].
+\end{aligned}
+$$
+
+We don’t need to worry about the validity of these interchanges here (it’s covered in STAT 642, where it makes more sense with the right technical material in hand).
+
+# Inequalities 
+
+**Markov inequality:** Suppose $X$ is a random variable and $g(x) \ge 0$. Then, for any $r > 0$,
+
+$$
+\mathbb{P}(g(X) \ge r) \le \frac{\mathbb{E}[g(X)]}{r}.
+$$
+
+**Chebyshev inequality:** Suppose $X$ is a random variable with mean $\mathbb{E}[X] = \mu$ and variance $\sigma^2$. Then, for any $k > 0$,
+
+$$
+\mathbb{P}(|X - \mu| \ge k\sigma) \le \frac{1}{k^2},
+$$
+
+and equivalently,
+
+$$
+\mathbb{P}(|X - \mu| < k\sigma) \ge 1 - \frac{1}{k^2}.
+$$
+
+## Convex Functions
+
+**Definition:** A function $g(x)$ is **convex** if
+
+$$
+g(\lambda x + (1 - \lambda)y)
+\le
+\lambda g(x) + (1 - \lambda) g(y)
+$$
+
+for all $x, y$ and all $0 < \lambda < 1$.
+
+**Second Derivative Characterization**
+
+If $g$ is twice differentiable, then $g(x)$ is convex if
+
+$$
+g''(x) \ge 0 \quad \text{for all } x.
+$$
+
+Example:  
+If $g(x) = x^2$, then $g'(x) = 2x$ and $g''(x) = 2 > 0$, so $g(x)$ is convex.
+
+A function $g(x)$ is **concave** if $-g(x)$ is convex.
+
+**Jensen’s inequality:** Suppose $X$ is a random variable and $g(x)$ is a convex function. Then,
+
+$$
+\mathbb{E}[g(X)] \ge g(\mathbb{E}[X]).
+$$
+
+For a **concave** function, the reverse inequality holds:
+
+$$
+g(\mathbb{E}[X]) \ge \mathbb{E}[g(X)].
+$$
+
+# Common Distributions
+
+### Introduction
+
+- Often it is useful to consider structural forms for a pdf $f$ or cdf $F$, especially for modeling a population.
+
+- In particular, it is possible to specify a family of distributions using a single functional form with one or more free **parameters**.
+
+## Discrete Distributions 
+
+## Bernoulli Distribution
+
+A **Bernoulli trial** is a random variable
+
+$$
+X \sim \text{Bern}(p),
+$$
+
+where $p$ is a parameter.
+
+**Definition**
+
+- There are **two outcomes**, usually labeled $0$ and $1$ (failure / success).
+
+$$
+X =
+\begin{cases}
+0, & \text{with probability } 1 - p, \\
+1, & \text{with probability } p.
+\end{cases}
+$$
+
+- The parameter satisfies $0 < p < 1$ (i.e., $X = 1$ with probability $p$).
+
+**Probability Mass Function**
+
+If $X \sim \text{Bern}(p)$, then
+
+$$
+\mathbb{P}(X = 0) = 1 - p, \qquad \mathbb{P}(X = 1) = p.
+$$
+
+Equivalently, the pmf can be written as
+
+$$
+f_X(x) = f_X(x \mid p) = \mathbb{P}(X = x \mid p)
+= p^x (1 - p)^{1 - x}, \qquad x = 0, 1.
+$$
+
+**Expectation**
+
+The expectation of $X$ is
+
+$$
+\mathbb{E}[X]
+= \sum_{x=0}^1 x \, \mathbb{P}(X = x)
+= (0)(1 - p) + (1)(p)
+= p.
+$$
+
+**Second Moment**
+
+The second moment is
+
+$$
+\mathbb{E}[X^2]
+= \sum_{x=0}^1 x^2 \, \mathbb{P}(X = x)
+= (0)^2(1 - p) + (1)^2(p)
+= p.
+$$
+
+**Variance**
+
+The variance of $X$ is
+
+$$
+\operatorname{Var}(X)
+= \mathbb{E}[X^2] - (\mathbb{E}[X])^2
+= p - p^2
+= p(1 - p).
+$$
+
+## Binomial Distribution
+
+The **Binomial distribution** is defined as
+
+$$
+X \sim \text{Binom}(n, p), \qquad 0 < p < 1,
+$$
+
+where $n$ is the number of trials and $p$ is the success probability.
+
+**Probability Mass Function**
+
+The pmf is given by
+
+$$
+f_X(x)
+= f_X(x \mid n, p)
+= \mathbb{P}(X = x \mid n, p)
+= \binom{n}{x} p^x (1 - p)^{n - x},
+\qquad x = 0, 1, \ldots, n.
+$$
+
+**Motivation**
+
+The Binomial distribution arises as the distribution of the **number of successes** in $n$ independent Bernoulli$(p)$ trials.
+
+Let
+
+$$
+Y_1, \ldots, Y_n \stackrel{\text{iid}}{\sim} \text{Bern}(p),
+$$
+
+where $Y_i = 1$ if the $i$th trial is a “success” and $0$ if it is a “failure.” Define
+
+$$
+X = \sum_{i=1}^n Y_i.
+$$
+
+Then $X \sim \text{Binom}(n, p)$.
+
+**Derivation of the pmf**
+
+For a given $x = 0, 1, \ldots, n$,
+
+$$
+\mathbb{P}(X = x)
+= \mathbb{P}\!\left( \sum_{i=1}^n Y_i = x \right).
+$$
+
+Since $Y_1, \ldots, Y_n$ are independent,
+
+$$
+\mathbb{P}(X = x)
+= \sum_{\substack{(y_1,\ldots,y_n)\in\{0,1\}^n \\ \sum_{i=1}^n y_i = x}}
+\mathbb{P}(Y_1 = y_1, \ldots, Y_n = y_n)
+= \sum_{\substack{(y_1,\ldots,y_n)\in\{0,1\}^n \\ \sum_{i=1}^n y_i = x}}
+\prod_{i=1}^n \mathbb{P}(Y_i = y_i).
+$$
+
+Because each $Y_i \sim \text{Bern}(p)$,
+
+$$
+\prod_{i=1}^n \mathbb{P}(Y_i = y_i)
+= p^{\sum_i y_i} (1 - p)^{n - \sum_i y_i}
+= p^x (1 - p)^{n - x}.
+$$
+
+Thus,
+
+$$
+\mathbb{P}(X = x)
+= p^x (1 - p)^{n - x}
+\times
+\bigl(\text{number of ways to choose exactly } x \text{ components of } (y_1,\ldots,y_n) \text{ to be } 1 \bigr).
+$$
+
+The number of such configurations is $\binom{n}{x}$, giving
+
+$$
+\mathbb{P}(X = x) = \binom{n}{x} p^x (1 - p)^{n - x}.
+$$
+
+**Mean and Variance**
+
+- Mean:
+$$
+\mathbb{E}[X] = np \qquad \text{(proof on next slide)}
+$$
+
+- Variance:
+$$
+\operatorname{Var}(X) = np(1 - p).
+$$
+
+**Moment Generating Function**
+
+The moment generating function of $X$ is
+
+$$
+M_X(t) = \mathbb{E}[e^{tX}] = \bigl( p e^t + (1 - p) \bigr)^n,
+\qquad t \in \mathbb{R}.
+$$
+
+This follows from
+
+$$
+M_X(t)
+= \sum_{x=0}^n \binom{n}{x} (p e^t)^x (1 - p)^{n - x},
+$$
+
+and the binomial expansion of $(a + b)^n$.
+
+## Negative Binomial
+
+Let
+
+$$
+X \sim \text{Neg-Binom}(r, p), \qquad r \in \mathbb{Z},\ r \ge 1,\ 0 < p < 1.
+$$
+
+**Probability Mass Function**
+
+The pmf is given by
+
+$$
+\mathbb{P}(X = x)
+= f_X(x)
+= f_X(x \mid r, p)
+= \binom{x - 1}{r - 1} p^r (1 - p)^{x - r},
+\qquad x = r, r+1, \ldots
+$$
+
+**Motivation**
+
+The Negative Binomial distribution describes the distribution of the **number of independent Bernoulli$(p)$ trials needed to obtain $r$ successes**.
+
+Equivalently, consider a sequence of successes (S) and failures (F) of total length $x$ such that the $r$th success occurs on the $x$th trial.
+
+**Alternative Parameterization**
+
+Define
+
+$$
+Y = X - r,
+$$
+
+the **number of failures prior to the $r$th success**. Then $Y$ is also commonly referred to as Negative Binomial.
+
+The pmf of $Y$ is
+
+$$
+\mathbb{P}(Y = y)
+= f_Y(y \mid r, p)
+= \binom{y + r - 1}{y} p^r (1 - p)^y,
+\qquad y = 0, 1, 2, \ldots
+$$
+
+(Note that $\binom{y + r - 1}{y} = \binom{y + r - 1}{r - 1}$.)
+
+**Caution**
+
+Be careful: **both** random variables $X$ and $Y$ (which are different) are often called “negative binomial” in the literature.
+
+**Mean and Variance**
+
+For $Y$ (failures before the $r$th success),
+
+$$
+\mathbb{E}[Y] = \frac{r(1 - p)}{p}.
+$$
+
+Since $X = Y + r$,
+
+$$
+\mathbb{E}[X] = \mathbb{E}[Y] + r = \frac{r}{p}.
+$$
+
+The variance is
+
+$$
+\operatorname{Var}(Y) = \frac{r(1 - p)}{p^2}
+\qquad \text{and} \qquad
+\operatorname{Var}(X) = \operatorname{Var}(Y).
+$$
+
+**Moment Generating Function**
+
+The mgf of $Y$ is
+
+$$
+M_Y(t) = \mathbb{E}[e^{tY}]
+= \left[ \frac{p}{1 - (1 - p)e^t} \right]^r,
+\qquad t < -\log(1 - p).
+$$
+
+Since $X = Y + r$,
+
+$$
+M_X(t)
+= \mathbb{E}[e^{t(X)}]
+= \mathbb{E}[e^{t(Y + r)}]
+= e^{rt} M_Y(t).
+$$
+
+
+## Geometric
+
+Let
+
+$$
+X \sim \text{Geom}(p), \qquad 0 < p < 1.
+$$
+
+**Relationship to the Negative Binomial**
+
+The Geometric distribution is a **special case** of the Negative Binomial distribution with $r = 1$.
+
+**Motivation**
+
+The Geometric distribution describes the distribution of the **number of independent Bernoulli$(p)$ trials needed to obtain the first success**.
+
+**Probability Mass Function**
+
+The pmf is
+
+$$
+f_X(x)
+= f_X(x \mid p)
+= p(1 - p)^{x - 1},
+\qquad x = 1, 2, 3, \ldots
+$$
+
+**Mean and Variance**
+
+The mean is
+
+$$
+\mathbb{E}[X] = \frac{1}{p}.
+$$
+
+The variance is
+
+$$
+\operatorname{Var}(X) = \frac{1 - p}{p^2}.
+$$
+
+**Moment Generating Function**
+
+The mgf of $X$ is
+
+$$
+M_X(t)
+= \mathbb{E}[e^{tX}]
+= \frac{p e^t}{1 - (1 - p)e^t},
+\qquad t < -\log(1 - p).
+$$
+
+#### Memoryless Property of the Geometric Distribution
+
+The Geometric distribution has the famous **memoryless** property: for any integer $x_0 \ge 0$,
+
+$$
+\mathbb{P}(X = x_0 + x \mid X > x_0) = \mathbb{P}(X = x).
+$$
+
+**Interpretation**
+
+The conditional distribution of the remaining waiting number of trials until the first success, given that we have already waited $x_0$ trials, is the same as the original distribution of the number of trials until the first success.
+
+Given that each trial is an independent Bernoulli trial, this makes sense: whether we start counting trials at the beginning, or we start counting trials after $x_0$ trials without success, the distribution of the remaining number of trials needed until the first success should be the same.
+
+## Hypergeometric
+
+Let
+
+$$
+X \sim \text{Hypergeometric}(N, M, K),
+$$
+
+where $N, M, K$ are integers.
+
+**Probability Mass Function**
+
+The pmf is given by
+
+$$
+\mathbb{P}(X = x)
+= f_X(x)
+= \frac{\binom{M}{x}\binom{N - M}{K - x}}{\binom{N}{K}},
+\qquad x = 0, 1, \ldots, K.
+$$
+
+**Motivation**
+
+Choose $K$ objects **without replacement** from a total population of size $N$ that contains $M$ “special” objects.
+
+- $N$ = total population size  
+- $M$ = number of special objects  
+- $N - M$ = number of non-special objects  
+- $X$ = number of special objects among the $K$ chosen  
+
+**Support Conditions**
+
+The pmf is nonzero only when
+
+$$
+0 \le x \le K, \qquad x \le M, \qquad K - x \le N - M.
+$$
+
+Typically, when $N > 2M$ and $M > K$, only the condition
+
+$$
+0 \le x \le K
+$$
+
+matters.
+
+**Mean**
+
+The mean of a Hypergeometric random variable is
+
+$$
+\mathbb{E}[X] = K \frac{M}{N}.
+$$
+
+(Interpretation: sample size $\times$ proportion of special objects.)
+
+**Variance**
+
+The variance is
+
+$$
+\operatorname{Var}(X)
+= \frac{K M (N - M)(N - K)}{N^2 (N - 1)}.
+$$
+
+### Connection between Hypergeometric and Binomial
+
+**Hypergeometric (sampling without replacement)**
+
+Choose $x$ special objects in a sample of size $K$ drawn **without replacement** from a population where $M$ objects are “special” and $N - M$ are not.
+
+**Binomial (sampling with replacement)**
+
+Choose $x$ special objects in a sample of size $n$, where each selected item has probability $p$ of being a special object.
+
+In particular, if sampling *with replacement* from a population of size $N$ containing $M$ special objects, then
+
+$$
+X \sim \text{Binomial}\!\left(n = K,\; p = \frac{M}{N}\right).
+$$
+
+**Result**
+
+As the population size $N$ becomes large, the **Hypergeometric distribution tends to the Binomial distribution**.
+
+## Poisson
+
+Let
+
+$$
+X \sim \text{Poisson}(\lambda), \qquad \lambda > 0.
+$$
+
+**Probability Mass Function**
+
+The pmf is given by
+
+$$
+\mathbb{P}(X = x)
+= f_X(x)
+= \frac{e^{-\lambda} \lambda^x}{x!},
+\qquad x = 0, 1, 2, \ldots
+$$
+
+**Motivation**
+
+The Poisson distribution is widely used to model **rare-event count data**, for example:
+- number of car accidents in a county,
+- number of system failures in a fixed time period.
+
+**Useful Identity**
+
+Recall that for any real $a$,
+
+$$
+e^a = \sum_{k=0}^\infty \frac{a^k}{k!}.
+$$
+
+This identity ensures that the Poisson pmf satisfies:
+- $f_X(x) \ge 0$ for all $x$,
+- $\sum_x f_X(x) = 1$.
+
+**Mean**
+
+The mean of a Poisson random variable is
+
+$$
+\mathbb{E}[X] = \lambda.
+$$
+
+This follows from
+
+$$
+\mathbb{E}[X]
+= \sum_{x=0}^\infty x \frac{e^{-\lambda} \lambda^x}{x!}.
+$$
+
+**Variance**
+
+The variance of a Poisson random variable is
+
+$$
+\operatorname{Var}(X) = \lambda.
+$$
+
+One way to derive this is by noting that
+
+$$
+\operatorname{Var}(X)
+= \mathbb{E}[X^2] - (\mathbb{E}[X])^2
+= \mathbb{E}[X(X - 1)] + \mathbb{E}[X] - (\mathbb{E}[X])^2,
+$$
+
+and showing that
+
+$$
+\mathbb{E}[X(X - 1)] = \lambda^2.
+$$
+
+**Moment Generating Function**
+
+The moment generating function of $X$ is
+
+$$
+M_X(t)
+= \mathbb{E}[e^{tX}]
+= \exp\!\bigl(\lambda(e^t - 1)\bigr),
+\qquad t \in \mathbb{R}.
+$$
+
+## Continuous Distributions 
+
+## Uniform
+
+Let
+
+$$
+X \sim \text{Uniform}(a, b), \qquad -\infty < a < b < \infty.
+$$
+
+**Probability Density Function**
+
+The pdf is given by
+
+$$
+f_X(x) = \frac{1}{b - a}, \qquad a < x < b.
+$$
+
+**Motivation**
+
+The Uniform distribution models **equally likely outcomes** over a finite range $(a, b)$.
+
+- $a$ is the lower endpoint of the range  
+- $b$ is the upper endpoint  
+
+**Moments**
+
+For $r > 0$,
+
+$$
+\mathbb{E}[X^r]
+= \frac{1}{b - a} \int_a^b x^r \, dx
+= \frac{b^{r+1} - a^{r+1}}{(r + 1)(b - a)}.
+$$
+
+**Mean**
+
+$$
+\mathbb{E}[X] = \frac{a + b}{2}.
+$$
+
+**Variance**
+
+$$
+\operatorname{Var}(X)
+= \mathbb{E}[X^2] - (\mathbb{E}[X])^2
+= \frac{(b - a)^2}{12}.
+$$
+
+**Important Case: Uniform(0, 1)**
+
+Let
+
+$$
+U \sim \text{Uniform}(0, 1).
+$$
+
+Then:
+
+1. $f_U(u) = 1$, for $0 < u < 1$  
+2. $\mathbb{E}[U] = \tfrac{1}{2}$  
+3. $\operatorname{Var}(U) = \tfrac{1}{12}$  
+
+**Probability Integral Transform (PIT)**
+
+1. If $Y$ has a **continuous cdf** $F_Y(y)$, then
+
+$$
+U = F_Y(Y) \sim \text{Uniform}(0, 1).
+$$
+
+2. Conversely, if $U \sim \text{Uniform}(0, 1)$ and $F_Y(y)$ is a continuous cdf, then
+
+$$
+Y = F_Y^{-1}(U)
+$$
+
+has distribution $F_Y$.
+
+(This is useful for simulating random variables.)
+
+## Gamma
+
+Let
+
+$$
+X \sim \text{Gamma}(\alpha, \beta),
+\qquad \alpha > 0, \; \beta > 0.
+$$
+
+**Probability Density Function**
+
+The pdf is given by
+
+$$
+f_X(x)
+= \frac{1}{\Gamma(\alpha)\beta^\alpha}
+x^{\alpha - 1} e^{-x/\beta},
+\qquad 0 < x < \infty.
+$$
+
+**Motivation**
+
+The Gamma distribution is a **flexible family for positive-valued random variables**.
+
+**Parameters**
+
+- $\alpha > 0$ is the **shape parameter**
+  - If $\alpha < 1$, the density is unbounded near $x = 0$
+  - If $\alpha > 1$, the density is zero at $x = 0$
+- $\beta > 0$ is the **scale parameter**
+
+If $X \sim \text{Gamma}(\alpha, \beta)$, then
+
+$$
+Z = \frac{X}{\beta} \sim \text{Gamma}(\alpha, 1).
+$$
+
+**The Gamma Function**
+
+The Gamma function is defined as
+
+$$
+\Gamma(\alpha)
+= \int_0^\infty x^{\alpha - 1} e^{-x} \, dx,
+\qquad \alpha > 0,
+$$
+
+which ensures that $f_X(x)$ integrates to 1.
+
+**Properties of the Gamma Function**
+
+1. $\Gamma(1 + \alpha) = \alpha \Gamma(\alpha)$, for $\alpha > 0$  
+2. $\Gamma(\alpha) = (\alpha - 1)!$, for integers $\alpha \ge 1$  
+3. $\Gamma\!\left(\tfrac{1}{2}\right) = \sqrt{\pi}$  
+
+**Moments**
+
+For $r > 0$,
+
+$$
+\mathbb{E}[X^r]
+= \beta^r \frac{\Gamma(\alpha + r)}{\Gamma(\alpha)}.
+$$
+
+**Mean**
+
+$$
+\mathbb{E}[X] = \alpha \beta.
+$$
+
+**Variance**
+
+$$
+\operatorname{Var}(X)
+= \mathbb{E}[X^2] - (\mathbb{E}[X])^2
+= \alpha \beta^2.
+$$
+
+**Moment Generating Function**
+
+The mgf of $X$ is
+
+$$
+M_X(t)
+= \mathbb{E}[e^{tX}]
+= (1 - \beta t)^{-\alpha},
+\qquad t < \frac{1}{\beta}.
+$$
+
+#### Relationship Between Gamma and Poisson (Integer Shape)
+
+For integer $\alpha$,
+
+$$
+F_X(x \mid \alpha, \beta)
+= \mathbb{P}(X \le x)
+= \mathbb{P}(Y \ge \alpha),
+\qquad \text{where } Y \sim \text{Poisson}(x / \beta).
+$$
+
+#### Continuous Distributions: Gamma — Special Cases
+
+#### Chi-squared Distribution
+
+If $p > 0$ is an integer, then
+
+$$
+\chi^2_p \sim \text{Gamma}\!\left(\alpha = \frac{p}{2}, \; \beta = 2\right),
+$$
+
+where $p$ is called the **degrees of freedom** parameter.
+
+#### Exponential Distribution
+
+The Exponential distribution is a special case of the Gamma distribution:
+
+$$
+\text{Exp}(\beta) = \text{Gamma}(\alpha = 1, \beta).
+$$
+
+The pdf is
+
+$$
+f_X(x) = \frac{1}{\beta} e^{-x / \beta},
+\qquad 0 < x < \infty.
+$$
+
+The Exponential distribution is commonly used to model **failure times** and has the **memoryless property**:
+
+$$
+\mathbb{P}(X > s + t \mid X > t) = \mathbb{P}(X > s).
+$$
+
+#### Weibull Distribution
+
+If
+
+$$
+X \sim \text{Exp}(\beta)
+$$
+
+and $\gamma > 0$, then
+
+$$
+W = X^{1/\gamma} \sim \text{Weibull}(\gamma, \beta).
+$$
+
+The pdf of $W$ is
+
+$$
+f_W(w)
+= \frac{\gamma}{\beta} w^{\gamma - 1} e^{-w^\gamma / \beta},
+\qquad 0 < w < \infty.
+$$
+
+The Weibull distribution is a **general failure time distribution**.
+
+#### Inverse-Gamma Distribution
+
+If
+
+$$
+X \sim \text{Gamma}(\alpha, \beta),
+$$
+
+then
+
+$$
+Y = \frac{1}{X}
+$$
+
+has the **inverse-gamma distribution**, with pdf
+
+$$
+f_Y(y)
+= \frac{1}{\Gamma(\alpha)\beta^\alpha}
+\left(\frac{1}{y}\right)^{1+\alpha}
+e^{-1/(\beta y)},
+\qquad 0 < y < \infty.
+$$
+
+## Beta
+
+Let
+
+$$
+X \sim \text{Beta}(\alpha, \beta),
+\qquad \alpha > 0, \; \beta > 0.
+$$
+
+**Probability Density Function**
+
+The pdf is
+
+$$
+f_X(x)
+= \frac{1}{B(\alpha, \beta)} x^{\alpha - 1} (1 - x)^{\beta - 1},
+\qquad 0 < x < 1.
+$$
+
+**Motivation**
+
+The Beta distribution is a flexible family, often used for modeling **proportions**.
+
+**Shape Parameters**
+
+Both $\alpha$ and $\beta$ are **shape parameters**:
+
+1. $\alpha$ determines behavior near $x = 0$  
+   - If $\alpha < 1$, density is unbounded near $0$  
+   - If $\alpha > 1$, density is zero at $0$
+
+2. $\beta$ determines behavior near $x = 1$  
+   - If $\beta < 1$, density is unbounded near $1$  
+   - If $\beta > 1$, density is zero at $1$
+
+3. If $\alpha = \beta$, the distribution is symmetric.
+
+**Beta Function**
+
+The Beta function is defined as
+
+$$
+B(\alpha, \beta)
+= \frac{\Gamma(\alpha)\Gamma(\beta)}{\Gamma(\alpha + \beta)}.
+$$
+
+**Moments**
+
+For $r > 0$,
+
+$$
+\mathbb{E}[X^r]
+= \frac{B(\alpha + r, \beta)}{B(\alpha, \beta)}
+= \frac{\Gamma(\alpha + \beta)\Gamma(\alpha + r)}
+{\Gamma(\alpha + \beta + r)\Gamma(\alpha)}.
+$$
+
+**Mean**
+
+$$
+\mathbb{E}[X] = \frac{\alpha}{\alpha + \beta}.
+$$
+
+**Variance**
+
+$$
+\operatorname{Var}(X)
+= \mathbb{E}[X^2] - (\mathbb{E}[X])^2
+= \left( \frac{\alpha}{\alpha + \beta} \right)
+  \left( \frac{\beta}{\alpha + \beta} \right)
+  \left( \frac{1}{\alpha + \beta + 1} \right).
+$$
+
+**Related Distribution**
+
+If $\alpha = \beta = 1$, then
+
+$$
+X \sim \text{Uniform}(0, 1).
+$$
+
+## Normal (Gaussian)
+
+Let
+
+$$
+X \sim N(\mu, \sigma^2),
+\qquad -\infty < \mu < \infty, \; \sigma > 0.
+$$
+
+**Probability Density Function**
+
+The pdf is
+
+$$
+f_X(x)
+= \frac{1}{\sqrt{2\pi}\sigma}
+\exp\!\left( -\frac{1}{2} \left(\frac{x - \mu}{\sigma}\right)^2 \right),
+\qquad -\infty < x < \infty.
+$$
+
+**Motivation**
+
+The Normal distribution is the **single most important distribution** in statistics:
+
+- widely used and analytically tractable  
+- bell-shaped density arises naturally  
+- Central Limit Theorem (normal distribution is extremely relevant in large samples)
+
+**Parameters**
+
+- $\mu \in \mathbb{R}$ is the mean: $\mathbb{E}[X] = \mu$
+- $\sigma^2 = \operatorname{Var}(X)$ is the variance; $\sigma$ is the standard deviation
+
+**Standard Normal Distribution**
+
+Many properties of the Normal distribution are most easily derived using the standard normal distribution $N(0,1)$.
+
+1. If $X \sim N(\mu, \sigma^2)$, then
+
+$$
+Z = \frac{X - \mu}{\sigma} \sim N(0,1).
+$$
+
+2. If $Z \sim N(0,1)$, then for constants $a, b \in \mathbb{R}$,
+
+$$
+X = a + bZ \sim N(\mu = a, \sigma^2 = b^2).
+$$
