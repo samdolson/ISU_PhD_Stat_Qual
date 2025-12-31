@@ -8,9 +8,121 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-Note: Finished Lecture 20 
+Note: Finished Lecture 31 
 
 # Introduction 
+
+## Calculus Review
+
+**Basic Integrals**
+
+$$
+\int x^m \, dx = \frac{1}{m+1} x^{m+1},
+$$
+
+$$
+\int e^x \, dx = e^x.
+$$
+
+**Integration by Parts**
+
+$$
+\int u \, dv = uv - \int v \, du.
+$$
+
+**Gamma Integral**
+
+$$
+\int_0^\infty e^{-x} x^{m-1} \, dx = \Gamma(m).
+$$
+
+**Derivatives**
+
+**Chain rule:**
+$$
+(f(g(x)))' = g'(x) f'(g(x)).
+$$
+
+**Exponential:**
+$$
+(e^{f(x)})' = f'(x) e^{f(x)}.
+$$
+
+**Logarithm:**
+$$
+(\log f(x))' = \frac{f'(x)}{f(x)}.
+$$
+
+**Quotient rule:**
+$$
+\left(\frac{f(x)}{g(x)}\right)'
+=
+\frac{f'(x)g(x) - g'(x)f(x)}{g(x)^2}.
+$$
+
+**Power rule:**
+$$
+(x^m)' = m x^{m-1}.
+$$
+
+**Function powers:**
+$$
+(f(x))^m{}' = m f'(x) [f(x)]^{m-1}.
+$$
+
+**Even and Odd Functions**
+
+- A function $f$ is **even** if
+$$
+f(x) = f(-x),
+$$
+e.g., $f(x) = x^2$.
+
+- A function $f$ is **odd** if
+$$
+f(-x) = -f(x),
+$$
+e.g., $f(x) = x^3$, $f(x) = \sin x$.
+
+For integrals:
+
+- If $f$ is even,
+$$
+\int_{-a}^a f(x)\, dx = 2 \int_0^a f(x)\, dx.
+$$
+
+- If $f$ is odd,
+$$
+\int_{-a}^a f(x)\, dx = 0.
+$$
+
+**Trigonometric Derivatives**
+
+$$
+(\sin u)' = u' \cos u,
+$$
+
+$$
+(\cos u)' = -u' \sin u.
+$$
+
+**Beta Function**
+
+$$
+B(a,b) = \frac{\Gamma(a)\Gamma(b)}{\Gamma(a+b)}.
+$$
+
+Equivalently,
+
+$$
+B(a,b)
+=
+\int_0^1 x^{a-1}(1-x)^{b-1}\, dx
+=
+\frac{\Gamma(a)\Gamma(b)}{\Gamma(a+b)}.
+$$
+
+## Probability 
 
 - **Probability** is a branch of mathematics concerned with the study of *random phenomenon* (e.g., experiments, models of populations).
 
@@ -2110,3 +2222,1367 @@ $$
 $$
 X = a + bZ \sim N(\mu = a, \sigma^2 = b^2).
 $$
+#### From Standard Normal to Normal
+
+If, for $\mu \in \mathbb{R}$ and $\sigma > 0$, a random variable $X$ has the same distribution as
+
+$$
+X = \mu + \sigma Z,
+$$
+
+where $Z \sim N(0,1)$ (standard normal), then we say that $X$ has a normal distribution with mean $\mu$ and variance $\sigma^2$, denoted
+
+$$
+X \sim N(\mu, \sigma^2).
+$$
+
+#### Some facts / properties of $X \sim N(\mu, \sigma^2)$, $\mu \in \mathbb{R}$, $\sigma > 0$:
+
+**CDF**
+
+For $-\infty < x < \infty$,
+
+$$
+\begin{aligned}
+F_X(x)
+&= P(X \le x) \\
+&= P(\mu + \sigma Z \le x) \\
+&= P\left(Z \le \frac{x - \mu}{\sigma}\right) \\
+&= \Phi\left(\frac{x - \mu}{\sigma}\right),
+\end{aligned}
+$$
+
+where $\Phi(\cdot)$ denotes the CDF of the standard normal distribution.
+
+**PDF**
+
+For $-\infty < x < \infty$,
+
+$$
+\begin{aligned}
+f_X(x)
+&= \frac{d}{dx} F_X(x) \\
+&= \frac{d}{dx} \Phi\left(\frac{x - \mu}{\sigma}\right) \\
+&= \frac{1}{\sigma} \phi\left(\frac{x - \mu}{\sigma}\right) \\
+&= \frac{1}{\sigma \sqrt{2\pi}}
+    \exp\left\{
+      -\frac{1}{2}
+      \left(\frac{x - \mu}{\sigma}\right)^2
+    \right\},
+\end{aligned}
+$$
+
+where $\phi(\cdot)$ denotes the standard normal density.
+
+**Mean**
+
+$$
+\begin{aligned}
+\mathbb{E}[X]
+&= \mathbb{E}(\mu + \sigma Z) \\
+&= \mu + \sigma \mathbb{E}[Z] \\
+&= \mu.
+\end{aligned}
+$$
+
+**Variance**
+
+$$
+\begin{aligned}
+\mathrm{Var}(X)
+&= \mathrm{Var}(\mu + \sigma Z) \\
+&= \sigma^2 \mathrm{Var}(Z) \\
+&= \sigma^2.
+\end{aligned}
+$$
+
+**Also**
+
+Given $\mu$, $\sigma^2$, and $Z \sim N(0,1)$,
+
+$$
+X = \mu + \sigma Z \sim N(\mu, \sigma^2).
+$$
+
+**Moment Generating Function (MGF)**
+
+For $-\infty < t < \infty$,
+
+$$
+\begin{aligned}
+M_X(t)
+&= \mathbb{E}[e^{tX}] \\
+&= \mathbb{E}\left[e^{t(\mu + \sigma Z)}\right] \\
+&= \mathbb{E}\left[e^{t\mu} e^{t\sigma Z}\right] \\
+&= e^{t_togglemu} \mathbb{E}\left[e^{t\sigma Z}\right] \\
+&= e^{\mu t} M_Z(\sigma t).
+\end{aligned}
+$$
+
+Since the MGF of $Z \sim N(0,1)$ is
+
+$$
+M_Z(t) = \exp\left(\frac{t^2}{2}\right),
+$$
+
+we obtain
+
+$$
+\boxed{
+M_X(t)
+= \exp\left(\mu t + \frac{\sigma^2 t^2}{2}\right).
+}
+$$
+
+#### Distributions Related to the Normal
+
+**Log-normal Distribution**
+
+If
+
+$$
+X \sim N(\mu, \sigma^2),
+$$
+
+then
+
+$$
+Y = e^X \sim \text{LogNormal}(\mu, \sigma^2).
+$$
+
+**Probability Density Function**
+
+The pdf of $Y$ is given by
+
+$$
+\begin{aligned}
+f_Y(y)
+&= \frac{1}{y} f_X(\log y) \\
+&= \frac{1}{y \sqrt{2\pi}\sigma}
+   \exp\left\{
+     -\frac{1}{2}
+     \left(\frac{\log y - \mu}{\sigma}\right)^2
+   \right\},
+\end{aligned}
+$$
+
+for
+
+$$
+0 < y < \infty.
+$$
+
+**Mean**
+
+$$
+\begin{aligned}
+\mathbb{E}[Y]
+&= \mathbb{E}[e^X] \\
+&= M_X(t = 1) \\
+&= \exp\left(\mu + \frac{1}{2}\sigma^2\right).
+\end{aligned}
+$$
+
+**Note:**  
+By Jensen’s inequality,
+
+$$
+\mathbb{E}[Y] = \mathbb{E}[e^X] \ge e^{\mathbb{E}[X]} = e^\mu.
+$$
+
+**Shape and Applications**
+
+- The shape of the log-normal distribution is similar to that of a Gamma distribution with shape parameter $\alpha > 1$.
+- Common in economics (e.g., assuming $\log(\text{income})$ is normally distributed).
+- Also used as a failure-time distribution.
+
+**Chi-Square Connection**
+
+If
+
+$$
+Z \sim N(0,1),
+$$
+
+then
+
+$$
+Z^2 \sim \chi^2_1,
+$$
+
+a chi-square distribution with 1 degree of freedom.
+
+## Other Continuous Distributions
+
+Each of the following distributions has a **location parameter**
+$-\infty < \mu < \infty$ and a **scale parameter** $\sigma > 0$.
+
+## Cauchy Distribution
+
+- $\mu$ is the **location parameter**
+- $\sigma$ is the **scale parameter**
+
+**Probability Density Function**
+
+$$
+f_X(x)
+= \frac{1}{\pi \sigma \left(1 + \left(\frac{x - \mu}{\sigma}\right)^2\right)},
+\qquad -\infty < x < \infty.
+$$
+
+- A favorite **counter-example distribution**
+- No finite moments
+- No moment generating function (mgf)
+
+In particular,
+
+$$
+\mathbb{E}[X] = \infty,
+\qquad
+\mathrm{Var}(X) = \infty.
+$$
+
+## Logistic Distribution
+
+**Probability Density Function**
+
+$$
+f_X(x)
+= \frac{e^{(x-\mu)/\sigma}}
+       {\sigma \left(1 + e^{(x-\mu)/\sigma}\right)^2},
+\qquad -\infty < x < \infty.
+$$
+
+- Underlies **logistic regression**
+
+## Double Exponential (Laplace) Distribution
+
+**Probability Density Function**
+
+$$
+f_X(x)
+= \frac{1}{2\sigma}
+  \exp\left(-\frac{|x-\mu|}{\sigma}\right),
+\qquad -\infty < x < \infty.
+$$
+
+- Similar to the normal distribution but with **heavier tails**
+
+## Extreme Value Distribution
+
+**Probability Density Function**
+
+$$
+f_X(x)
+= \frac{1}{\sigma}
+  \exp\left(\frac{x-\mu}{\sigma}\right)
+  \exp\left\{
+    -\exp\left(\frac{x-\mu}{\sigma}\right)
+  \right\},
+\qquad -\infty < x < \infty.
+$$
+
+- Limiting distribution of **record highs / record lows**
+
+## Pareto Distribution
+
+**Probability Density Function**
+
+$$
+f_X(x)
+= \frac{\alpha}{\beta \left(1 + \frac{x}{\beta}\right)^{\alpha + 1}},
+\qquad 0 < x < \infty.
+$$
+
+- $\alpha > 0$ is the **shape parameter**
+- $\beta > 0$ is the **scale parameter**
+
+## Location–Scale Families of Continuous Random Variables
+
+- We have already seen families with **location** and **scale** parameters  
+  (e.g., Normal, Cauchy).
+
+**Definition (Location–Scale Family)**
+
+Suppose $f_Z(z)$ is a given (fixed) pdf.  
+Then the collection of pdfs of the form
+
+$$
+f_X(x \mid \mu, \sigma)
+= \frac{1}{\sigma}
+  f_Z\!\left(\frac{x - \mu}{\sigma}\right),
+$$
+
+for
+
+$$
+-\infty < \mu < \infty,
+\qquad
+\sigma > 0,
+$$
+
+is called the **location–scale family** with standard pdf $f_Z$.
+
+- $\mu$ is the **location parameter**
+- $\sigma > 0$ is the **scale parameter**
+
+**Relationship via Transformation**
+
+If
+
+$$
+Z \sim f_Z(z)
+$$
+
+and
+
+$$
+X = \mu + \sigma Z,
+$$
+
+then
+
+$$
+X \sim f_X(x \mid \mu, \sigma)
+$$
+
+as defined above.
+
+**Distribution Function**
+
+$$
+\begin{aligned}
+F_X(x)
+&= P(X \le x) \\
+&= P(\mu + \sigma Z \le x) \\
+&= P\left(Z \le \frac{x - \mu}{\sigma}\right) \\
+&= F_Z\!\left(\frac{x - \mu}{\sigma}\right).
+\end{aligned}
+$$
+
+Differentiating,
+
+$$
+f_X(x)
+= \frac{d}{dx} F_X(x)
+= \frac{1}{\sigma}
+  f_Z\!\left(\frac{x - \mu}{\sigma}\right).
+$$
+
+**Standard Distribution**
+
+The **standard pdf** $f_Z$ belongs to the family as the special case
+
+$$
+\mu = 0, \qquad \sigma = 1.
+$$
+
+**Properties**
+
+Properties of the location–scale family can be obtained by studying the
+standard pdf $f_Z$.
+
+For example, if moments exist,
+
+$$
+\mathbb{E}[X] = \mu + \sigma \mathbb{E}[Z],
+\qquad
+\mathrm{Var}(X) = \sigma^2 \mathrm{Var}(Z).
+$$
+
+**Location Family**
+
+The collection of pdfs of the form
+
+$$
+f_X(x \mid \mu) = f_Z(x - \mu),
+$$
+
+for $-\infty < \mu < \infty$, defines the **location family** with standard pdf
+$f_Z$.
+
+**Scale Family**
+
+The collection of pdfs of the form
+
+$$
+f_X(x \mid \sigma)
+= \frac{1}{\sigma} f_Z\!\left(\frac{x}{\sigma}\right),
+$$
+
+for $\sigma > 0$, defines the **scale family** with standard pdf $f_Z$.
+
+# Multivariate Distributions
+
+## Introduction
+
+- We are generally interested in **more than one random variable at a time**.
+
+1. **$n$ observations of a single characteristic from some population**
+   
+   $$
+   (X_1, \ldots, X_n)
+   $$
+
+2. **$k$ different characteristics from a single individual**
+   
+   For example, for one person:
+   - $Y_1$: age  
+   - $Y_2$: height  
+   - $Y_3$: gender  
+
+**Notation**
+
+Let
+
+$$
+\mathbf{X} = (X_1, \ldots, X_n)
+$$
+
+denote an **$n$-dimensional random vector** (r.v.).
+
+In other words, $\mathbf{X}$ is a function from the sample space $S$ to $\mathbb{R}^n$.
+
+**Cumulative Distribution Functions**
+
+The **joint cumulative distribution function (cdf)** of $X$ and $Y$ is
+
+$$
+F_{X,Y}(x,y) = F(x,y) = P(X \le x, Y \le y),
+\qquad x,y \in \mathbb{R}.
+$$
+
+**Discrete Case**
+
+- Rarely used in practice, but computed as
+
+$$
+F(x,y)
+= P(X \le x, Y \le y)
+= \sum_{x_1 \le x,\; y_1 \le y} f(x_1, y_1).
+$$
+
+**Continuous Case**
+
+- Often useful, and computed as
+
+$$
+F(x,y)
+= P(X \le x, Y \le y)
+= \int_{-\infty}^y \int_{-\infty}^x f(s,t)\, ds\, dt.
+$$
+
+In the continuous case,
+
+$$
+\frac{\partial^2 F(x,y)}{\partial x \, \partial y}
+= \frac{d}{dx}\frac{dF(x,y)}{dy}
+= f(x,y).
+$$
+
+## Properties of a Joint CDF
+
+A function $F(x,y)$ is a cdf for some random vector $(X,Y)$ **if and only if**:
+
+1. **Limits at $-\infty$:**
+
+$$
+\lim_{x \to -\infty} F(x,y)
+=
+\lim_{y \to -\infty} F(x,y)
+= 0.
+$$
+
+2. **Limit at $+\infty$:**
+
+$$
+\lim_{x,y \to \infty} F(x,y) = 1.
+$$
+
+3. **Right continuity in each argument:**
+
+$$
+\lim_{h \downarrow 0} F(x+h,y)
+=
+\lim_{h \downarrow 0} F(x,y+h)
+= F(x,y).
+$$
+
+4. **Nondecreasing (nonnegative probability on rectangles):**
+
+For all $x,y \in \mathbb{R}$ and any $\Delta_1, \Delta_2 > 0$,
+
+$$
+\begin{aligned}
+P(x < X \le x + \Delta_1,\; y < Y \le y + \Delta_2)
+&= F(x+\Delta_1, y+\Delta_2)
+ - F(x+\Delta_1, y) \\
+&\quad - F(x, y+\Delta_2)
+ + F(x,y) \\
+&\ge 0.
+\end{aligned}
+$$
+
+## Continuous Random Vectors and Probability Density Functions
+
+If there exists a function $f(x,y) \ge 0$ for $(x,y) \in \mathbb{R}^2$ such that
+
+$$
+\iint_{\mathbb{R}^2} f(x,y)\, dx\, dy
+=
+\int_{-\infty}^{\infty} \int_{-\infty}^{\infty} f(x,y)\, dx\, dy
+= 1,
+$$
+
+and
+
+$$
+P\big((X,Y) \in A\big)
+=
+\iint_A f(x,y)\, dx\, dy,
+\qquad A \subset \mathbb{R}^2,
+$$
+
+then we say that the distribution of $X$ and $Y$ is **jointly (absolutely) continuous**.
+
+The function $f(x,y)$ is called the **joint probability density function (joint pdf)** of
+$(X,Y)$.
+
+As in the univariate case, any function $f(x,y)$ satisfying:
+
+1. **Nonnegativity**
+$$
+f(x,y) \ge 0 \quad \text{for all } (x,y) \in \mathbb{R}^2,
+$$
+
+2. **Unit total probability**
+$$
+\int_{-\infty}^{\infty} \int_{-\infty}^{\infty} f(x,y)\, dx\, dy = 1
+\qquad \text{(continuous case)},
+$$
+
+or
+$$
+\sum_{(x,y) \in \mathbb{R}^2} f(x,y) = 1
+\qquad \text{(discrete case)},
+$$
+
+specifies the joint pdf (or pmf) of some bivariate random vector $(X,Y)$.
+
+## Marginal Distributions
+
+**Marginal Distributions in the Discrete Case**
+
+For a jointly discrete random vector $(X,Y)$ with joint pmf $f(x,y)$,
+
+$$
+f_X(x)
+= P(X = x)
+= \sum_y P(X = x, Y = y)
+= \sum_y f(x,y),
+\qquad x \in \mathbb{R}.
+$$
+
+Similarly,
+
+$$
+f_Y(y)
+= P(Y = y)
+= \sum_x P(X = x, Y = y)
+= \sum_x f(x,y),
+\qquad y \in \mathbb{R}.
+$$
+
+**Marginal Distributions in the Continuous Case**
+
+In the continuous $(X,Y)$ case, for $x \in \mathbb{R}$,
+
+$$
+\begin{aligned}
+P(X \le x)
+&= P\big((X,Y) \in (-\infty, x] \times (-\infty, \infty)\big) \\
+&= \int_{-\infty}^x \int_{-\infty}^{\infty} f(s,t)\, ds\, dt.
+\end{aligned}
+$$
+
+This motivates the definition of marginal densities.
+
+**Marginal PDFs**
+
+For a jointly continuous random vector $(X,Y)$ with joint pdf $f(x,y)$,
+
+$$
+f_X(x)
+= \int_{-\infty}^{\infty} f(x,y)\, dy,
+\qquad x \in \mathbb{R},
+$$
+
+and
+
+$$
+f_Y(y)
+= \int_{-\infty}^{\infty} f(x,y)\, dx,
+\qquad y \in \mathbb{R}.
+$$
+
+We often say that we **integrate out** $x$ or $y$ to obtain a marginal pdf.
+
+## From Bivariate to Multivariate
+
+Now consider the $n$-dimensional case:
+an $\mathbb{R}^n$-valued random vector $(X_1,\ldots,X_n)$.
+
+**CDF**
+
+$$
+F(x_1,\ldots,x_n)
+= P(X_1 \le x_1,\ldots,X_n \le x_n),
+\qquad x_1,\ldots,x_n \in \mathbb{R}.
+$$
+
+Properties:
+
+1. If all $x_i \to \infty$, then
+$$
+F(x_1,\ldots,x_n) \to 1.
+$$
+
+2. If any $x_i \to -\infty$, then
+$$
+F(x_1,\ldots,x_n) \to 0.
+$$
+
+3. $F$ is right-continuous in each argument.
+
+4. A generalized **monotonicity condition** holds for $n$-dimensional rectangles.
+
+**PDF or PMF**
+
+A joint pdf or pmf satisfies
+
+$$
+f(x_1,\ldots,x_n) \ge 0
+$$
+
+with integral (or sum) equal to 1.
+
+For the continuous case,
+
+$$
+P\big((X_1,\ldots,X_n) \in A\big)
+=
+\int \cdots \int_{\{(x_1,\ldots,x_n)\in A\}}
+f(x_1,\ldots,x_n)\, dx_1 \cdots dx_n,
+\qquad A \subset \mathbb{R}^n.
+$$
+
+For the discrete case,
+
+$$
+P\big((X_1,\ldots,X_n) \in A\big)
+=
+\sum_{(x_1,\ldots,x_n)\in A}
+f(x_1,\ldots,x_n).
+$$
+
+**Marginal Distributions in the Multivariate Case**
+
+A marginal pdf or pmf can be obtained for **any subset** of
+$(X_1,\ldots,X_n)$.
+
+For example, to obtain the marginal distribution of
+$(X_1,\ldots,X_k)$ from $(X_1,\ldots,X_n)$, fix
+$x_1,\ldots,x_k \in \mathbb{R}$ and integrate (or sum) out the remaining
+variables:
+
+$$
+f(x_1,\ldots,x_k)
+=
+\int \cdots \int
+f(x_1,\ldots,x_n)\, dx_{k+1}\cdots dx_n
+\qquad \text{(continuous case)},
+$$
+
+or
+
+$$
+f(x_1,\ldots,x_k)
+=
+\sum_{x_{k+1},\ldots,x_n}
+f(x_1,\ldots,x_n)
+\qquad \text{(discrete case)}.
+$$
+
+### Expectations of Several Random Variables
+
+Extension of the Univariate Case
+
+Let $(X_1,\ldots,X_n)$ be a random vector and let
+$g : \mathbb{R}^n \to \mathbb{R}$.
+
+**Discrete Case**
+
+If $(X_1,\ldots,X_n)$ are jointly discrete with pmf $f$, define
+
+$$
+\mathbb{E}[g(X_1,\ldots,X_n)]
+=
+\sum_{(x_1,\ldots,x_n)}
+g(x_1,\ldots,x_n)\, f(x_1,\ldots,x_n),
+$$
+
+provided that
+
+$$
+\sum_{(x_1,\ldots,x_n)}
+|g(x_1,\ldots,x_n)|\, f(x_1,\ldots,x_n)
+< \infty.
+$$
+
+**Continuous Case**
+
+If $(X_1,\ldots,X_n)$ are jointly continuous with pdf $f$, define
+
+$$
+\mathbb{E}[g(X_1,\ldots,X_n)]
+=
+\int_{-\infty}^{\infty} \cdots \int_{-\infty}^{\infty}
+g(x_1,\ldots,x_n)\, f(x_1,\ldots,x_n)\,
+dx_1 \cdots dx_n,
+$$
+
+provided that
+
+$$
+\int_{-\infty}^{\infty} \cdots \int_{-\infty}^{\infty}
+|g(x_1,\ldots,x_n)|\, f(x_1,\ldots,x_n)\,
+dx_1 \cdots dx_n
+< \infty.
+$$
+
+**Bivariate Case ($n=2$)**
+
+These reduce to
+
+$$
+\mathbb{E}[g(X,Y)]
+=
+\begin{cases}
+\displaystyle
+\sum_{(x,y)} g(x,y) f(x,y),
+& \text{discrete case}, \\[1em]
+\displaystyle
+\int_{-\infty}^{\infty} \int_{-\infty}^{\infty}
+g(x,y) f(x,y)\, dx\, dy,
+& \text{continuous case}.
+\end{cases}
+$$
+
+### Covariance
+
+The **covariance** of $X_i$ and $X_j$ is defined as
+
+$$
+\operatorname{Cov}(X_i, X_j)
+= \sigma_{X_i,X_j}
+= \mathbb{E}\!\left[(X_i - \mathbb{E}X_i)(X_j - \mathbb{E}X_j)\right].
+$$
+
+Equivalently,
+
+$$
+\operatorname{Cov}(X_i, X_j)
+= \mathbb{E}[X_i X_j] - (\mathbb{E}X_i)(\mathbb{E}X_j).
+$$
+
+**Interpretation**
+
+- If $\operatorname{Cov}(X_i, X_j) > 0$, then larger (or smaller) than average
+  values of $X_i$ tend to occur with larger (or smaller) than average values
+  of $X_j$.
+
+- If $\operatorname{Cov}(X_i, X_j) < 0$, then larger (or smaller) than average
+  values of $X_i$ tend to occur with smaller (or larger) than average values
+  of $X_j$.
+
+**Relationships and Properties**
+
+1. **Variance as a special case**
+
+$$
+\operatorname{Cov}(X_i, X_i) = \operatorname{Var}(X_i).
+$$
+
+Indeed,
+
+$$
+\operatorname{Cov}(X_i, X_i)
+= \mathbb{E}[X_i^2] - (\mathbb{E}X_i)^2
+= \operatorname{Var}(X_i).
+$$
+
+2. **Symmetry**
+
+$$
+\operatorname{Cov}(X_i, X_j) = \operatorname{Cov}(X_j, X_i).
+$$
+
+3. **Linearity with constants**
+
+For constants $a,b,c,d$,
+
+$$
+\operatorname{Cov}(aX_i + c,\; bX_j + d)
+= ab\,\operatorname{Cov}(X_i, X_j).
+$$
+
+4. **Variance of a linear combination (two variables)**
+
+$$
+\operatorname{Var}(aX_i + bX_j + c)
+= a^2 \operatorname{Var}(X_i)
++ b^2 \operatorname{Var}(X_j)
++ 2ab\,\operatorname{Cov}(X_i, X_j).
+$$
+
+5. **Covariance of linear combinations (general case)**
+
+For constants $a_1,\ldots,a_n$ and $b_1,\ldots,b_n$,
+
+$$
+\operatorname{Cov}\!\left(
+c + \sum_{i=1}^n a_i X_i,\;
+d + \sum_{j=1}^n b_j X_j
+\right)
+=
+\sum_{i=1}^n \sum_{j=1}^n
+a_i b_j\, \operatorname{Cov}(X_i, X_j).
+$$
+
+This can be written as
+
+$$
+\sum_{i=1}^n a_i^2 \operatorname{Var}(X_i)
+\;+\;
+2 \sum_{1 \le i < j \le n}
+a_i b_j\, \operatorname{Cov}(X_i, X_j).
+$$
+
+6. **Variance of a linear combination (general case)**
+
+(Equation 4 is a special case of the following.)
+
+$$
+\operatorname{Var}\!\left(
+c + \sum_{i=1}^n a_i X_i
+\right)
+=
+\sum_{i=1}^n \sum_{j=1}^n
+a_i a_j\, \operatorname{Cov}(X_i, X_j).
+$$
+
+Equivalently,
+
+$$
+\operatorname{Var}\!\left(
+c + \sum_{i=1}^n a_i X_i
+\right)
+=
+\sum_{i=1}^n a_i^2 \operatorname{Var}(X_i)
+\;+\;
+2 \sum_{1 \le i < j \le n}
+a_i a_j\, \operatorname{Cov}(X_i, X_j).
+$$
+
+### Correlation
+
+Note: **Covariance has no natural scale.**
+
+The **correlation** of $X_i$ and $X_j$ is a standardized measure of association,
+defined as
+
+$$
+\operatorname{Corr}(X_i, X_j)
+= \rho_{X_i,X_j}
+= \frac{\operatorname{Cov}(X_i, X_j)}
+       {\sqrt{\operatorname{Var}(X_i)}\sqrt{\operatorname{Var}(X_j)}}
+= \frac{\operatorname{Cov}(X_i, X_j)}
+       {\sigma_{X_i}\sigma_{X_j}},
+$$
+
+provided that
+
+$$
+\operatorname{Var}(X_i) < \infty
+\quad \text{and} \quad
+\operatorname{Var}(X_j) < \infty.
+$$
+
+**Theorem**
+
+1. **Bounds**
+
+$$
+-1 \le \rho_{X,Y} \le 1.
+$$
+
+2. **Perfect correlation**
+
+$$
+\rho_{X,Y} = \pm 1
+\quad \text{if and only if} \quad
+P(X = aY + b) = 1,
+$$
+
+for some constants $a$ and $b$, where
+
+- $a > 0$ if $\rho_{X,Y} = +1$,
+- $a < 0$ if $\rho_{X,Y} = -1$.
+
+### Moment Generating Functions
+
+The **joint moment generating function (mgf)** of $(X_1,\ldots,X_n)$ is defined as
+
+$$
+M_{X_1,\ldots,X_n}(t_1,\ldots,t_n)
+= \mathbb{E}\!\left[e^{t_1 X_1 + \cdots + t_n X_n}\right],
+\qquad t_1,\ldots,t_n \in \mathbb{R},
+$$
+
+provided the expectation exists for all
+
+$$
+-h < t_1,\ldots,t_n < h
+$$
+
+for some $h > 0$.
+
+**Marginal MGFs from the Joint MGF**
+
+The joint mgf can be used to obtain **univariate mgfs**.  
+Specifically,
+
+$$
+M_{X_i}(t_i)
+=
+M_{X_1,\ldots,X_n}
+(t_1 = 0,\ldots,t_{i-1} = 0,\, t_i,\, t_{i+1} = 0,\ldots,t_n = 0).
+$$
+
+Applications (as before)
+
+- **Characterizes distributions**
+
+  For example, if $(X_1,\ldots,X_n)$ and $(Y_1,\ldots,Y_n)$ have the same joint
+  mgf, then these random vectors have the same distribution.
+
+- **Transformations**
+
+For example, the mgf of $(a_1 X_1,\ldots,a_n X_n)$ is
+
+$$
+M_{X_1,\ldots,X_n}(a_1 t_1,\ldots,a_n t_n).
+$$
+
+# Conditional Distributions  
+
+Recall that $P(A \mid B)$ is the probability that $A$ occurs given that $B$
+occurs:
+
+$$
+P(A \mid B) = \frac{P(A \cap B)}{P(B)},
+\qquad P(B) > 0.
+$$
+
+We want to apply this idea to **random variables**.
+
+**Example: Truncated Distributions**
+
+Fix $x_0$. For $x > x_0$,
+
+$$
+\begin{aligned}
+P(X \le x \mid X > x_0)
+&= \frac{P(X \le x,\; X > x_0)}{P(X > x_0)} \\
+&= \frac{P(x_0 < X \le x)}{P(X > x_0)} \\
+&= \frac{F(x) - F(x_0)}{1 - F(x_0)}.
+\end{aligned}
+$$
+
+**Definitions: Conditional Distribution (Given a General Event $A$)**
+
+Suppose we observe an event $A$ with
+
+$$
+P(A) > 0.
+$$
+
+## Conditional CDF
+
+The **conditional cdf** of $X$ given $A$ is
+
+$$
+F(x \mid A)
+= P(X \le x \mid A)
+= \frac{P(A,\; X \le x)}{P(A)}.
+$$
+
+## Conditional PMF / PDF
+
+- **Discrete case** (pmf):
+
+$$
+f(x \mid A)
+= P(X = x \mid A)
+= \frac{P(A,\; X = x)}{P(A)},
+\qquad x \in \mathbb{R}.
+$$
+
+- **Continuous case** (pdf):
+
+$$
+f(x \mid A)
+= \frac{d}{dx} F(x \mid A),
+\qquad x \in \mathbb{R}.
+$$
+
+
+## Discrete Case
+
+For jointly discrete random variables $X,Y$ with joint pmf $f(x,y)$, for each
+$x$ with $f_X(x) > 0$, define
+
+$$
+f(y \mid x)
+= P(Y = y \mid X = x)
+= \frac{f(x,y)}{f_X(x)},
+$$
+
+called the **conditional pmf of $Y$ given $X = x$**, which specifies a
+distribution of $Y$ given $X=x$.
+
+Similarly, for each $y$ with $f_Y(y) > 0$, define
+
+$$
+f(x \mid y)
+= P(X = x \mid Y = y)
+= \frac{f(x,y)}{f_Y(y)},
+$$
+
+called the **conditional pmf of $X$ given $Y = y$**.
+
+## Continuous Distributions
+
+For jointly continuous random variables $X,Y$ with joint pdf $f(x,y)$, for each
+$x$ with $f_X(x) > 0$, define the **conditional pdf of $Y$ given $X = x$** as
+
+$$
+f(y \mid x)
+= \frac{f(x,y)}{f_X(x)},
+$$
+
+which specifies the pdf for the continuous distribution of $Y$ given $X=x$.
+
+For each $y$ with $f_Y(y) > 0$, define the **conditional pdf of $X$ given $Y=y$** as
+
+$$
+f(x \mid y)
+= \frac{f(x,y)}{f_Y(y)}.
+$$
+
+**Conditional CDF**
+
+The conditional cdf of $X$ given $Y=y$ is
+
+$$
+F(x \mid y)
+= P(X \le x \mid Y=y)
+= \int_{-\infty}^{x} f(t \mid y)\, dt
+= \int_{-\infty}^{x} \frac{f(t,y)}{f_Y(y)}\, dt.
+$$
+
+**Technical note.** For a continuous random variable $Y$, $P(Y=y)=0$ for any $y$.
+Thus, $F(x \mid y)=P(X \le x \mid Y=y)$ is defined as a limit; this is well-defined
+whenever $f_Y(y)>0$.
+
+## Conditional Expectations
+
+**Definition**
+
+Suppose $X,Y$ are jointly discrete or jointly continuous, $g(x,y)$ is a
+real-valued function, and $x$ is such that $f(y \mid x)$ is defined.  
+The **conditional mean (conditional expected value)** of $g(X,Y)$ given $X=x$ is
+
+$$
+\mathbb{E}[g(X,Y) \mid X=x]
+=
+\begin{cases}
+\displaystyle \int g(x,y)\, f(y \mid x)\, dy, & \text{continuous case}, \\[1em]
+\displaystyle \sum_y g(x,y)\, f(y \mid x), & \text{discrete case},
+\end{cases}
+$$
+
+provided that
+
+$$
+\int |g(x,y)|\, f(y \mid x)\, dy < \infty
+\quad \text{or} \quad
+\sum_y |g(x,y)|\, f(y \mid x) < \infty.
+$$
+
+**Note.** $\mathbb{E}[g(X,Y)\mid X=x]$ is a **function of $x$**.
+
+**Common Conditional Expectations**
+
+1. **Conditional mean**
+$$
+\mathbb{E}[X \mid Y=y].
+$$
+
+2. **Conditional variance**
+$$
+\operatorname{Var}(X \mid Y=y)
+= \mathbb{E}\!\left[(X-\mathbb{E}[X \mid Y=y])^2 \mid Y=y\right]
+= \mathbb{E}[X^2 \mid Y=y] - (\mathbb{E}[X \mid Y=y])^2.
+$$
+
+
+### Properties of Conditional Expectations
+
+**Result 1**
+
+For $X,Y$ either jointly continuous or jointly discrete with $f_X(x)>0$,
+
+$$
+\mathbb{E}[a g(X,Y) + b h(X,Y) + c \mid X=x]
+= a\,\mathbb{E}[g(X,Y)\mid X=x]
++ b\,\mathbb{E}[h(X,Y)\mid X=x]
++ c,
+$$
+
+and
+
+$$
+\mathbb{E}[g(X)\, h(X,Y) \mid X=x]
+= g(x)\, \mathbb{E}[h(X,Y)\mid X=x],
+$$
+
+provided the expectations exist.
+
+These results also hold for the **random-variable version** of conditional
+expectations.
+
+**Result 2**
+
+Provided the necessary conditional means exist for a set of $x$ with probability
+1, the following equalities hold with probability 1:
+
+$$
+\mathbb{E}[a g(X,Y) + b h(X,Y) + c \mid X]
+= a\,\mathbb{E}[g(X,Y)\mid X]
++ b\,\mathbb{E}[h(X,Y)\mid X]
++ c,
+$$
+
+and
+
+$$
+\mathbb{E}[g(X)\, h(X,Y) \mid X]
+= g(X)\, \mathbb{E}[h(X,Y)\mid X].
+$$
+
+That is, both sides are random variables equal with probability 1.
+
+#### Law of Total Expectation
+
+If $X$ and $Y$ are random variables and $\mathbb{E}[Y]$ exists, then
+
+$$
+\mathbb{E}[Y]
+= \mathbb{E}\!\left[\mathbb{E}[Y \mid X]\right].
+$$
+
+**Interpretation.** If $m(x)=\mathbb{E}[Y \mid X=x]$, then $m(X)=\mathbb{E}[Y\mid X]$
+is a random variable. Averaging over $X$ yields $\mathbb{E}[Y]$.
+
+#### Law of Total Variance (EVVE)
+
+If $\operatorname{Var}(Y)$ exists, then
+
+$$
+\operatorname{Var}(Y)
+= \mathbb{E}[\operatorname{Var}(Y \mid X)]
++ \operatorname{Var}(\mathbb{E}[Y \mid X]).
+$$
+
+That is, the unconditional variance equals the **mean of the conditional
+variance plus the variance of the conditional mean**.
+
+## Hierarchical and Mixture Models
+
+**Key Idea**
+Joint distributions can be specified **hierarchically** (or conditionally):
+
+$$
+f_{X,Y}(x,y) = f_X(x)\, f_{Y \mid X}(y \mid x).
+$$
+
+This perspective underlies:
+- hierarchical models,
+- mixture distributions,
+- Bayesian models,
+- mixed discrete–continuous models.
+
+**Bayesian Statistics (as a Hierarchical Model)**
+
+Let:
+- $\theta$ = parameter (random),
+- $X$ = observed data.
+
+Bayes’ rule in density form:
+$$
+f(\theta \mid x)
+= \frac{f(x,\theta)}{f_X(x)}
+= \frac{f(x \mid \theta) f(\theta)}
+{\int f(x \mid \theta) f(\theta)\, d\theta}.
+$$
+
+Interpretation:
+- $f(\theta)$ = prior,
+- $f(x \mid \theta)$ = likelihood,
+- $f(\theta \mid x)$ = posterior.
+
+**Mixed Discrete–Continuous Models**
+
+It is possible to have:
+- $X$ discrete,
+- $Y \mid X=x$ continuous.
+
+Joint distribution still defined as:
+$$
+f(x,y) = f_X(x)\, f_{Y \mid X}(y \mid x).
+$$
+
+# Independence of Random Variables
+
+**Definition**
+
+Random variables $X$ and $Y$ are **independent** if
+$$
+P(X \in A, Y \in B) = P(X \in A) P(Y \in B)
+\quad \text{for all } A,B \subset \mathbb{R}.
+$$
+
+**Equivalent Characterizations**
+
+CDF Factorization
+
+$$
+F_{X,Y}(x,y) = F_X(x) F_Y(y)
+\quad \text{for all } x,y.
+$$
+
+Discrete Case
+
+$$
+f(x,y) = f_X(x) f_Y(y).
+$$
+
+Continuous Case
+
+There exist versions of the densities such that
+$$
+f(x,y) = f_X(x) f_Y(y).
+$$
+
+**Consequences for Conditional Distributions**
+
+If $X$ and $Y$ are independent, then:
+$$
+f(y \mid x) = f_Y(y), \qquad
+f(x \mid y) = f_X(x).
+$$
+
+That is, conditioning does **nothing** under independence.
+
+### Independence and Functions of Random Variables
+
+**Theorem**
+
+If $X$ and $Y$ are independent, then:
+$$
+g(X) \text{ and } h(Y) \text{ are independent}
+$$
+for any measurable functions $g,h$.
+
+**Expectations Under Independence**
+
+If expectations exist:
+$$
+\mathbb{E}[g(X)h(Y)] = \mathbb{E}[g(X)]\, \mathbb{E}[h(Y)].
+$$
+
+Special case:
+$$
+\mathbb{E}[XY] = \mathbb{E}[X]\mathbb{E}[Y].
+$$
+
+**Covariance and Independence**
+
+If $X$ and $Y$ are independent and $\mathbb{E}[XY]$ exists:
+$$
+\mathrm{Cov}(X,Y) = 0.
+$$
+
+> **Important:**  
+> Zero covariance **does not imply** independence.
+
+**Variance of Sums Under Independence**
+
+If $X$ and $Y$ are independent and second moments exist:
+$$
+\mathrm{Var}(aX + bY) = a^2 \mathrm{Var}(X) + b^2 \mathrm{Var}(Y).
+$$
+
+More generally, if $X_1,\dots,X_n$ are independent:
+$$
+\mathrm{Var}\!\left(\sum_{i=1}^n a_i X_i\right)
+= \sum_{i=1}^n a_i^2 \mathrm{Var}(X_i).
+$$
+
+**Moment Generating Functions (MGFs) and Independence**
+
+### Univariate MGF
+
+$$
+M_X(t) = \mathbb{E}[e^{tX}],
+$$
+defined for $t$ in a neighborhood of $0$.
+
+Joint MGF
+
+For $(X,Y)$:
+$$
+M_{X,Y}(t_1,t_2)
+= \mathbb{E}[e^{t_1 X + t_2 Y}].
+$$
+
+**Independence via MGFs**
+
+Corollary
+
+If $X$ and $Y$ are independent and both MGFs exist:
+$$
+M_{X+Y}(t) = M_X(t)\, M_Y(t).
+$$
+
+**Characterization Theorem**
+
+Suppose $M_X(t)$ and $M_Y(t)$ exist in neighborhoods of $0$.
+
+Then $X$ and $Y$ are independent **if and only if**
+$$
+M_{X,Y}(t_1,t_2) = M_X(t_1) M_Y(t_2)
+$$
+for all $(t_1,t_2)$ near $(0,0)$.
+
