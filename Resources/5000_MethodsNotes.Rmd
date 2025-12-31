@@ -7,7 +7,7 @@ output: pdf_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-Note: Finished Week 8
+Note: Finished Week 12
 
 # Introduction 
 
@@ -113,7 +113,7 @@ Statistics is the science of using information to make decisions and quantify un
 3. Analyze the data (Study)
 4. Interpret the results (Act)
 
-# Unit 1 Experiments 
+# Unit 1: Experiments 
 
 ### Terminology 
 
@@ -937,7 +937,7 @@ $$
 2 \times P(Z > |z|)
 $$
 
-# Unit 2 ANOVA
+# Unit 2: ANOVA
 
 ## Motivation
 
@@ -2114,7 +2114,1093 @@ Interaction Effect Present
 
 ### Effects 
 
+- Estimate $a \times b$ treatment means with
+  - $\mu$
+  - $a$ effects for Factor A
+  - $b$ effects for Factor B
+  - $a \times b$ interaction effects for Factors A and B
+
+- Impose constraints on main effects and interaction effects  
+  to reduce number of parameters to $a \times b$
+
+
+#### Baseline Constraints Effects Model
+
+$$
+Y_{ijk} = \mu + \alpha_i + \tau_j + (\alpha\tau)_{ij} + \varepsilon_{ijk}
+$$
+
+- Set $\alpha_a = 0$ (level $a$ of Factor A)
+- Set $\tau_b = 0$ (level $b$ of Factor B)
+- Set $(\alpha\tau)_{aj} = 0$ for all $j = 1, \ldots, b$  
+  (All interaction effects with level $a$ of Factor A)
+- Set $(\alpha\tau)_{ib} = 0$ for all $i = 1, \ldots, a$  
+  (All interaction effects with level $b$ of Factor B)
+
+**Interpretation (Baseline Constraints)**
+
+- $\mu$ is the mean of the baseline cell $(i=a, j=b)$.
+- $\alpha_i$ is the difference between level $i$ of Factor A and the baseline level $a$, evaluated at $j=b$.
+- $\tau_j$ is the difference between level $j$ of Factor B and the baseline level $b$, evaluated at $i=a$.
+- $(\alpha\tau)_{ij}$ is the additional deviation for cell $(i,j)$ beyond what is explained by the main effects, relative to the baseline cell.
+
+#### Sum-to-Zero Constraints Effects Model
+
+$$
+Y_{ijk} = \mu + \alpha_i + \tau_j + (\alpha\tau)_{ij} + \varepsilon_{ijk}
+$$
+
+- Set $\sum_{i=1}^a \alpha_i = 0$
+- Set $\sum_{j=1}^b \tau_j = 0$
+- Set $\sum_{i=1}^a (\alpha\tau)_{ij} = 0$ for all $j$
+- Set $\sum_{j=1}^b (\alpha\tau)_{ij} = 0$ for all $i$
+
+**Interpretation (Sum-to-Zero Constraints)**
+
+- $\mu$ represents the grand mean across all $a \times b$ treatment combinations.
+- $\alpha_i$ represents the deviation of level $i$ of Factor A from the grand mean, averaged over levels of Factor B.
+- $\tau_j$ represents the deviation of level $j$ of Factor B from the grand mean, averaged over levels of Factor A.
+- $(\alpha\tau)_{ij}$ represents the remaining cell-specific deviation after accounting for both main effects, subject to averaging to zero across rows and columns.
+
 ### Diagnostics 
 
+**Model Assumptions**
+
+$$
+\varepsilon_{ijk} \text{ are i.i.d. } N(0, \sigma^2)
+$$
+
+- Independence
+- Homogeneous (Equal) Variance
+- Normality
+
+**Model Diagnostics**
+
+- Independence  
+  - Check details of data collection
+
+- Homogeneous variance  
+  - Plot residuals vs. estimated means  
+  - Plot residuals vs. levels of each factor
+
+- Normality  
+  - Normal probability plot for residuals  
+  - Histogram of residuals  
+  - Tests for normality
+
 ### Additional Factorial Designs 
+
+#### 2 Factors Plus Block
+
+**Setup**
+
+- RCBD with full factorial treatment design ($r = ab$ treatments)
+- Different random assignment of units to treatments in each of the $n$ blocks
+  - One experimental unit for each block–treatment combination
+  - Assume no interaction between block and treatment effects
+  - Model:
+  
+$$
+Y_{ijk} = \mu + \beta_i + \alpha_j + \tau_k + (\alpha\tau)_{jk} + \varepsilon_{ijk}
+$$
+
+
+**ANOVA Table**
+
+| Variation            | d.f.                  | Sums of Squares |
+|----------------------|-----------------------|-----------------|
+| Block                | $n - 1$               | $ab \sum_{i=1}^n (\bar{Y}_{i..} - \bar{Y}_{...})^2$ |
+| Factor A             | $a - 1$               | $nb \sum_{j=1}^a (\bar{Y}_{.j.} - \bar{Y}_{...})^2$ |
+| Factor B             | $b - 1$               | $na \sum_{k=1}^b (\bar{Y}_{..k} - \bar{Y}_{...})^2$ |
+| $A \times B$ interaction | $(a - 1)(b - 1)$ | $n \sum_j \sum_k (\bar{Y}_{.jk} - \bar{Y}_{.j.} - \bar{Y}_{..k} + \bar{Y}_{...})^2$ |
+| Error                | $(ab - 1)(n - 1)$     | $SS_{\text{error}}$ |
+| **Corrected total**  | $abn - 1$             | $\sum_i \sum_j \sum_k (Y_{ijk} - \bar{Y}_{...})^2$ |
+
+#### Three Factors
+
+**Notation**
+
+- Factor A with $a$ levels: $i = 1, \ldots, a$
+- Factor B with $b$ levels: $j = 1, \ldots, b$
+- Factor C with $c$ levels: $k = 1, \ldots, c$
+- $n$ replications for each treatment: $l = 1, \ldots, n$
+
+$$
+Y_{ijkl} = \mu + \alpha_i + \tau_j + \delta_k
++ (\alpha\tau)_{ij} + (\alpha\delta)_{ik} + (\tau\delta)_{jk}
++ (\alpha\tau\delta)_{ijk} + \varepsilon_{ijkl}
+$$
+
+
+**ANOVA Table**
+
+| Source of variation | Degrees of freedom | Sums of squares |
+|---------------------|-------------------|-----------------|
+| Factor A | $a - 1$ | $nbc \sum_i (\bar{Y}_{i...} - \bar{Y}_{....})^2$ |
+| Factor B | $b - 1$ | $nac \sum_j (\bar{Y}_{.j..} - \bar{Y}_{....})^2$ |
+| Factor C | $c - 1$ | $nab \sum_k (\bar{Y}_{..k.} - \bar{Y}_{....})^2$ |
+| Interaction $AB$ | $(a - 1)(b - 1)$ | $nc \sum_i \sum_j (\bar{Y}_{ij..} - \bar{Y}_{i...} - \bar{Y}_{.j..} + \bar{Y}_{....})^2$ |
+| Interaction $AC$ | $(a - 1)(c - 1)$ | $nb \sum_i \sum_k (\bar{Y}_{i.k.} - \bar{Y}_{i...} - \bar{Y}_{..k.} + \bar{Y}_{....})^2$ |
+| Interaction $BC$ | $(b - 1)(c - 1)$ | $na \sum_j \sum_k (\bar{Y}_{.jk.} - \bar{Y}_{.j..} - \bar{Y}_{..k.} + \bar{Y}_{....})^2$ |
+| Interaction $ABC$ | $(a - 1)(b - 1)(c - 1)$ | $SS_{ABC}$ |
+| Error | $abc(n - 1)$ | $\sum_i \sum_j \sum_k \sum_l (Y_{ijkl} - \bar{Y}_{ijk.})^2$ |
+| **Total** | $abcn - 1$ | $\sum_i \sum_j \sum_k \sum_l (Y_{ijkl} - \bar{Y}_{....})^2$ |
+
+
+#### $2^K$ Studies 
+
+**Set-up**
+
+- $K$ factors with $j = 1, 2, \ldots, r_k$ levels for the $k$th factor
+- Known as an $r_1 \times r_2 \times \cdots \times r_K$ factorial design
+- There are $r_1 \times r_2 \times \cdots \times r_K$ experimental units, and exactly one unit is assigned to each treatment
+- If all possible interactions are included in the model, there are no degrees of freedom left for computing $MS_{\text{error}}$
+- We will only consider the special situation of $K$ factors with exactly two levels for each factor — $2^K$ factorial designs
+
+
+**Special Features**
+
+- All main effect and interaction contrasts have 1 d.f.
+- Set up the model with
+  - One column in the model matrix $X$ for each main effect using $+1/-1$ coding
+  - Interaction columns obtained by multiplication of appropriate main effect columns
+  - All columns of $X$ are orthogonal
+
+# Unit 3: Simple Linear Regression 
+
+## Introduction 
+
+**Research Question**
+
+- Study the relationship of two or more quantitative variables  
+  - quantitative: numbers, usually continuous  
+  - qualitative: classes, identify groups
+
+- Is there a significant linear relationship between the response variable and the explanatory variable?
+
+- What mean value of response would we predict for a given value of the explanatory variable?
+
+- What value of response would we predict for a given value of the explanatory variable?
+
+**SLR Model**
+
+$$
+Y_i = \beta_0 + \beta_1 X_i + \varepsilon_i, \qquad i = 1, \ldots, n
+$$
+
+- $i = 1, \ldots, n$ is the number of observations
+- $Y_i$ is the response or dependent variable
+- $X_i$ is the predictor, explanatory variable, or independent variable, treated as known and fixed
+- $\varepsilon_i$ is the random error term representing individual variation and measurement error
+
+**Model Assumptions**
+
+- $x$’s are fixed (or conditioned upon)
+- The expected response is a linear function of the explanatory variable:
+$$
+E(Y_i \mid X_i = x_i) = \beta_0 + \beta_1 x_i
+$$
+- additive random errors:
+$$
+Y_i = E(Y_i \mid X_i = x_i) + \varepsilon_i
+$$
+- independent (uncorrelated) random errors
+- homogeneous error variance:
+$$
+\operatorname{Var}(\varepsilon_i) = \sigma^2
+$$
+- normally distributed random errors:
+$$
+\varepsilon_i \sim N(0, \sigma^2)
+$$
+
+### Least Squares Estimates
+
+$$
+b_0 = \bar{Y} - b_1 \bar{X}
+$$
+
+$$
+b_1
+= \frac{\sum_{i=1}^n (x_i - \bar{X})(Y_i - \bar{Y})}{\sum_{i=1}^n (x_i - \bar{X})^2}
+= \frac{\sum_{i=1}^n (x_i - \bar{X})Y_i}{\sum_{i=1}^n (x_i - \bar{X})^2}
+$$
+
+### Multivariate Normal Distribution
+
+Suppose
+$$
+Z =
+\begin{bmatrix}
+Z_1 \\
+\vdots \\
+Z_m
+\end{bmatrix}
+$$
+is a random vector whose elements are independently distributed standard normal random variables.
+
+For any $n \times m$ matrix $A$, we say that
+$$
+Y = \mu + AZ
+$$
+has a multivariate normal distribution with mean vector
+$$
+E(Y) = E(\mu + AZ) = \mu + AE(Z) = \mu + A0 = \mu
+$$
+and variance–covariance matrix
+$$
+\operatorname{Var}(Y) = A[\operatorname{Var}(Z)]A^T = AA^T \equiv \Sigma.
+$$
+
+**Multivariate Normal Linear Combinations**
+
+If $Y \sim N(\mu, \Sigma)$, then
+$$
+W = c + BY \sim N(c + B\mu, B\Sigma B^T)
+$$
+for any non-random $c$ and $B$.
+
+## Inference
+
+### Regression Analysis: ANOVA
+
+- Write the deviation from the overall sample mean as
+$$
+Y_i - \bar{Y} = (Y_i - \hat{Y}_i) + (\hat{Y}_i - \bar{Y})
+\quad \text{where} \quad
+\hat{Y}_i = b_0 + b_1 X_i
+$$
+
+- Partition the corrected total sums of squares
+$$
+SS_{\text{total}}
+= \sum_i (Y_i - \bar{Y})^2
+= \sum_i (Y_i - \hat{Y}_i + \hat{Y}_i - \bar{Y})^2
+$$
+
+$$
+= \sum_i (Y_i - \hat{Y}_i)^2
++ \sum_i (\hat{Y}_i - \bar{Y})^2
++ 2\sum_i (Y_i - \hat{Y}_i)(\hat{Y}_i - \bar{Y})
+$$
+
+$$
+= \sum_i (Y_i - \hat{Y}_i)^2 + \sum_i (\hat{Y}_i - \bar{Y})^2
+$$
+
+$$
+= SS_{\text{residuals}} + SS_{\text{model}}
+$$
+
+**ANOVA Table**
+
+| Source | df | Sums of Squares |
+|---|---:|---|
+| Model | $1$ | $SS_{\text{model}} = \sum_{i=1}^n (\hat{Y}_i - \bar{Y})^2$ |
+| Error | $n - 2$ | $SS_{\text{error}} = \sum_{i=1}^n (Y_i - \hat{Y}_i)^2$ |
+| Total | $n - 1$ | $SS_{\text{total}} = \sum_{i=1}^n (Y_i - \bar{Y})^2$ |
+
+
+**F-test for Significance of Model**
+
+- $H_0 : \beta_1 = 0 \;\rightarrow\; Y_i = \beta_0 + \varepsilon_i$
+- $H_a : \beta_1 \neq 0 \;\rightarrow\; Y_i = \beta_0 + \beta_1 x_i + \varepsilon_i$
+
+- Test Statistic:
+$$
+F = \frac{MS_{\text{model}}}{MS_{\text{error}}}
+$$
+
+- Reject $H_0$ if
+$$
+F = \frac{MS_{\text{model}}}{MS_{\text{error}}} > F_{1,n-2,1-\alpha}
+$$
+
+### Coefficient of Determination ($R^2$)
+
+$$
+R^2 = \frac{SS_{\text{model}}}{SS_{\text{total}}}
+$$
+
+- Fraction of variation in the response variable that can be explained by the linear regression model with the explanatory variable $x$.
+- Expressed as percentage: $0\% \le R^2 \le 100\%$
+- Large values of $R^2$ indicate better model fit.
+
+### Hypothesis Test for $\beta_1$
+
+- Null and Alternative Hypotheses
+$$
+H_0 : \beta_1 = 0
+\qquad
+H_a : \beta_1 \neq 0
+$$
+
+- Test Statistic
+$$
+T = \frac{b_1 - 0}{S_{b_1}}
+$$
+
+- Reject $H_0$ if
+$$
+|T| > t_{n-2,1-\alpha/2}
+$$
+
+- Note that $T^2 = F$, this $t$-test for $\beta_1$ is the same as the $F$-test for significance of model from ANOVA Table.
+
+- One-sided alternative hypothesis is possible for the $t$-test:
+$$
+H_a : \beta_1 > 0
+\quad \text{or} \quad
+H_a : \beta_1 < 0
+$$
+
+**Confidence Interval for $\beta_1$**
+
+- $100(1-\alpha)\%$ confidence interval for $\beta_1$:
+$$
+b_1 \pm t_{n-2,1-\alpha/2} S_{b_1}
+$$
+
+
+### Prediction
+
+Predict the value for $Y$ at given $x$:
+$$
+Y_{\text{new}} = \beta_0 + \beta_1 x + \varepsilon
+$$
+
+- Estimate is still $\hat{Y} = b_0 + b_1 x$
+
+- Standard error is
+$$
+S_{\text{pred}}
+=
+\sqrt{
+MS_{\text{error}}
+\left(
+1 + \frac{1}{n} + \frac{(x - \bar{x})^2}{\sum_{i=1}^n (x_i - \bar{x})^2}
+\right)
+}
+$$
+
+- $100(1-\alpha)\%$ prediction interval:
+$$
+(b_0 + b_1 x) \pm t_{n-2,1-\alpha/2} \, S_{\text{pred}}
+$$
+
+## Model Diagnostics
+
+**SLR Model and Assumptions**
+
+$$
+Y_i = \beta_0 + \beta_1 x_i + \varepsilon_i
+\quad \text{where} \quad
+\varepsilon_i \overset{iid}{\sim} N(0,\sigma^2)
+$$
+
+- Values of $Y_i$ are independent (independent random errors)
+- Values of $x_i$ are fixed
+- $\mu_{Y|x_i}$ is a linear function of $x_i$
+- Homogeneous error variance: $\mathrm{Var}(\varepsilon_i) = \sigma^2$
+- Normally distributed errors: $\varepsilon_i \overset{iid}{\sim} N(0,\sigma^2)$
+
+**Interpretation**
+
+- The regression line describes the *conditional mean* of $Y$ given $x$.
+- All randomness is attributed to the error term $\varepsilon_i$, not to $x_i$.
+- These assumptions justify least squares estimation, standard errors, and inference.
+
+
+### Independence
+
+- Check independence of observations through details of data collection
+- Beware of:
+  - Observations over time
+  - Clustering of observations
+  - Spatial elements to observations
+- Crucial assumption — must use other methods if violated
+
+**Interpretation**
+
+- Lack of independence leads to underestimated standard errors and invalid tests.
+- Time series, spatial data, or grouped data often violate this assumption.
+- Remedies include correlation structures, random effects, or generalized least squares.
+
+
+### Fixed Values of $x$
+
+- Assume $x$ is measured without error
+- Check through variable definition and through details of data collection
+- If violated, model the error in $x$ using a random effect
+
+**Interpretation**
+
+- Treating $x$ as fixed simplifies inference and variance calculations.
+- Measurement error in $x$ typically biases slope estimates toward zero.
+- Errors-in-variables models are needed when this assumption fails.
+
+
+### Linearity
+
+- Scatterplot: Plot of $Y_i$ versus $x_i$ $\rightarrow$ linear pattern
+- Residual plot: Plot of residuals $e_i$ versus $x_i$ $\rightarrow$ no pattern
+- Violations of linearity:
+  - Transform $Y_i$ values so that relationship with $x_i$ is linear
+  - Common transformations: log and power ($Y^2$, $Y^3$, $\sqrt{Y}$, etc.)
+  - Conduct analysis with transformed $Y$ values
+  - Undo transformation in drawing conclusions
+
+**Interpretation**
+
+- Linearity concerns the *mean structure*, not the raw data cloud.
+- Residual patterns indicate missing nonlinear structure.
+- Transformations allow linear regression tools to be used legitimately.
+
+### Regression Analysis – Residuals
+
+- Residuals do not have homogeneous variances
+
+$$
+e_i \sim N\!\left(
+0,\;
+\sigma^2\left(
+1 - \frac{1}{n}
+- \frac{(x_i - \bar{x})^2}{\sum_i (x_i - \bar{x})^2}
+\right)
+\right)
+$$
+
+- Sometimes use
+
+$$
+r_i
+=
+\frac{e_i}{
+\sqrt{
+MSE\left(
+1 - \frac{1}{n}
+- \frac{(x_i - \bar{x})^2}{\sum_i (x_i - \bar{x})^2}
+\right)
+}
+}
+$$
+
+(known as studentized residuals)
+
+**Interpretation**
+
+- Raw residuals have different variances depending on leverage.
+- Studentized residuals standardize variability, enabling fair comparison.
+- Large studentized residuals suggest potential outliers.
+
+**Residual Plots**
+
+- Plot residuals versus $X$
+  - In simple linear regression, this is the same as previous
+  - In multiple regression, it will be useful
+- Plot residuals versus other possible predictors (e.g., time)
+  - Detect important lurking variable
+- Plot residuals vs. lagged residuals
+  - Detect correlated errors
+- Normal probability plot of residuals
+  - Detect non-normality
+
+**Interpretation**
+
+- Residual plots diagnose unmet assumptions rather than model fit.
+- Patterns imply omitted variables, dependence, or heteroskedasticity.
+- Normal Q–Q plots assess whether inference based on normality is reasonable.
+
+### Diagnostics 
+
+**Leverage**
+
+- Extreme values of $x$ are called high leverage cases because they exert a large “pull” on SLR
+- Measure of “potential” influence of observation on SLR
+- Leverage of the $i$th observation is:
+
+$$
+h_i
+=
+\frac{1}{n-1}\left(\frac{x_i - \bar{x}}{s_x}\right)^2
++ \frac{1}{n}
+$$
+
+- Properties of $h_i$:
+  - $\frac{1}{n} \le h_i \le 1$
+  - $\sum_{i=1}^n h_i = 2 \;\Rightarrow\; \bar{h} = \frac{2}{n}$
+
+**Interpretation**
+
+- High leverage points have unusual $x$-values, not necessarily unusual $Y$.
+- They can strongly affect slope estimates even with small residuals.
+- Leverage alone does not imply influence—residual size also matters.
+
+**Outliers**
+
+- Extreme $Y_i$ value for a given $x_i$
+- Three assessment methods:
+  - Residuals
+  - Internally studentized residuals
+  - Externally studentized residuals
+
+**Interpretation**
+
+- Outliers are unusual *conditional responses*, not unusual predictors.
+- Studentized residuals allow formal cutoff rules (e.g., $|r_i| > 2$).
+- Influential points combine high leverage *and* large residuals.
+
+**Influence**
+
+- Concerned about unusual cases that have a big influence on both:
+  - $\hat{Y}_i$ for some $x_i$
+  - estimated slope $\hat{\beta}_1$
+- Could delete the case, refit model, and examine the change
+
+**Interpretation**
+
+- Influence combines information about *outliers* (large residuals) and *leverage* (extreme $x$ values).
+- An influential case can substantially alter fitted values and slope estimates.
+- Sensitivity analysis (refitting with/without the case) helps assess robustness of conclusions.
+
+**Influence (Cook’s Distance)**
+
+- Cook’s $D$ — effect of deleting the $i$th case on the least squares regression model
+
+$$
+D_i
+=
+\left(\frac{r_i^2}{2}\right)
+\left(\frac{h_i}{1 - h_i}\right)
+$$
+
+- $D_i$ is large when $r_i$ is large and $h_i$ is large
+- $D_i > 2\sqrt{2/n}$ indicates substantial influence
+
+**Interpretation**
+
+- Cook’s distance summarizes influence in a *single diagnostic*.
+- Large $D_i$ values indicate cases that strongly affect fitted values and parameter estimates.
+- Influence does not imply data error—such cases may be scientifically meaningful.
+- Follow-up typically includes plotting Cook’s $D$, checking data quality, and refitting models with and without influential observations.
+
+## Lack of Fit 
+
+**Lack of Fit Test**
+
+- One method for model checking.
+- Suppose we have multiple observations at one or more of the $x_i$ values.
+- Notation: $Y_{ij}$ is the $j$th observation at $x_i$.
+- Three models:
+  1. $Y_{ij} = \mu + \varepsilon_i$  (common mean)
+  2. $Y_{ij} = \beta_0 + \beta_1 x_i + \varepsilon_i$  (regression)
+  3. $Y_{ij} = \mu_i + \varepsilon_i$  (separate means)
+
+**Interpretation**
+
+- Model (1) ignores $x$ entirely.
+- Model (2) imposes a linear structure on the mean response.
+- Model (3) makes no functional-form assumption and serves as a flexible benchmark.
+- The lack-of-fit test compares the linear model to the saturated “separate means” model.
+
+### Lack of Fit Test (Sum of Squares Decomposition)
+
+- SSE from regression model (Model 2):
+
+$$
+SS_{\text{error}}
+=
+\sum_i \sum_j (Y_{ij} - \hat{Y}_i)^2
+$$
+
+$$
+=
+\sum_i \sum_j (Y_{ij} - \bar{Y}_{i\cdot})^2
++
+\sum_i \sum_j (\bar{Y}_{i\cdot} - \hat{Y}_i)^2
+$$
+
+$$
+=
+SS_{\text{pure error}} + SS_{\text{lack-of-fit}}
+$$
+
+- $SS_{\text{Pure Error}}$ is the error sum of squares for Model 3.
+  - Measures variability of observations about the mean response for each $x$.
+  - Does **not** assume the regression model is correct.
+- $SS_{\text{Lack-of-Fit}}$ measures lack of fit of the regression model.
+- Let $r$ = number of distinct $x$ values.
+
+**Interpretation**
+
+- Pure error reflects natural variability at fixed $x$.
+- Lack-of-fit captures systematic deviation from linearity.
+- Replication at the same $x$ values is essential to separate these two components.
+
+**New and Improved ANOVA Table**
+
+| Source of variation | Degrees of freedom | Sums of squares |
+|---|---:|---|
+| Regression | $1$ | $SS_{\text{regression}}$ |
+| Lack-of-Fit | $r - 2$ | $SS_{\text{lack-of-fit}}$ |
+| Pure Error | $n - r$ | $SS_{\text{pure error}}$ |
+| Total | $n - 1$ | $SS_{\text{total}}$ |
+
+**Interpretation**
+
+- Total variation is partitioned into explained variation, lack-of-fit, and pure error.
+- The lack-of-fit row isolates model misspecification.
+- When $r = n$ (no replication), lack-of-fit cannot be tested.
+
+### Example: Lack-of-Fit Test
+
+- $F$-test for lack of fit
+
+Null and alternative hypotheses:
+
+$$
+H_0:\; E(Y_{ij}\mid x_i) = \beta_0 + \beta_1 x_i
+$$
+
+$$
+H_a:\; E(Y_{ij}\mid x_i) = \mu_i = \beta_0 + \beta_1 x_i + g(x_i)
+$$
+
+- Expected mean squares:
+
+$$
+E(MS_{\text{Pure Error}}) = \sigma^2
+$$
+
+$$
+E(MS_{\text{Lack-of-Fit}})
+=
+\sigma^2
++
+\frac{\sum_{i=1}^r n_i [g(x_i)]^2}{r - 2}
+$$
+
+- Reject $H_0$ if
+
+$$
+F
+=
+\frac{MS_{\text{Lack-of-Fit}}}{MS_{\text{Pure Error}}}
+>
+F_{(df_{\text{LoF}},\,df_{\text{PE}}),\,1-\alpha}
+$$
+
+**Interpretation**
+
+- The test assesses whether departures from linearity are larger than expected from random error.
+- A significant result indicates the linear model is inadequate.
+- Failure to reject does **not** prove linearity—only that deviations are not detectable given the data.
+- Power depends strongly on replication at each $x$ value.
+
+## Correlation 
+
+**Population Correlation Coefficient**
+
+- Measure of linear relationship between two quantitative variables ($X$ and $Y$) in the population
+- Denoted as $\rho$
+- Defined as
+
+$$
+\rho
+=
+\frac{\operatorname{Cov}(X,Y)}{\sigma_X \sigma_Y}
+=
+\frac{E[(X - E(X))(Y - E(Y))]}{\sigma_X \sigma_Y}
+$$
+
+**Interpretation**
+
+- $\rho$ measures **linear association**, not causation.
+- $-1 \le \rho \le 1$:
+  - $\rho > 0$: positive linear relationship
+  - $\rho < 0$: negative linear relationship
+  - $\rho = 0$: no linear relationship (may still be nonlinear)
+- Scale-free: unaffected by changes in units of $X$ or $Y$.
+- Sensitive to outliers and extreme values.
+
+**Sample Correlation Coefficient**
+
+- Estimate $\rho$ by taking a sample from the population and calculating
+
+$$
+r
+=
+\frac{1}{n-1}
+\left(
+\frac{\sum_{i=1}^n (X_i - \bar{X})(Y_i - \bar{Y})}{S_X S_Y}
+\right)
+$$
+
+- $r$ has the same properties as $\rho$
+
+**Interpretation**
+
+- $r$ is a **sample-based estimate** of the population correlation $\rho$.
+- Takes values between $-1$ and $1$ with the same directional interpretation as $\rho$.
+- Strongly influenced by outliers.
+- Describes the *strength and direction* of linear association in the observed data.
+
+### $r$ and $R^2$
+
+- $r$ is a function of $R^2$
+
+$$
+r = \pm \sqrt{R^2},
+\qquad
+r^2 = R^2
+$$
+
+- $r$ is a numerical summary of the direction and strength of the linear relationship between $X$ and $Y$
+- $R^2$ is a numerical summary of the percentage of variability in $Y$ that can be explained by the linear regression with $X$
+
+**Interpretation**
+
+- The **sign of $r$** is determined by the sign of the slope $\hat{\beta}_1$.
+- $R^2$ measures *explanatory power*, not strength of association alone.
+- High $R^2$ does not imply causation or a correct model.
+- In simple linear regression, $R^2$ and $r^2$ are equivalent summaries of linear fit.
+
+## Multiple Linear Regression 
+
+### Introduction 
+
+**Research Questions**
+
+- Does the MLR model significantly explain the response variable $Y_i$ and how well does it explain the variation in the response variable $Y_i$?
+
+- Which explanatory variables are significant in the MLR model?
+
+- Which set of explanatory variables are significant in the MLR model?
+
+- What value of the conditional mean of $Y_i$ would we predict for given values of $x_{i1}, x_{i2}, \ldots, x_{ik}$?
+
+- What value of $Y_i$ would we predict for given values of $x_{i1}, x_{i2}, \ldots, x_{ik}$?
+
+**MLR Model**
+
+$$
+Y_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \cdots + \beta_k x_{ik} + \varepsilon_i
+$$
+
+$$
+\begin{bmatrix}
+Y_1 \\
+Y_2 \\
+Y_3 \\
+\vdots \\
+Y_n
+\end{bmatrix}
+=
+\begin{bmatrix}
+1 & x_{11} & x_{12} & x_{13} & \cdots & x_{1k} \\
+1 & x_{21} & x_{22} & x_{23} & \cdots & x_{2k} \\
+1 & x_{31} & x_{32} & x_{33} & \cdots & x_{3k} \\
+\vdots & \vdots & \vdots & \vdots & \ddots & \vdots \\
+1 & x_{n1} & x_{n2} & x_{n3} & \cdots & x_{nk}
+\end{bmatrix}
+\begin{bmatrix}
+\beta_0 \\
+\beta_1 \\
+\beta_2 \\
+\vdots \\
+\beta_k
+\end{bmatrix}
++
+\begin{bmatrix}
+\varepsilon_1 \\
+\varepsilon_2 \\
+\varepsilon_3 \\
+\vdots \\
+\varepsilon_n
+\end{bmatrix}
+$$
+
+$$
+\mathbf{Y} = \mathbf{X}\boldsymbol{\beta} + \boldsymbol{\varepsilon}
+$$
+
+### MLR Assumptions
+
+- Fixed values of the explanatory variables, $x_{i1}, x_{i2}, \cdots, x_{ik}$
+- Conditional mean of $Y$ given the values of $x_{i1}, x_{i2}, \cdots, x_{ik}$ is linear:
+
+$$
+\mu_Y |_{x_{i1}, x_{i2}, \cdots, x_{ik}} = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \cdots + \beta_k x_{ik}
+$$
+- Additive random errors:
+
+$$
+Y_i = \mu_Y |_{x_{i1}, x_{i2}, \cdots, x_{ik}} + \epsilon_i
+$$
+- Independent (uncorrelated) random errors
+- Homogeneous error variance:
+
+$$
+\text{Var}(\epsilon_i) = \sigma^2
+$$
+- Normally distributed random errors:
+
+$$
+\epsilon_i \sim N(0, \sigma^2)
+$$
+
+### Interpretation and Estimation
+
+**Parameters (Coefficients)**
+
+Interpretation of parameters $\beta_0, \beta_1, \ldots, \beta_k$ depends on the presence or absence of other explanatory variables in the model.
+
+**Example:**
+
+- Model 1: $Y_i = \beta_0 + \beta_1 X_{i1} + \beta_2 X_{i2} + \cdots + \beta_k X_{ik} + \epsilon_i$
+- Model 2: $Y_i = \beta_0 + \beta_1 X_{i1} + \beta_2 X_{i2} + \epsilon_i$
+
+Interpretation of parameters $\beta_0, \beta_1$, and $\beta_2$ are **NOT** the same in the two models.
+
+**Least Squares Estimation**
+
+Find **b**, the least squares estimator for $\beta$, that minimizes:
+
+$$
+q(b) = \sum_{i=1}^n (Y_i - b_0 - b_1 x_{i1} - \cdots - b_k x_{ik})^2
+$$
+
+This can be written in matrix form as:
+
+$$
+q(b) = (Y - Xb)^T(Y - Xb) = e^Te
+$$
+
+where $e = Y - Xb$ is the vector of residuals.
+
+**Solution:**
+
+- Solve the set of normal equations: $(X^T X)b = X^TY$
+- Solution (assuming $X$ is of full column rank):
+
+$$
+b = (X^T X)^{-1} X^TY
+$$
+
+is the unique solution to the normal equations.
+
+#### Properties of Least Squares Estimators
+
+Variance of $b$:
+
+$$
+\text{Var}(b) = \sigma^2(X^T X)^{-1}
+$$
+
+**Derivation requires:**
+- Uncorrelated errors
+- Homogeneous error variances
+- *Note:* Normality is **not** required for this derivation (normality is needed for inference procedures)
+
+Estimating $\sigma^2$:
+
+An unbiased estimator for $\sigma^2$ is:
+
+$$
+s_e^2 = MS_{\text{error}} = \frac{(Y - Xb)^T(Y - Xb)}{n - (k + 1)} = \frac{e^Te}{df_{\text{error}}} = \frac{\sum e_i^2}{df_{\text{error}}}
+$$
+
+where $df_{\text{error}} = n - (k + 1)$.
+
+### Variance Decomposition 
+
+Total variability in response variable
+
+$$
+SS_{\text{Total}} = \sum_{i=1}^{n} (Y_i - \bar{Y})^2
+$$
+
+Total variability explained by the model
+
+$$
+SS_{\text{model}} = \sum_{i=1}^{n} (\hat{Y_i} - \bar{Y})^2
+$$
+
+Total variability not explained by the model
+
+$$
+SS_{\text{error}} = \sum_{i=1}^{n} (Y_i - \hat{Y_i})^2
+$$
+
+**ANOVA Table**
+
+| Source of Variation | Degrees of Freedom | Sums of Squares                                      |
+|---------------------|---------------------|------------------------------------------------------|
+| model               | $k$                 | $SS_{\text{model}} = \sum_{i=1}^{n} (\hat{Y_i} - \bar{Y})^2$ |
+| error               | $n - (k + 1)$       | $SS_{\text{error}} = \sum_{i=1}^{n} (Y_i - \hat{Y_i})^2$ |
+| **Total**           | **$n - 1$**         | **$SS_{\text{total}} = \sum_{i=1}^{n} (Y_i - \bar{Y})^2$** |
+
+#### F-test for Significance of Model
+
+**Hypotheses**
+
+- $H_0 : \beta_1 = \beta_2 = \cdots = \beta_k = 0$
+- $H_a :$ at least one $\beta_j \neq 0, \quad j = 1, \ldots, k$
+
+**Test Statistic**
+
+$$
+F = \frac{MS_{\text{model}}}{MS_{\text{error}}}
+$$
+
+**Decision Rule**
+
+Reject $H_0$ if $F > F_{k,\, n-(k+1),\, 1-\alpha}$
+
+**Model Comparison Interpretation**
+
+The F-test from the ANOVA Table is comparing two models:
+
+- Model under $H_0$: $Y_i = \beta_0 + \epsilon_i$
+- Model under $H_a$: $Y_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \cdots + \beta_k x_{ik} + \epsilon_i$
+
+> Note: We almost always reject $H_0$ in this test (if the model explains any meaningful variation in the data).
+
+### More on Estimation 
+
+**Coefficient of Determination**
+
+$$
+R^2 = \frac{SS_{\text{model}}}{SS_{\text{Total}}}
+$$
+
+- Fraction of variation in the response variable that can be explained by the multiple linear regression model  
+- Expressed as percentage: $0\% \leq R^2 \leq 100\%$  
+- Adding explanatory variables to the model will always increase the value of $R^2$
+
+**Adjusted $R^2$**
+
+$$
+adj \, R^2 = 1 - \frac{MS_{\text{error}}}{SS_{\text{total}}/(n-1)}
+$$
+
+- Expressed as percentage: $0\% \leq adj \, R^2 \leq 100\%$
+- Adjusts for the number of explanatory variables in model through degrees of freedom of $MS_{\text{error}} = n - (k+1)$
+- Used primarily for model comparisons
+
+#### Hypothesis Tests 
+
+For Population Coefficient
+
+**Null and Alternative Hypotheses**
+
+$H_0 : \beta_j = 0$ vs. $H_a : \beta_j \neq 0$
+
+**Test Statistic**
+
+$$
+T = \frac{b_j - 0}{S_e \sqrt{(X^T X)_{[j+1,j+1]}^{-1}}} = \frac{b_j - 0}{S_{b_j}}
+$$
+
+**Decision Rule**
+
+Reject $H_0$ if $|T| > t_{n-(k+1),\, 1-\alpha/2}$
+
+**Confidence Interval for Population Coefficient**
+
+- $100(1 - \alpha)\%$ CI for $\beta_j$ is:
+
+$$
+b_j \pm t_{n-(k+1),\, 1-\alpha/2} \cdot S_{b_j}
+$$
+
+### Partial F-Test
+
+#### Understanding the Difference in Sum of Squares
+
+$$
+SSE_{\text{reduced}} - SSE_{\text{full}}
+$$
+
+- Amount of error explained by adding the $m$ explanatory variables to the model  
+- The only difference in these two models is the $m$ explanatory variables  
+- Difference has $m$ degrees of freedom  
+- Compare amount of error explained to $MSE_{\text{full}}$
+
+#### Test Statistic Formula
+
+$$
+F = \frac{(SSE_{\text{reduced}} - SSE_{\text{full}})/m}{MSE_{\text{full}}}
+$$
+
+- Large values of $F$ indicate group of $m$ explanatory variables should be included in the model
+
+### Hypothesis Testing Framework
+
+- $H_0 : \beta_j = 0$ for the $m$ explanatory variables  
+- $H_a :$ at least one $\beta_j \neq 0$ for the $m$ explanatory variables  
+- Test Statistic:
+
+$$
+F = \frac{(SSE_{\text{reduced}} - SSE_{\text{full}})/m}{MSE_{\text{full}}}
+$$
+
+- Decision: Reject $H_0$ if $F > F_{m,\, n-(k+1),\, 1-\alpha}$  
+- **Important**: Conclusion about the significance of the $m$ explanatory variables depends on the presence of the other $k-m$ explanatory variables in the model.
+
+**Inference for Conditional Means**
+
+Estimate the conditional mean response $\mu_{Y|X}$ under specific values for vector $x = (1, x_1, x_2, \ldots, x_k)^T$
+
+**Point Estimate**
+
+$$
+\hat{\mu}_{Y|X} = x^T \hat{\beta}
+$$
+
+**Standard Error**
+
+$$
+S_{\hat{\mu}_{Y|X}} = \sqrt{MS_{\text{error}}} \, x^T (X^T X)^{-1} x
+$$
+
+**Confidence Interval**
+
+A $(1 - \alpha) \times 100\%$ confidence interval for $\mu_{Y|X}$ is:
+
+$$
+\hat{\mu}_{Y|X} \pm t_{n-(k+1),\, 1-\alpha/2} \, S_{\hat{\mu}_{Y|X}}
+$$
+
+**Simultaneous Confidence Region (Scheffé's Method)**
+
+For an entire line segment:
+
+$$
+\hat{Y} \pm \sqrt{(k+1)F_{k+1,\, n-k-1,\, 1-\alpha}} \, S_{\hat{\mu}_{Y|X}}
+$$
+
+**Prediction Intervals**
+
+Predict value of $Y_i = \mathbf{x}^T \beta + \epsilon_i$ that will be observed under specific values for vector $\mathbf{x} = (1, x_1, x_2, \ldots, x_k)^T$
+
+Predictor
+
+$$
+\hat{Y}_i = \mathbf{x}^T \hat{\beta}
+$$
+
+Standard Error for Predictor
+
+$$
+S_{\hat{Y}} = \sqrt{MS_{\text{error}} + S_{\hat{\mu}_{Y|X}}^2}
+$$
+
+**Prediction Interval**
+
+A $(1 - \alpha) \times 100\%$ prediction interval is:
+
+$$
+\hat{Y}_i \pm t_{n-(k+1),\, 1-\alpha/2} \, S_{\hat{Y}}
+$$
 
