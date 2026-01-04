@@ -1,13 +1,11 @@
 ---
-title: "Methods Notes"
+title: "5000 Methods Notes"
 output: pdf_document
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-
-Note: Finished Week 12
 
 # Introduction 
 
@@ -3204,3 +3202,764 @@ $$
 \hat{Y}_i \pm t_{n-(k+1),\, 1-\alpha/2} \, S_{\hat{Y}}
 $$
 
+### Categorical Predictors 
+
+We also have different possible parametrizations when our predictors (random variables) are categorical. An easier example where the predictor takes only 2 dinstict values, e.g., Male/Female, Yes/No, etc. 
+
+**Baseline Coding of Categories**
+
+Baseline coding of categories:
+
+$$
+x_{2i} =
+\begin{cases}
+1, & \text{student is female} \\
+0, & \text{student is male}
+\end{cases}
+$$
+
+**Sum-to-Zero Coding of Categories**
+
+Sum-to-zero coding of categories:
+
+$$
+x_{2i} =
+\begin{cases}
+1, & \text{student is female} \\
+-1, & \text{student is male}
+\end{cases}
+$$
+
+**Motivating Example: Sum-to-Zero with Interaction**
+
+We can consider a model with an interaction term between $x_1$ and $x_2$ — height and gender.
+
+**For Females**
+
+$$
+Y_i = (\beta_0 + \beta_2) + (\beta_1 + \beta_3)x_{1i} + \varepsilon_i
+$$
+
+**For Males**
+
+$$
+Y_i = (\beta_0 - \beta_2) + (\beta_1 - \beta_3)x_{1i} + \varepsilon_i
+$$
+
+This model allows for a different relationship between students’ height and the height of their ideal romantic partner.
+
+- **Different slopes:** $(\beta_1 + \beta_3)$ vs. $(\beta_1 - \beta_3)$  
+- **Different intercepts:** $(\beta_0 + \beta_2)$ vs. $(\beta_0 - \beta_2)$
+
+### Model Selection 
+
+**Importance of Model Selection**
+
+- Including too few variables in the model leads to inaccurate estimates of coefficients and response means.
+- Including too many variables leads to unnecessary excess variability in estimates of the coefficients and mean response.
+
+**Theory**
+
+- Adding a predictor to Model A (adding a column to $X$ that is not a linear combination of the columns already in $X$):
+  - decreases bias (or may leave it the same) of $\hat{Y}$
+  - increases the total variance of the estimates of the response means $\hat{Y}$, because the column rank of $X$, which is also the rank of the new $P_X$, increases by 1
+
+- If we fit the “true” model, Model B, then:
+  - bias $= 0$
+  - variance $= \sum_i \mathrm{Var}(\hat{Y}_i) = \sigma^2 (k + 1 + \dim(Z))$
+
+#### Criterion: $R^2$
+
+$$
+R^2 = \frac{SS_{\text{model}}}{SS_{\text{Total}}}
+$$
+
+- Larger values indicate better model
+- Maximizing $R^2$ is equivalent to minimizing $SS_{\text{error}}$
+- $R^2$ never decreases when adding an explanatory variable to the model
+- Most useful for comparing two models with the same number of explanatory variables
+
+#### Criterion: adjusted $R^2$
+
+$$
+\text{adj } R^2 = 1 - \frac{MS_{\text{error}}}{SS_{\text{Total}}/(n - 1)}
+$$
+
+- Larger values indicate better model
+- Maximizing adjusted $R^2$ is equivalent to minimizing $MS_{\text{error}} = \hat{\sigma}^2$
+- Does not necessarily increase when adding an explanatory variable to the model
+- Most useful in comparing models with different numbers of explanatory variables
+
+#### Criterion: $C_p$
+
+$$
+C_p = \frac{SS_{\text{error}}}{\hat{\sigma}^2} - \left[n - 2(k + 1)\right]
+$$
+
+- $SS_{\text{error}}$ from fitted model
+- $\hat{\sigma}^2$ is $MS_{\text{error}}$ for the model containing all explanatory variables
+- $p = k + 1$ is the number of coefficients in the fitted model
+
+Also: 
+
+- Full name: Mallow’s $C_p$
+- Good models have $C_p$ around $p = k + 1$
+  - Why?
+- $C_p < p$ is no problem (sampling error)
+- Large $C_p$ indicates poor model
+- Let $m$ denote the size of the biggest possible model with $m - 1$ explanatory variables and $m$ regression coefficients
+- For the model containing all explanatory variables, $C_p = m$
+- Limited to MLR models
+
+#### Criterion: AIC
+
+$$
+\text{AIC} = n \log\left(\frac{SS_{\text{error}}}{n}\right) + 2(k + 1)
+$$
+
+- Full name: Akaike Information Criterion
+- Smaller values indicate better models
+- Favors models with a slightly larger number of explanatory variables, i.e., may include a few non-significant explanatory variables
+- Not limited to MLR models
+
+#### Criterion: BIC
+
+$$
+\text{BIC} = n \log\left(\frac{SS_{\text{error}}}{n}\right) + (k + 1)\log(n)
+$$
+
+- Full name: Bayesian Information Criterion
+- Smaller values indicate better models
+- Leads to smaller models than AIC (larger penalty for explanatory variables)
+- Not limited to MLR models
+
+### Selection Techniques
+
+- Many different approaches
+
+- Measures that focus on fit:
+  - $R^2$ (fit using $SS_{\text{error}}$): bad
+  - adjusted $R^2$ (fit using $MS_{\text{error}}$)
+
+- Measures that combine fit and complexity:
+  - general idea: fit + penalty for model complexity
+  - Mallows $C_p$: least penalty
+  - AIC: larger penalty
+  - BIC: largest penalty (usually)
+  - Often $C_p$, AIC, and BIC lead to the same model
+    - When they differ, smaller penalty $\Rightarrow$ more variables
+    - $C_p$ selects most variables
+    - BIC selects fewest
+
+#### All Possible Subsets
+
+- Set of $k$ explanatory variables
+- Fit all $2^k - 1$ possible models
+- Compare models using some criterion (adj-$R^2$, $C_p$, AIC, BIC)
+- Works up to about $k = 20$ (i.e., takes a reasonable amount of time to process $2^k - 1$ possible models)
+- Review the best models of each size: $1, 2, \ldots, k$
+
+#### Stepwise Methods
+
+- Enter or delete one variable at a time from model according to algorithm
+- Less time to compute than all possible subsets
+- Possible algorithms:
+  - Forward selection
+  - Backward elimination (selection)
+  - Stepwise selection
+
+#### Difficulties with Model Selection
+
+- Multicollinearity: high correlation between some explanatory variables
+- Example: Suppose $x_j$ and $x_\ell$ have a high correlation (near $-1$ or $1$) and are both in the model
+  - Significance test for either $\beta_j$ or $\beta_\ell$: does $x_j$ or $x_\ell$ significantly add to the model that includes all other explanatory variables?
+  - Once one of the variables is in the model, the other is not likely to significantly add to the model due to their close association
+
+**Variance Inflation Factor (VIF)**
+
+- Measures the degree to which the standard error of an estimated coefficient $\hat{\beta}_j$ is inflated by the correlations with the other explanatory variables:
+
+$$
+\text{VIF}_j = \frac{1}{1 - R_j^2}
+$$
+
+where $R_j^2$ is the $R^2$ value from the MLR with response variable $x_j$ on the remaining explanatory variables.
+
+- Explanatory variables with $\text{VIF}_j > 4$ should be investigated further
+- Explanatory variables with $\text{VIF}_j > 10$ indicate severe multicollinearity
+
+### MLR Diagnostics 
+
+**MLR Model and Assumptions**
+
+$$
+Y_i = \mu_{Y \mid x} + \varepsilon_i \quad \text{where } \varepsilon_i \text{ i.i.d. } N(0, \sigma^2)
+$$
+
+$$
+= \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \cdots + \beta_k x_{ik} + \varepsilon_i
+$$
+
+- Observations $Y_i$ are independent
+- Values of $\mathbf{x}$ are fixed
+- $\mu_{Y \mid x}$ is a linear function of $\mathbf{x}$
+- Homogeneous error variance: $\mathrm{Var}(\varepsilon_i) = \sigma^2$
+- Normally distributed errors: $\varepsilon_i$ i.i.d. $N(0, \sigma^2)$
+
+#### Weighted Least Squares
+
+- Assume $\mathrm{Var}(\varepsilon_i) = \sigma_i^2$ for $i = 1, \ldots, n$
+- Define diagonal matrix $W$ to have elements $w_{ii} = 1 / \sigma_i^2$
+- Weighted least squares estimate of $\boldsymbol{\beta}$ is
+
+$$
+(X^T W X)^{-1} X^T W Y
+$$
+
+- Observations with smaller $\sigma_i^2$ get a larger weight in the weighted least squares estimate than observations with larger $\sigma_i^2$
+- Must know or be able to estimate values of $w_{ii}$:
+  - If the $i$th observation is an average of $n_i$ equally variable observations, then
+  
+$$
+\mathrm{Var}(Y_i) = \sigma^2 / n_i \quad \text{and} \quad w_{ii} = n_i
+$$
+
+- If the $i$th observation is a total of $n_i$ observations, then
+
+$$
+\mathrm{Var}(Y_i) = n_i \sigma^2 \quad \text{and} \quad w_{ii} = 1 / n_i
+$$
+
+- If variance is proportional to some predictor $x_j$, then
+
+$$
+\mathrm{Var}(Y_i) = x_{ij} \sigma^2 \quad \text{and} \quad w_{ii} = 1 / x_{ij}
+$$
+  - In some cases, the values of the weights may be based on theory or prior research
+
+#### Model Selection Assessment
+
+- Stepwise procedures tend to overfit the sample data. Would the model perform as well in making predictions for new cases randomly selected from the population?
+- Model validation: Split data into two parts:
+  - Training sample (perhaps $2/3$ of the data)
+  - Validation sample (the remainder of the data)
+  - Use training sample to select model
+  - Use validation sample to assess model performance and fit
+
+- Compute
+
+$$
+\mathrm{MSE}_{\text{Validation}} =
+\frac{1}{n_{\text{test}}}
+\sum_{i=1}^{n_{\text{test}}}
+\left(Y_i - \hat{Y}_i\right)^2
+$$
+
+- Should be approximately equal to $\mathrm{MSE}_{\text{Training}}$ from selected model
+- $\mathrm{MSE}_{\text{Validation}}$ will be substantially larger if model is overfit to the training sample
+- Use as model selection technique:
+  - Fit many models to the training sample
+  - Compute $\mathrm{MSE}_{\text{Validation}}$ for the validation sample for each selected model
+- PRESS is doing this over-and-over with the size of the test sample equal to one case
+
+## Linear Model Theory 
+
+### Introduction 
+
+**Linear Model Setup**
+
+$$
+\mathbf{Y} =
+\begin{bmatrix}
+Y_1 \\
+Y_2 \\
+\vdots \\
+Y_n
+\end{bmatrix}
+$$
+
+is a random vector.
+
+1. $E(\mathbf{Y}) = X\boldsymbol{\beta}$ is a vector of expected responses for some known matrix $X$ of constants and unknown parameter vector $\boldsymbol{\beta}$.
+2. $\mathrm{Var}(\mathbf{Y}) = \Sigma$.
+3. Complete the model by specifying a probability distribution for the possible values of $\mathbf{Y}$ or $\boldsymbol{\varepsilon}$.
+
+**Gauss–Markov Model**
+
+The linear model
+
+$$
+\mathbf{Y} = X\boldsymbol{\beta} + \boldsymbol{\varepsilon}
+$$
+
+is called a **Gauss–Markov model** if
+
+$$
+\mathrm{Var}(\mathbf{Y}) = \mathrm{Var}(\boldsymbol{\varepsilon}) = \sigma^2 I
+$$
+
+for some unknown constant $\sigma^2$.
+
+**Normal Theory Gauss–Markov Model**
+
+A normal theory Gauss–Markov model is a Gauss–Markov model where $\mathbf{Y}$ (and $\boldsymbol{\varepsilon}$) has a multivariate normal distribution.
+
+$$
+\mathbf{Y} \sim N(X\boldsymbol{\beta}, \sigma^2 I)
+\quad \text{implying} \quad
+\boldsymbol{\varepsilon} \sim N(\mathbf{0}, \sigma^2 I)
+$$
+
+## ANOVA Table
+
+| Variation | d.f. | Sums of Squares | Mean Square |
+|----------|------|----------------|-------------|
+| Model | $2$ | $\displaystyle \sum_{i=1}^{5}(\hat{Y}_i - \bar{Y})^2 = \mathbf{Y}^T (P_X - P_1)\mathbf{Y}$ | $\displaystyle \frac{1}{2}SS_{\text{model}}$ |
+| Error | $2$ | $\displaystyle \sum_{i=1}^{5}(Y_i - \hat{Y}_i)^2 = \mathbf{Y}^T (I - P_X)\mathbf{Y}$ | $\displaystyle \frac{1}{2}SS_{\text{error}}$ |
+| Total | $4$ | $\displaystyle \sum_{i=1}^{5}(Y_i - \bar{Y})^2 = \mathbf{Y}^T (I - P_1)\mathbf{Y}$ |  |
+
+### Estimation 
+
+#### Ordinary Least Squares (OLS) Estimator
+
+For a linear model with
+$$
+E(\mathbf{Y}) = X\boldsymbol{\beta},
+$$
+
+any vector $\mathbf{b}$ that minimizes the sum of squared residuals
+
+$$
+Q(\mathbf{b})
+= \sum_{i=1}^n \left(Y_i - \mathbf{x}_i^T \mathbf{b}\right)^2
+= (\mathbf{Y} - X\mathbf{b})^T (\mathbf{Y} - X\mathbf{b})
+$$
+
+is an ordinary least squares (OLS) estimator for $\boldsymbol{\beta}$.
+
+**Normal Equations**
+
+For $j = 1, 2, \ldots, k$, solve the set of equations
+
+$$
+0 = \frac{\partial Q(\mathbf{b})}{\partial b_j}
+= 2 \sum_{i=1}^n \left(Y_i - \mathbf{x}_i^T \mathbf{b}\right) x_{ij}.
+$$
+
+These equations are expressed in matrix form as
+
+$$
+\mathbf{0} = X^T (\mathbf{Y} - X\mathbf{b})
+= X^T \mathbf{Y} - X^T X \mathbf{b},
+$$
+
+or equivalently,
+
+$$
+X^T X \mathbf{b} = X^T \mathbf{Y}.
+$$
+
+These are called the **normal equations**.
+
+**Uniqueness of the OLS Estimator**
+
+If $X_{n \times k}$ has full column rank, $\mathrm{rank}(X) = k$, then:
+
+- $X^T X$ is non-singular,
+- $(X^T X)^{-1}$ exists and is unique.
+
+This means we can solve the normal equations for $\mathbf{b}$ as
+
+$$
+X^T X \mathbf{b} = X^T \mathbf{Y},
+$$
+
+$$
+(X^T X)^{-1}(X^T X)\mathbf{b} = (X^T X)^{-1} X^T \mathbf{Y},
+$$
+
+$$
+\mathbf{b} = (X^T X)^{-1} X^T \mathbf{Y},
+$$
+
+and $\mathbf{b}$ is unique.
+
+**Generalized Inverse**
+
+For a given $m \times n$ matrix $A$, any $n \times m$ matrix $G$ that satisfies
+
+$$
+A G A = A
+$$
+
+is a **generalized inverse** of $A$.
+
+#### Projection Matrix
+
+Define the projection matrix $P_X$ to be
+
+$$
+P_X = X (X^T X)^{-} X^T,
+$$
+
+where $(X^T X)^{-}$ is a generalized inverse of $X^T X$.
+
+**Uniqueness of Mean Estimation**
+
+The estimation of the mean vector (predicted response vector)
+
+$$
+\hat{\mathbf{Y}}
+= X\mathbf{b}
+= X (X^T X)^{-} X^T \mathbf{Y}
+= P_X \mathbf{Y}
+$$
+
+is unique.
+
+#### Residuals
+
+The vector of residuals is
+
+$$
+\mathbf{e}
+= \mathbf{Y} - \hat{\mathbf{Y}}
+= \mathbf{Y} - X\mathbf{b}
+= \mathbf{Y} - P_X \mathbf{Y}
+= (I - P_X)\mathbf{Y}.
+$$
+
+**Uniqueness of Residuals**
+
+Because the projection operator
+
+$$
+P_X = X (X^T X)^{-} X^T
+$$
+
+is invariant with respect to the choice of $(X^T X)^{-}$, the residuals are invariant with respect to the choice of $(X^T X)^{-}$. That is,
+
+$$
+\mathbf{e} = \mathbf{Y} - X\mathbf{b} = (I - P_X)\mathbf{Y}
+$$
+
+is the same for any solution
+
+$$
+\mathbf{b} = (X^T X)^{-} X^T \mathbf{Y}
+$$
+
+to the normal equations.
+
+### Estimability 
+
+#### Identifiable
+
+For a linear model $E(Y) = X\beta$, the parameter vector $\beta$ is *identifiable* if
+
+$$
+X\beta_1 = X\beta_2 \implies \beta_1 = \beta_2.
+$$
+
+**Identifiability and Estimability**
+
+- Only *identifiable* parameters can be estimated.
+- Linear functions of identifiable parameters are called *estimable*.
+- Unbiased estimators can be found for estimable functions of model parameters.
+
+#### Example: One-Way ANOVA Cell Means Model
+
+Write: 
+
+$\beta_1 = \left( \beta_1, \beta_2, \beta_3 \right)^{\top}$
+
+$\beta_2 = \left( \beta_1^*, \beta_2^*, \beta_3^*\right)^{\top}$
+
+- For $X\beta_1 = X\beta_2$, we must have $\beta_1 = \beta_2$.
+- For this model, $\beta$ is identifiable.
+- The vector of response means uniquely determines the values of the parameter vector $\beta$.
+
+#### Estimable Functions
+
+An *estimable function* is a linear function of identifiable parameters.
+
+- Estimable functions are reasonable quantities to estimate.
+- Estimable functions have the same interpretation regardless of the constraints placed on the parameters to obtain a solution to the normal equations.
+- Least squares estimates of estimable functions are not affected by the choice of constraints placed on the parameters to obtain a solution to the normal equations.
+
+**Formal Definition**
+
+For a linear model
+
+$$
+Y = X\beta + \varepsilon,
+$$
+
+we say that a linear function of $\beta$, $C\beta$, is estimable if
+
+$$
+C\beta = AX\beta = AE(Y)
+$$
+
+for some matrix $A$.
+
+**Rules for Estimable Functions**
+
+For a linear model
+
+$$
+Y = X\beta + \varepsilon:
+$$
+
+- The expectation of any observation is estimable.
+- A linear combination of estimable functions is estimable.
+- Each element of $\beta$ is estimable if and only if $\operatorname{rank}(X) = k$, where $k$ is the number of columns in $X$.
+- Every $c^T\beta$ is estimable if and only if $\operatorname{rank}(X) = k$, the number of columns in $X$.
+- Let $X_j$ be the $j$th column of $X$. The parameter $\beta_j$ is *not* estimable if and only if
+
+$$
+X_j = \sum_{j \neq \ell} c_\ell X_\ell
+$$
+
+for some set of scalars $\{c_\ell : j \neq \ell\}$.
+
+**General Remarks**
+
+For a linear model
+
+$$
+Y = X\beta + \varepsilon:
+$$
+
+- Definitions of estimable functions of the elements of the parameter vector $\beta$ depend on the linear model for the expected responses,
+
+$$
+E(Y) = X\beta.
+$$
+
+- No assumption is made about $\operatorname{Var}(Y)$ or $\operatorname{Var}(\varepsilon)$ or the shape of the distribution of $Y$ or $\varepsilon$.
+
+#### The Gauss–Markov Theorem
+
+For the Gauss–Markov model,
+
+$$
+Y = X\beta + \varepsilon,
+$$
+
+with
+
+$$
+E(Y) = X\beta
+\quad \text{and} \quad
+\operatorname{Var}(Y) = \sigma^2 I,
+$$
+
+the OLS estimator $C\mathbf{b}$ of an estimable function $C\beta$ is the **unique best linear unbiased estimator (BLUE)** of this estimable function.
+
+### Hypothesis Testing 
+
+#### Quadratic Form
+
+Let $\mathbf{Y}$ be an $n$-dimensional random vector and let $\mathbf{A}$ be a non-random $n \times n$ matrix.  
+A *quadratic form* is a random variable defined by
+$$
+\mathbf{Y}^\top \mathbf{A}\mathbf{Y}.
+$$
+
+**Theorem**
+
+If $E(\mathbf{Y}) = \boldsymbol{\mu}$ and $\mathrm{Var}(\mathbf{Y}) = \boldsymbol{\Sigma}$, then
+
+$$
+E\!\left(\mathbf{Y}^\top \mathbf{A}\mathbf{Y}\right)
+= \mathrm{tr}(\mathbf{A}\boldsymbol{\Sigma}) + \boldsymbol{\mu}^\top \mathbf{A}\boldsymbol{\mu}.
+$$
+
+**Central Chi-Squared Distribution**
+
+Let
+$$
+\mathbf{Z} =
+\begin{bmatrix}
+Z_1 \\
+\vdots \\
+Z_n
+\end{bmatrix}
+\sim N(\mathbf{0}, \mathbf{I}),
+$$
+i.e., the elements of $\mathbf{Z}$ are $n$ independent standard normal random variables.
+
+The distribution of
+
+$$
+W = \mathbf{Z}^\top \mathbf{Z} = \sum_{i=1}^n Z_i^2
+$$
+
+is called the **Central Chi-Squared distribution** with $n$ degrees of freedom.
+
+**Non-central Chi-Squared Distribution**
+
+Let
+$$
+\mathbf{Y}^\top =
+\begin{bmatrix}
+Y_1 & \cdots & Y_n
+\end{bmatrix}
+\sim N(\boldsymbol{\mu}, \mathbf{I}),
+$$
+
+i.e., the elements of $\mathbf{Y}$ are independent normal random variables with
+
+$$
+Y_i \sim N(\mu_i, 1).
+$$
+
+The distribution of the random variable
+
+$$
+W = \mathbf{Y}^\top \mathbf{Y} = \sum_{i=1}^n Y_i^2
+$$
+
+is called a **Non-central Chi-Squared distribution** with $n$ degrees of freedom and non-centrality parameter
+
+$$
+\delta = \frac{1}{2}\boldsymbol{\mu}^\top \boldsymbol{\mu}
+= \frac{1}{2}\sum_{i=1}^n \mu_i^2.
+$$
+
+#### Distribution of Quadratic Forms
+
+Let $\mathbf{A}$ be an $n \times n$ symmetric matrix with $\mathrm{rank}(\mathbf{A})$, and let
+
+$$
+\mathbf{Y} =
+\begin{bmatrix}
+Y_1 \\
+\vdots \\
+Y_n
+\end{bmatrix}
+\sim N(\boldsymbol{\mu}, \boldsymbol{\Sigma}),
+$$
+
+where $\boldsymbol{\Sigma}$ is an $n \times n$ symmetric positive definite matrix.
+
+If
+
+$$
+\mathbf{A}\boldsymbol{\Sigma} \text{ is idempotent},
+$$
+
+then
+
+$$
+\mathbf{Y}^\top \mathbf{A}\mathbf{Y}
+\sim \chi^2_{\mathrm{rank}(\mathbf{A})}
+\left( \frac{1}{2}\boldsymbol{\mu}^\top \mathbf{A}\boldsymbol{\mu} \right).
+$$
+
+In addition, if
+
+$$
+\mathbf{A}\boldsymbol{\mu} = \mathbf{0},
+$$
+
+then
+
+$$
+\mathbf{Y}^\top \mathbf{A}\mathbf{Y}
+\sim \chi^2_{\mathrm{rank}(\mathbf{A})}.
+$$
+
+**Independence of Quadratic Forms**
+
+Let
+$$
+\mathbf{Y} =
+\begin{bmatrix}
+Y_1 \\
+\vdots \\
+Y_n
+\end{bmatrix}
+\sim N(\boldsymbol{\mu}, \boldsymbol{\Sigma}),
+$$
+
+and let $\mathbf{A}_1, \mathbf{A}_2, \ldots, \mathbf{A}_p$ be $n \times n$ symmetric matrices.
+
+If
+
+$$
+\mathbf{A}_i \boldsymbol{\Sigma} \mathbf{A}_j = \mathbf{0}
+\quad \text{for all } i \neq j,
+$$
+
+then
+
+$$
+\mathbf{Y}^\top \mathbf{A}_1 \mathbf{Y}, \;
+\mathbf{Y}^\top \mathbf{A}_2 \mathbf{Y}, \;
+\ldots, \;
+\mathbf{Y}^\top \mathbf{A}_p \mathbf{Y}
+$$
+
+are independent random variables.
+
+**Central $F$ Distribution**
+
+If
+$$
+W_1 \sim \chi^2_{n_1}, \quad
+W_2 \sim \chi^2_{n_2},
+$$
+
+and $W_1$ and $W_2$ are independent, then the distribution of
+
+$$
+F = \frac{W_1 / n_1}{W_2 / n_2}
+$$
+
+is called the **Central $F$ distribution** with $n_1$ and $n_2$ degrees of freedom.
+
+**Non-central $F$ Distribution**
+
+If
+
+$$
+W_1 \sim \chi^2_{n_1}(\delta_1), \quad
+W_2 \sim \chi^2_{n_2},
+$$
+
+and $W_1$ and $W_2$ are independent, then the distribution of
+
+$$
+F = \frac{W_1 / n_1}{W_2 / n_2}
+$$
+
+is called a **Non-central $F$ distribution** with $n_1$ and $n_2$ degrees of freedom and non-centrality parameter $\delta_1$.
+
+#### Testable Hypotheses
+
+For the Gauss–Markov model
+
+$$
+\mathbf{Y} = \mathbf{X}\boldsymbol{\beta} + \boldsymbol{\varepsilon},
+$$
+
+with
+
+$$
+E(\mathbf{Y}) = \mathbf{X}\boldsymbol{\beta}
+\quad \text{and} \quad
+\mathrm{Var}(\mathbf{Y}) = \sigma^2 \mathbf{I},
+$$
+
+we say that the hypothesis
+
+$$
+H_0 : \mathbf{C}\boldsymbol{\beta} = \mathbf{d}
+$$
+
+is **testable** if:
+
+- $\mathbf{C}\boldsymbol{\beta}$ is estimable;
+- $\mathrm{rank}(\mathbf{C}) = m$, where $m$ is the number of rows in $\mathbf{C}$.
