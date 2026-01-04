@@ -8,8 +8,6 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-Note: Finished Lecture 44
-
 # Introduction 
 
 ## Calculus Review
@@ -4835,8 +4833,231 @@ $$
 
 # Inequalities (Again)
 
+## 1. Markov Inequality
 
+Suppose $X$ is a random variable and $g(x) \ge 0$. Then, for any $r > 0$,
+
+$$
+P\big(g(X) \ge r\big) \le \frac{E[g(X)]}{r}.
+$$
+
+## 2. Jensen’s Inequality
+
+Suppose $X$ is a random variable and $g(x)$ is a convex function. Then,
+
+$$
+E[g(X)] \ge g(E[X]).
+$$
+
+## Cauchy–Schwarz Inequality
+
+If $X$ and $Y$ are random variables with **finite variances**, then
+
+$$
+|\operatorname{Cov}(X,Y)| \le \sqrt{\operatorname{Var}(X)\operatorname{Var}(Y)}.
+$$
+
+Essentially, we have already seen this because the correlation satisfies
+
+$$
+|\operatorname{corr}(X,Y)| \le 1,
+$$
+
+which is equivalent to
+
+$$
+\left| \frac{\operatorname{Cov}(X,Y)}{\sqrt{\operatorname{Var}(X)\operatorname{Var}(Y)}} \right| \le 1.
+$$
+
+## Hölder’s Inequality
+
+Suppose $p, q > 0$ are positive real numbers such that
+
+$$
+\frac{1}{p} + \frac{1}{q} = 1.
+$$
+
+Then,
+
+$$
+E|XY| \le \left(E|X|^p\right)^{1/p} \left(E|Y|^q\right)^{1/q}.
+$$
 
 # Convergence 
 
+## Convergence in Probability
 
+**Definition:**  
+A sequence of random variables $Y_n$ converges in probability to $Y$, denoted
+
+$$
+Y_n \xrightarrow{p} Y \quad \text{as } n \to \infty,
+$$
+
+if for any fixed $\epsilon > 0$,
+
+$$
+\lim_{n \to \infty} P\big(|Y_n - Y| \ge \epsilon\big) = 0.
+$$
+
+**Note:**  
+Often the limit $Y$ is a constant (e.g., $Y = a$ or $P(Y = a) = 1$).
+
+**Interpretation**
+
+- The set
+
+$$
+\{|Y_n - Y| \ge \epsilon\}
+$$
+
+  is an event, and the definition requires that the probability of this event (for a fixed $\epsilon > 0$) tends to zero as $n$ gets large.
+
+- Since $P(A^c) = 1 - P(A)$, this is equivalent to requiring
+
+$$
+\lim_{n \to \infty} P\big(|Y_n - Y| < \epsilon\big) = 1.
+$$
+
+- Informally, with arbitrarily high probability, $Y_n$ will be close to $Y$ (within $\epsilon$ for any given $\epsilon > 0$) for sufficiently large $n$.
+
+**Theorem: Weak Law of Large Numbers (WLLN).** Suppose $X_1, X_2, \ldots$ are  
+iid with $EX_1 = \mu$ and $Var(X_1) = \sigma^2 < \infty$. Let $Y_n = \bar{X}_n = \sum_{i=1}^n X_i / n$. Then  
+
+$$Y_n = \bar{X}_n \xrightarrow{p} \mu \quad \text{as } n \to \infty.$$
+
+
+## Convergence in distribution
+
+**Definition:** $Y_n$ converges in distribution to $Y$, denoted as $Y_n \xrightarrow{d} Y$ as $n \to \infty$,
+
+if
+$$\lim_{n \to \infty} F_{Y_n}(y) = F_Y(y)$$
+for any $y \in \mathbb{R}$ at which $F_Y(\cdot)$ is continuous (i.e., not all $y$).
+
+- Concerns the limiting distribution of a sequence of r.v.s.
+
+The distribution $F_Y(y)$ is called the limiting distribution.
+
+- This is the most useful convergence concept for us:
+
+If $X_n \xrightarrow{d} X$ then assuming the cdf $F_X$ of $X$ is continuous at $a, b \in \mathbb{R}$,
+
+$$P(a < X_n \leq b) = F_{X_n}(b) - F_{X_n}(a) \to F_X(b) - F_X(a) = P(a < X \leq b)$$
+
+as $n \to \infty$.
+
+For "large $n$" we can approximate probabilities of $X_n$ with probabilities of $X$.
+
+- Also called weak convergence.
+
+## Convergence concepts
+
+- Connections between convergence in distribution & probability
+  - $X_n \xrightarrow{P} X$ $\Rightarrow$ $X_n \xrightarrow{d} X$
+- Convergence in probability always implies convergence in distribution.
+
+**Theorem**
+
+1. If $Y_n \xrightarrow{P} Y$ then $Y_n \xrightarrow{d} Y$.  
+   (The reverse is not true; see above)
+
+2. $Y_n \xrightarrow{P} c$ if and only if $Y_n \xrightarrow{d} c$.
+
+## Convergence Results 
+
+1. One can extend the definition of convergence in probability to vectors:  
+$$\mathbf{Y}_n = (Y_{1,n}, \ldots, Y_{k,n})'$$  
+converges in probability to $\mathbf{Y} = (Y_1, \ldots, Y_k)'$, denoted as $\mathbf{Y}_n \xrightarrow{p} \mathbf{Y}$ as $n \to \infty$, if  
+
+for any $\epsilon > 0$,  
+$$\lim_{n \to \infty} P(\| \mathbf{Y}_n - \mathbf{Y} \| \geq \epsilon) = 0.$$
+
+Whenever you have vectors of random variables though, the random vectors converge in probability iff the individual components do so:  
+
+**Result:**  
+$$\mathbf{Y}_n = (Y_{1,n}, \ldots, Y_{k,n})' \xrightarrow{p} \mathbf{Y} = (Y_1, \ldots, Y_k) \text{ iff } Y_{i,n} \xrightarrow{p} Y_i, \, i = 1, \ldots, k.$$  
+
+2. **A Stronger Version of Weak Law of Large Numbers (WLLN):** If $X_1, X_2, \ldots$, are iid with mean $\mu = \mathbb{E} X_1$, then  
+
+$$\bar{X}_n \xrightarrow{p} \mu \quad \text{as } n \to \infty.$$
+
+(We saw one version of the WLLN already but that statement required $\text{Var}(X_1) < \infty$. Actually, one does not need a finite variance for the WLLN to hold, only the existence of the mean $\mu$ as above (i.e., $\mathbb{E}|X_1| < \infty$) However, this is not easy to show.)
+
+### Continuous mapping theorem
+
+Suppose $Y_n$ are $\mathbb{R}^k$-valued random vectors such that $Y_n \xrightarrow{p} c \in \mathbb{R}^k$. Suppose also that $g : \mathbb{R}^k \to \mathbb{R}$ is continuous at $c$. Then,
+
+$$g(Y_n) \xrightarrow{p} g(c)$$
+
+as $n \to \infty$.
+
+### CLT
+
+If $X_1, X_2, \ldots$, are iid random vectors in $\mathbb{R}^k$ with mean $EX_i = \mu \in \mathbb{R}^k$ and  
+$$Var(X_i) = \Sigma, \text{ then} \quad \sqrt{n} \left( \bar{X}_n - \mu \right) \overset{d}{\to} MVN_k(0, \Sigma)$$  
+as $n \to \infty$, where $\bar{X}_n = \sum_{i=1}^n X_i / n$.
+
+**Interpretation:**  
+iid sums/averages have approximately normal distribution for large $n$, regardless of the population distribution of $X_i$ as long as the variance exists  
+
+- We say **asymptotic or limiting distribution** of $\sqrt{n} (\bar{X}_n - \mu)$ is $MVN_k(0, \Sigma)$
+
+- We sometimes say that **asymptotic distribution** of $\bar{X}_n$ is $MVN_k(\mu, \frac{1}{n}\Sigma)$,  
+or  
+
+$$\sqrt{n} \left( \bar{X}_n - \mu \right) \overset{d}{\to} MVN_k(0, \Sigma)$$  
+
+$$\bar{X}_n \overset{a}{\sim} MVN_k(\mu, \frac{1}{n}\Sigma)$$
+
+- CLT can apply to dependent r.v.s too (as long as not too dependent)  
+- CLT can apply to non-iid r.v.s too (but not if one r.v. dominates others)
+
+### Slutsky's theorem
+
+If $X_n \xrightarrow{d} X$ and $Y_n \xrightarrow{p} c$, then  
+
+1. It holds that  
+
+$$\begin{pmatrix}
+X_n \\
+Y_n
+\end{pmatrix}
+\xrightarrow{d}
+\begin{pmatrix}
+X \\
+c
+\end{pmatrix}$$
+
+2. If $g : \mathbb{R}^2 \to \mathbb{R}$ is continuous at $(x, c)$ for any $x \in \mathbb{R}$, then  
+
+$$g(X_n, Y_n) \xrightarrow{d} g(X, c)$$
+
+3. In particular,  
+
+$$X_n + Y_n \xrightarrow{d} X + c,$$
+
+$$X_n Y_n \xrightarrow{d} X c, \quad \text{and if } c \neq 0, \quad X_n / Y_n \xrightarrow{d} X / c.$$
+
+### Delta Method
+
+If $\sqrt{n}(Y_n - m) \overset{d}{\to} N(0, c^2)$ and $g'(m) \neq 0$, then 
+$$\sqrt{n}[g(Y_n) - g(m)] \overset{d}{\to} N(0, [g'(m)]^2c^2).$$
+
+**Interpretation:** If $Y_n \overset{a}{\sim} N(m, c^2/n)$ then $g(Y_n) \overset{a}{\sim} N(g(m), [g'(m)]^2c^2/n).$
+
+**A heuristic**
+
+Normal approximation obtained by delta method has a heuristic justification:
+
+- Since $\sqrt{n}(Y_n - m) \overset{d}{\to} N(0, c^2)$, we expect $Y_n$ to be close to $m$ for large $n$
+
+For large $n$, $Y_n$ is close to $m$,
+
+- Do a Taylor series expansion of $g(Y_n)$ around $m$ (ignore higher order terms)
+
+$$g(Y_n) \approx g(m) + g'(m)(Y_n - m)$$
+
+$$\sqrt{n} \left( g(Y_n) - g(m) \right) \approx g'(m) \sqrt{n} (Y_n - m)$$
+
+If $Y_n$ is asymptotically normal then $g(Y_n)$ will be too.
