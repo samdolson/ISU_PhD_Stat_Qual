@@ -8,7 +8,7 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-Note: Finished Lecture 31 
+Note: Finished Lecture 44
 
 # Introduction 
 
@@ -3585,4 +3585,1258 @@ $$
 M_{X,Y}(t_1,t_2) = M_X(t_1) M_Y(t_2)
 $$
 for all $(t_1,t_2)$ near $(0,0)$.
+
+## Sums of Independent Random Variables
+
+The same technique shows that, for independent $X_1, \ldots, X_n$:
+
+1. **Normal**
+
+If each $X_i \sim \mathcal{N}(\mu_i, \sigma_i^2)$, then
+
+$$
+S = \sum_{i=1}^n X_i \sim \mathcal{N}\!\left(\sum_{i=1}^n \mu_i,\; \sum_{i=1}^n \sigma_i^2\right).
+$$
+
+2. **Binomial (common $p$)**
+
+If each $X_i \sim \text{Binomial}(n_i, p)$, then
+
+$$
+S = \sum_{i=1}^n X_i \sim \text{Binomial}\!\left(\sum_{i=1}^n n_i,\; p\right).
+$$
+
+3. **Gamma (common $\beta$)**
+
+If each $X_i \sim \text{Gamma}(\alpha_i, \beta)$, then
+
+$$
+S = \sum_{i=1}^n X_i \sim \text{Gamma}\!\left(\sum_{i=1}^n \alpha_i,\; \beta\right).
+$$
+
+Recall the Gamma density (shape–scale form):
+
+$$
+f_X(x) = \frac{1}{\beta^\alpha \Gamma(\alpha)} x^{\alpha - 1} e^{-x / \beta}, \quad x > 0.
+$$
+
+#### Special Cases
+
+(a) **Exponential**
+
+If each $X_i \sim \text{Exponential}(\beta) \sim \text{Gamma}(1, \beta)$, then
+$$
+S = \sum_{i=1}^n X_i \sim \text{Gamma}(n, \beta).
+$$
+
+(b) **Chi-square**
+
+If $X_i \sim \chi^2_{\nu_i} \sim \text{Gamma}\!\left(\frac{\nu_i}{2}, 2\right)$, then
+
+$$
+S = \sum_{i=1}^n X_i \sim \chi^2_{\sum_{i=1}^n \nu_i}.
+$$
+
+The mgf of a $\chi^2_\nu$ random variable is
+
+$$
+M_X(t) = (1 - 2t)^{-\nu/2}.
+$$
+
+4. **Poisson**
+
+If each $X_i \sim \text{Poisson}(\lambda_i)$, then
+
+$$
+S = \sum_{i=1}^n X_i \sim \text{Poisson}\!\left(\sum_{i=1}^n \lambda_i\right).
+$$
+
+5. **Negative Binomial (common $p$)**
+
+If each $X_i \sim \text{Neg-Binomial}(r_i, p)$, then
+
+$$
+S = \sum_{i=1}^n X_i \sim \text{Neg-Binomial}\!\left(\sum_{i=1}^n r_i,\; p\right).
+$$
+
+(a) **Geometric**
+
+If each $X_i \sim \text{Geometric}(p) \sim \text{Neg-Binomial}(1, p)$, then
+$$
+S = \sum_{i=1}^n X_i \sim \text{Neg-Binomial}(n, p).
+$$
+
+# Transformations of Random Variables
+
+Assume the transformation is **one-to-one** with inverse functions:
+
+$$
+x_i = u_i^{-1}(y_1, \ldots, y_n), \quad i = 1, \ldots, n.
+$$
+
+For $n = 2$:
+
+$$
+f_{U,V}(u,v) = f_{X,Y}\!\left(h(u,v),\, h(u,v)\right)\,|\text{Jacobian term}|.
+$$
+
+In general,
+
+$$
+f_{Y_1,\ldots,Y_n}(y_1,\ldots,y_n)
+= f_{X_1,\ldots,X_n}\!\left(u^{-1}(y_1,\ldots,y_n)\right)\,|J|.
+$$
+
+## Jacobian
+
+Define the Jacobian as
+
+$$
+J
+= \det
+\begin{pmatrix}
+\frac{\partial x_1}{\partial y_1} & \frac{\partial x_1}{\partial y_2} & \cdots & \frac{\partial x_1}{\partial y_n} \\
+\frac{\partial x_2}{\partial y_1} & \frac{\partial x_2}{\partial y_2} & \cdots & \frac{\partial x_2}{\partial y_n} \\
+\vdots & \vdots & \ddots & \vdots \\
+\frac{\partial x_n}{\partial y_1} & \frac{\partial x_n}{\partial y_2} & \cdots & \frac{\partial x_n}{\partial y_n}
+\end{pmatrix}.
+$$
+
+Equivalently,
+
+$$
+J
+= \det
+\begin{pmatrix}
+\frac{\partial u_1^{-1}}{\partial y_1} & \frac{\partial u_1^{-1}}{\partial y_2} & \cdots & \frac{\partial u_1^{-1}}{\partial y_n} \\
+\frac{\partial u_2^{-1}}{\partial y_1} & \frac{\partial u_2^{-1}}{\partial y_2} & \cdots & \frac{\partial u_2^{-1}}{\partial y_n} \\
+\vdots & \vdots & \ddots & \vdots \\
+\frac{\partial u_n^{-1}}{\partial y_1} & \frac{\partial u_n^{-1}}{\partial y_2} & \cdots & \frac{\partial u_n^{-1}}{\partial y_n}
+\end{pmatrix}.
+$$
+
+If $J$ is continuous and $J \neq 0$ on $B$ (except possibly on a set of probability zero), then
+
+$$
+f_{Y_1,\ldots,Y_n}(y_1,\ldots,y_n)
+= f_{X_1,\ldots,X_n}\!\left(u^{-1}(y_1,\ldots,y_n)\right)\,|J|,
+\quad (y_1,\ldots,y_n) \in B.
+$$
+
+## Partial Transformations
+
+Often we are interested in only one transformation:
+
+$$
+Y_1 = u_1(X_1,\ldots,X_n).
+$$
+
+Then choose convenient definitions to complete the transformation, e.g.
+
+$$
+Y_2 = X_2,\; \ldots,\; Y_n = X_n.
+$$
+
+If the transformation is **not one-to-one**, partition the support $A$ of $(X_1,\ldots,X_n)$ into sets $A_i$ where the transformation is one-to-one, and sum:
+
+$$
+f_Y(y) = \sum_{i=1}^k f_X\!\left(u_i^{-1}(y)\right)\,|J_i|.
+$$
+
+## Independence Notes**
+
+- If $X_1$ and $X_2$ are independent, then $h(X_1)$ and $w(X_2)$ are independent.
+- If $X_1$ and $X_2$ are independent, then $h(X_1, X_2)$ and $w(X_1, X_2)$ are **not necessarily independent**.
+
+## Multivariate Continuous Case: Convolutions
+
+**Example: Sum of Two Continuous Random Variables**
+
+Let $(X_1, X_2)$ have joint density $f_{X_1,X_2}(x_1, x_2)$.
+
+Define the transformation:
+
+$$
+S = X_1 + X_2, \quad T = X_2.
+$$
+
+Inverse transformation:
+
+$$
+X_1 = S - T, \quad X_2 = T.
+$$
+
+The Jacobian is
+
+$$
+J = \det
+\begin{pmatrix}
+1 & -1 \\
+0 & 1
+\end{pmatrix}
+= 1.
+$$
+
+The joint density of $(S,T)$ is
+
+$$
+f_{S,T}(s,t) = f_{X_1,X_2}(s - t, t).
+$$
+
+The marginal density of $S$ is
+
+$$
+f_S(s) = \int_{-\infty}^{\infty} f_{X_1,X_2}(s - t, t)\,dt.
+$$
+
+If $X_1$ and $X_2$ are independent, then
+
+$$
+f_S(s) = \int_{-\infty}^{\infty} f_{X_1}(s - t)\,f_{X_2}(t)\,dt,
+$$
+
+which is called the **convolution formula**.
+
+# Multivariate Distributions 
+
+## Multinomial Distribution
+
+- Suppose $0 \le p_1, p_2, \ldots, p_k$ are probabilities such that
+$$
+\sum_{i=1}^k p_i = 1.
+$$
+
+- Consider a series of $n$ identical trials where, on each trial, one can get **exactly one** of $k$ possible outcomes $o_1, \ldots, o_k$.
+
+- Let $X_i =$ number of trials resulting in outcome $o_i$.
+
+- Then
+
+$$
+X = (X_1, \ldots, X_k)
+$$
+
+has a $\text{Multinomial}(n, p_1, \ldots, p_k)$ distribution with joint pmf
+
+$$
+P(X_1 = x_1, \ldots, X_k = x_k)
+=
+f(x_1, \ldots, x_k)
+=
+\begin{cases}
+\dfrac{n!}{x_1!x_2!\cdots x_k!} \, p_1^{x_1} p_2^{x_2} \cdots p_k^{x_k},
+& x_i \ge 0,\ \sum_{i=1}^k x_i = n, \\
+0, & \text{otherwise.}
+\end{cases}
+$$
+
+- The quantity
+
+$$
+\frac{n!}{x_1!x_2!\cdots x_k!}
+$$
+
+is the **multinomial coefficient**, counting the number of arrangements of $n$ trials resulting in
+$x_1$ outcomes of $o_1$, $x_2$ of $o_2$, $\ldots$, $x_k$ of $o_k$.
+
+- Individual marginal distributions are
+
+$$
+X_i \sim \text{Binomial}(n, p_i).
+$$
+
+- Conditional distributions of subsets given others are again multinomial.
+
+## Dirichlet Distribution
+
+- Suppose $Y_1, \ldots, Y_k$ are independent with
+
+$$
+Y_i \sim \text{Gamma}(\alpha_i, 1), \quad i = 1, \ldots, k.
+$$
+
+- Define
+
+$$
+X_i = \frac{Y_i}{\sum_{j=1}^k Y_j}, \quad i = 1, \ldots, k.
+$$
+
+- Then
+
+$$
+X = (X_1, \ldots, X_k)
+$$
+
+has a $\text{Dirichlet}(\alpha_1, \ldots, \alpha_k)$ distribution.
+
+- Note that
+
+$$
+0 < X_i < 1,
+\quad
+\sum_{i=1}^k X_i = 1.
+$$
+
+- Individual marginal distributions are
+
+$$
+X_i \sim \text{Beta}\!\left(\alpha_i,\; \sum_{j \ne i} \alpha_j \right).
+$$
+
+- Conditionals of subsets given others are (scaled) Dirichlet distributions.
+
+## Building to MVN 
+
+**Matrix–Vector Multivariate Notation**
+
+- For a $p \times q$ matrix
+
+$$
+A = [A_{ij}]_{i=1,\ldots,p;\, j=1,\ldots,q}
+$$
+
+of random variables, $E(A)$ denotes the matrix of componentwise expectations.
+
+- For a $k \times 1$ random vector,
+
+$$
+X = (X_1, \ldots, X_k)'.
+$$
+
+- The expected value of $X$ is
+
+$$
+E(X) = \mu_X = \mu = (E[X_1], \ldots, E[X_k])'.
+$$
+
+### Variance–Covariance Matrix
+
+**Definition.**
+The variance–covariance matrix of $X = (X_1, \ldots, X_k)'$ is the $k \times k$ matrix
+
+$$
+\text{Var}(X) = \Sigma =
+\begin{pmatrix}
+\sigma_{11} & \cdots & \sigma_{1k} \\
+\vdots & \ddots & \vdots \\
+\sigma_{k1} & \cdots & \sigma_{kk}
+\end{pmatrix},
+$$
+
+where
+
+$$
+\sigma_{ij} = \text{Cov}(X_i, X_j).
+$$
+
+**Result.**
+
+$$
+\text{Var}(X)
+=
+E\!\left[(X - \mu)(X - \mu)'\right].
+$$
+
+**Covariance Between Two Random Vectors**
+
+Let
+
+$$
+X = (X_1, \ldots, X_k)', \quad Y = (Y_1, \ldots, Y_m)'.
+$$
+
+Then
+
+$$
+\text{Cov}(X,Y)
+=
+E\!\left[(X - \mu_X)(Y - \mu_Y)'\right],
+$$
+
+which is a $k \times m$ matrix whose $(i,j)$ entry is
+
+$$
+\text{Cov}(X_i, Y_j).
+$$
+
+### Linear Transformations: Expectation and Variance
+
+Let $A_{r \times k}$ and $B_{s \times m}$ be fixed matrices,
+$a_r \in \mathbb{R}^r$, $b_s \in \mathbb{R}^s$, and $c,d \in \mathbb{R}$.
+
+1. **Expectation**
+
+$$
+E(a_r + A X) = a_r + A E(X).
+$$
+
+In one dimension:
+
+$$
+E\!\left(c + \sum_{i=1}^k a_i X_i\right)
+=
+c + \sum_{i=1}^k a_i E(X_i).
+$$
+
+2. **Variance**
+
+$$
+\text{Var}(a_r + A X) = A \Sigma A'.
+$$
+
+In one dimension:
+
+$$
+\text{Var}\!\left(\sum_{i=1}^k a_i X_i\right)
+=
+\sum_{i=1}^k \sum_{j=1}^k a_i a_j \text{Cov}(X_i, X_j).
+$$
+
+3. **Covariance**
+
+$$
+\text{Cov}(a_r + AX,\; b_s + BY)
+=
+A\,\text{Cov}(X,Y)\,B'.
+$$
+
+### Matrix Definitions
+
+Let $B$ be a $k \times k$ matrix.
+
+1. **Non-singular** if $\text{rank}(B) = k$ (equivalently $\det(B) \ne 0$ or $B^{-1}$ exists).
+
+2. **Singular** if $\text{rank}(B) < k$.
+
+3. **Non-negative definite** if
+
+$$
+a'Ba \ge 0 \quad \text{for all } a \in \mathbb{R}^k.
+$$
+
+4. **Positive definite** if
+
+$$
+a'Ba > 0 \quad \text{for all } a \ne 0.
+$$
+
+**Facts.**
+- Positive definite $\Rightarrow$ non-negative definite.
+- Non-negative definite and non-singular $\Rightarrow$ positive definite.
+- $B$ is positive definite iff $\det(B) > 0$.
+
+**Lemma.**
+If $\Sigma = \text{Var}(X)$, then $\Sigma$ is symmetric and non-negative definite.
+If $\Sigma$ is not positive definite, then $X$ lies in a hyperplane
+$$
+\{x \in \mathbb{R}^k : a'x = b\}
+$$
+with probability 1 for some $a \ne 0$.
+
+## Multivariate Normal Distribution
+
+**Definition.**
+A random vector
+
+$$
+X = (X_1, \ldots, X_k)'
+$$
+
+is said to have a multivariate normal distribution
+
+$$
+X \sim \text{MVN}_k(\mu, \Sigma)
+$$
+
+if
+
+$$
+X = \mu + P'Z,
+$$
+
+where
+
+- $Z = (Z_1, \ldots, Z_s)'$ with $Z_i \stackrel{\text{iid}}{\sim} N(0,1)$,
+- $P$ is an $s \times k$ matrix such that
+
+$$
+P'P = \Sigma.
+$$
+
+Then
+
+$$
+E(X) = \mu, \quad \text{Var}(X) = \Sigma.
+$$
+
+- $\mu \in \mathbb{R}^k$ is the mean vector.
+- $\Sigma$ is symmetric and non-negative definite.
+- For any non-negative definite $\Sigma$, a matrix $P$ satisfying $P'P=\Sigma$ exists.
+- If $\Sigma$ is positive definite, $P$ is $k \times k$ and non-singular.
+
+### Properties of the Multivariate Normal
+
+1. Linear combinations of an MVN vector are again normal.
+
+2. If all linear combinations $a'X$ are normal, then $X$ is MVN.
+
+3. Subvectors of an MVN vector are MVN.
+
+4. If
+
+$$
+X =
+\begin{pmatrix}
+X^{(1)} \\
+X^{(2)}
+\end{pmatrix}
+$$
+
+is MVN, then
+
+$$
+X^{(1)} \perp X^{(2)}
+\quad \Longleftrightarrow \quad
+\text{Cov}(X^{(1)}, X^{(2)}) = 0.
+$$
+
+(This is a **strong** property.)
+
+5. If $\Sigma$ is non-singular, the joint pdf of $X$ exists.
+
+6. Conditional distributions of subvectors are again MVN.
+
+**Moment Generating Function**
+
+If
+$$
+X \sim \text{MVN}_k(\mu, \Sigma),
+$$
+
+then the mgf is
+
+$$
+M_X(t)
+=
+E(e^{t'X})
+=
+\exp\!\left(t'\mu + \frac{1}{2} t'\Sigma t\right),
+\quad t \in \mathbb{R}^k.
+$$
+
+### Transformation Results
+
+**Result 1.**
+
+If
+
+$$
+X \sim \text{MVN}_k(\mu, \Sigma)
+$$
+
+and
+
+$$
+Y = a + BX,
+$$
+
+where $a \in \mathbb{R}^m$ and $B$ is $m \times k$, then
+
+$$
+Y \sim \text{MVN}_m(a + B\mu,\; B\Sigma B').
+$$
+
+**Result 2.**
+
+Partition
+
+$$
+X =
+\begin{pmatrix}
+X^{(1)} \\
+X^{(2)}
+\end{pmatrix},
+\quad
+\mu =
+\begin{pmatrix}
+\mu^{(1)} \\
+\mu^{(2)}
+\end{pmatrix},
+\quad
+\Sigma =
+\begin{pmatrix}
+\Sigma_{11} & \Sigma_{12} \\
+\Sigma_{21} & \Sigma_{22}
+\end{pmatrix}.
+$$
+
+Then
+
+$$
+X^{(1)} \sim \text{MVN}_p(\mu^{(1)}, \Sigma_{11}),
+\quad
+X^{(2)} \sim \text{MVN}_{k-p}(\mu^{(2)}, \Sigma_{22}).
+$$
+
+**Result 3.**
+
+$X$ is MVN **if and only if**
+
+$$
+a'X = \sum_{i=1}^k a_i X_i
+$$
+
+is normal for every $a \in \mathbb{R}^k$.
+
+#### Independence and Covariance in the MVN
+
+- Independence $\Rightarrow$ zero covariance
+- Zero covariance $+$ MVN $\Rightarrow$ independence
+
+**Result 4**
+
+Independence of Subvectors in the MVN
+
+Suppose
+
+$$
+X \sim \text{MVN}_k(\mu, \Sigma),
+$$
+
+and partition $X$, $\mu$, and $\Sigma$ as
+
+$$
+X =
+\begin{pmatrix}
+X^{(1)} \\
+X^{(2)}
+\end{pmatrix},
+\quad
+\mu =
+\begin{pmatrix}
+\mu^{(1)} \\
+\mu^{(2)}
+\end{pmatrix},
+\quad
+\Sigma =
+\begin{pmatrix}
+\Sigma_{11} & \Sigma_{12} \\
+\Sigma_{21} & \Sigma_{22}
+\end{pmatrix},
+$$
+where $X^{(1)}$ is $p \times 1$ and $X^{(2)}$ is $(k-p) \times 1$.
+
+Then,
+
+$$
+X^{(1)} \text{ and } X^{(2)} \text{ are independent}
+\quad \Longleftrightarrow \quad
+\text{Cov}(X^{(1)}, X^{(2)}) = \Sigma_{12} = 0.
+$$
+
+#### Independent Normals as a Special Case of MVN
+
+Sometimes we begin with $X_1, \ldots, X_k$ independent and
+
+$$
+X_i \sim N(\mu_i, \sigma_i^2).
+$$
+
+In this case,
+
+$$
+X =
+\begin{pmatrix}
+X_1 \\
+\vdots \\
+X_k
+\end{pmatrix}
+\sim \text{MVN}_k(\mu, \Sigma),
+$$
+
+where
+
+$$
+\mu = (\mu_1, \ldots, \mu_k)',
+\quad
+\Sigma = \text{diag}(\sigma_1^2, \ldots, \sigma_k^2).
+$$
+
+#### Linear Combinations of Independent Normals
+
+Let
+
+$$
+U = \sum_{i=1}^k a_i X_i,
+\quad
+V = \sum_{j=1}^k b_j X_j.
+$$
+
+Then $U$ and $V$ are normal, and
+
+$$
+\text{Cov}(U, V)
+=
+\sum_{i=1}^k \sum_{j=1}^k a_i b_j \text{Cov}(X_i, X_j)
+=
+\sum_{i=1}^k a_i b_i \sigma_i^2,
+$$
+
+since
+
+$$
+\text{Cov}(X_i, X_j) =
+\begin{cases}
+0, & i \ne j, \\
+\sigma_i^2, & i = j.
+\end{cases}
+$$
+
+Thus,
+
+$$
+U \text{ and } V \text{ are independent}
+\quad \Longleftrightarrow \quad
+\sum_{i=1}^k a_i b_i \sigma_i^2 = 0.
+$$
+
+If all $\sigma_i^2 = \sigma^2$, then
+
+$$
+U \perp V
+\quad \Longleftrightarrow \quad
+\sum_{i=1}^k a_i b_i = 0.
+$$
+
+**Result 5**
+
+PDF of the Multivariate Normal
+
+If
+
+$$
+X \sim \text{MVN}_k(\mu, \Sigma)
+$$
+
+with **non-singular** $\Sigma$, then the joint pdf of $X$ is
+
+$$
+f_X(x)
+=
+\frac{1}{(2\pi)^{k/2} |\Sigma|^{1/2}}
+\exp\!\left\{
+-\frac{1}{2} (x-\mu)' \Sigma^{-1} (x-\mu)
+\right\},
+\quad x \in \mathbb{R}^k.
+$$
+
+**Result 6**
+
+Conditional Distribution of an MVN
+
+Suppose
+
+$$
+X \sim \text{MVN}_k(\mu, \Sigma),
+$$
+
+and partition as
+
+$$
+X =
+\begin{pmatrix}
+X^{(1)} \\
+X^{(2)}
+\end{pmatrix},
+\quad
+\mu =
+\begin{pmatrix}
+\mu^{(1)} \\
+\mu^{(2)}
+\end{pmatrix},
+\quad
+\Sigma =
+\begin{pmatrix}
+\Sigma_{11} & \Sigma_{12} \\
+\Sigma_{21} & \Sigma_{22}
+\end{pmatrix},
+$$
+
+where $X^{(1)}$ is $p \times 1$ and $X^{(2)}$ is $(k-p) \times 1$.
+
+Then the conditional distribution of $X^{(1)} \mid X^{(2)} = x^{(2)}$ is
+
+$$
+X^{(1)} \mid X^{(2)} = x^{(2)}
+\sim
+\text{MVN}_p\!\left(
+\mu^{(1)} + \Sigma_{12} \Sigma_{22}^{-1} (x^{(2)} - \mu^{(2)}),
+\;
+\Sigma_{11} - \Sigma_{12} \Sigma_{22}^{-1} \Sigma_{21}
+\right).
+$$
+
+**Result 7**
+
+Quadratic Forms in the MVN
+
+Suppose
+
+$$
+X \sim \text{MVN}_k(\mu, \Sigma)
+$$
+
+with **non-singular** $\Sigma$. Then
+
+$$
+Q(X) = (X - \mu)' \Sigma^{-1} (X - \mu) \sim \chi_k^2.
+$$
+
+**Supporting Lemma**
+
+If
+
+$$
+Z \sim N(0,1),
+$$
+
+then
+
+$$
+Z^2 \sim \chi_1^2.
+$$
+
+# Random Samples 
+
+**Definition (Random Sample).**  
+If $X_1, \ldots, X_n$ are independent and identically distributed (iid) with
+
+$$
+X_i \sim f_X(x),
+$$
+
+then we call $X_1, \ldots, X_n$ a **random sample** from the population with pdf (or pmf) $f_X(x)$.
+
+## Statistics and Sampling Distributions
+
+Let
+
+$$
+Y = T(X_1, \ldots, X_n).
+$$
+
+- $Y$ is called a **statistic**, i.e., a function of the data computable from the sample.
+- The distribution of a statistic $Y$ is called the **sampling distribution** of $Y$.
+
+**Properties of the Sample Mean**
+
+Let $X_1, \ldots, X_n$ be a random sample from $f_X(x)$ with
+
+$$
+\mu = E(X_i), \quad \sigma^2 = \text{Var}(X_i).
+$$
+
+Define the sample mean
+$$
+\bar{X}_n = \frac{1}{n} \sum_{i=1}^n X_i.
+$$
+
+**Important Results**
+
+1. **Expectation**
+
+$$
+E(\bar{X}_n)
+=
+E\!\left(\frac{1}{n} \sum_{i=1}^n X_i\right)
+=
+\frac{1}{n} \sum_{i=1}^n E(X_i)
+=
+\mu.
+$$
+
+2. **Variance**
+
+$$
+\text{Var}(\bar{X}_n)
+=
+\text{Var}\!\left(\frac{1}{n} \sum_{i=1}^n X_i\right)
+=
+\frac{1}{n^2} \sum_{i=1}^n \text{Var}(X_i)
+=
+\frac{\sigma^2}{n},
+$$
+
+since the $X_i$ are independent.
+
+**MGF Approach for $\bar{X}_n$**
+
+Sometimes the exact distribution of $\bar{X}_n$ can be found using moment generating functions.
+
+$$
+M_{\bar{X}_n}(t)
+=
+E(e^{t\bar{X}_n})
+=
+E\!\left(e^{\frac{t}{n}(X_1+\cdots+X_n)}\right)
+=
+\prod_{i=1}^n E\!\left(e^{\frac{t}{n}X_i}\right)
+=
+\left[M_X\!\left(\frac{t}{n}\right)\right]^n.
+$$
+
+**Distribution of the Sample Variance**
+
+Let $X_1, \ldots, X_n$ be a random sample with
+
+$$
+\mu = E(X_i), \quad \sigma^2 = \text{Var}(X_i).
+$$
+
+Define the sample variance
+
+$$
+S^2
+=
+\frac{1}{n-1} \sum_{i=1}^n (X_i - \bar{X}_n)^2
+=
+\frac{1}{n-1}
+\left(
+\sum_{i=1}^n X_i^2 - n \bar{X}_n^2
+\right).
+$$
+
+- The **exact sampling distribution** of $S^2$ is difficult to obtain in general.
+
+- If
+
+$$
+X_1, \ldots, X_n \stackrel{\text{iid}}{\sim} N(\mu, \sigma^2),
+$$
+
+then, after appropriate scaling,
+
+$$
+\frac{(n-1)S^2}{\sigma^2} \sim \chi^2_{n-1}.
+$$
+
+**Result.**
+$$
+E(S^2) = \sigma^2 = \text{Var}(X_i).
+$$
+
+## Order Statistics 
+
+### Introduction - Distribution of the Maximum and Minimum
+
+Let $X_1, \ldots, X_n$ be a random sample with common cdf
+
+$$
+F_X(x) = P(X_1 \le x).
+$$
+
+Define
+
+$$
+X_{(n)} = \max\{X_1, \ldots, X_n\},
+\quad
+X_{(1)} = \min\{X_1, \ldots, X_n\}.
+$$
+
+**Important Results**
+
+1. **CDF of the Maximum**
+
+$$
+F_{X_{(n)}}(x)
+=
+P(X_{(n)} \le x)
+=
+P(X_1 \le x, \ldots, X_n \le x)
+=
+[F_X(x)]^n.
+$$
+
+2. **CDF of the Minimum**
+
+$$
+F_{X_{(1)}}(x)
+=
+P(X_{(1)} \le x)
+=
+1 - P(X_1 > x, \ldots, X_n > x)
+=
+1 - [1 - F_X(x)]^n.
+$$
+
+3. **PDFs (Continuous Case)**  
+
+If $F_X(x)$ is continuous with pdf $f_X(x)$, then
+
+$$
+f_{X_{(n)}}(x)
+=
+n f_X(x) [F_X(x)]^{n-1},
+$$
+
+and
+
+$$
+f_{X_{(1)}}(x)
+=
+n f_X(x) [1 - F_X(x)]^{n-1}.
+$$
+
+### Generalizing 
+
+**Definition.**  
+
+The **order statistics** of a sample $X_1, \ldots, X_n$ are the ordered values
+
+$$
+X_{(1)} \le X_{(2)} \le \cdots \le X_{(n)}.
+$$
+
+- Typically assume $X_1, \ldots, X_n$ are iid with a **continuous** distribution.
+- We may be interested in:
+  1. The distribution of a single order statistic $X_{(k)}$
+  2. The joint distribution of two or more order statistics $(X_{(i)}, X_{(j)})$
+  3. Functions of order statistics (e.g., the range $R = X_{(n)} - X_{(1)}$)
+
+- Order statistics can be viewed as a (discontinuous) transformation of $(X_1, \ldots, X_n)$.
+
+### Result 1: CDF of the $k$th Order Statistic
+
+If $X_1, \ldots, X_n$ are a random sample with common cdf $F_X(x)$, then for $k=1,\ldots,n$,
+$$
+F_{X_{(k)}}(x)
+=
+P(X_{(k)} \le x)
+=
+P(\text{at least } k \text{ of the } X_i \le x)
+=
+\sum_{j=k}^n
+\binom{n}{j}
+[F_X(x)]^j
+[1 - F_X(x)]^{n-j}.
+$$
+
+### Result 2: PDF of the $k$th Order Statistic (Continuous Case)
+
+If $X_1, \ldots, X_n$ are a random sample with continuous cdf $F_X(x)$ and pdf $f_X(x)$, then
+
+$$
+f_{X_{(k)}}(x)
+=
+\frac{n!}{(k-1)!(n-k)!}
+\, f_X(x)
+\, [F_X(x)]^{k-1}
+\, [1 - F_X(x)]^{n-k}.
+$$
+
+### Joint Distributions of Order Statistics
+
+**Result 1**
+
+Joint pdf of Two Order Statistics
+
+Let $X_1,\ldots,X_n$ be iid with continuous cdf $F_X(x)$ and pdf $f_X(x)$.  
+
+For $i < j$, the joint pdf of $(X_{(i)}, X_{(j)})$ is
+
+$$
+f_{X_{(i)},X_{(j)}}(u,v)
+=
+\frac{n!}{(i-1)!(j-i-1)!(n-j)!}
+\, f_X(u) f_X(v)
+\,[F_X(u)]^{i-1}
+\,[F_X(v)-F_X(u)]^{j-i-1}
+\,[1-F_X(v)]^{n-j},
+$$
+
+for $u < v$.
+
+**Result 2**
+
+Joint pdf of All Order Statistics
+
+Let $X_1,\ldots,X_n$ be iid with continuous pdf $f_X(x)$. Then the joint pdf of
+
+$$
+(X_{(1)}, X_{(2)}, \ldots, X_{(n)})
+$$
+
+is
+
+$$
+f_{X_{(1)},\ldots,X_{(n)}}(u_1,\ldots,u_n)
+=
+n! \prod_{i=1}^n f_X(u_i),
+$$
+
+for
+
+$$
+u_1 < u_2 < \cdots < u_n.
+$$
+
+The factor $n!$ counts the number of permutations of $(X_1,\ldots,X_n)$ that produce the same ordered sample.
+
+## Sampling from the Normal Distribution
+
+**Joint Distribution of $\bar{X}_n$ and $S^2$**
+
+If
+
+$$
+X_1,\ldots,X_n \stackrel{\text{iid}}{\sim} N(\mu,\sigma^2),
+$$
+
+then:
+
+1. The sample mean satisfies
+
+$$
+\bar{X}_n \sim N\!\left(\mu,\frac{\sigma^2}{n}\right).
+$$
+
+2. The sample variance satisfies
+
+$$
+\frac{(n-1)S^2}{\sigma^2} \sim \chi^2_{n-1}.
+$$
+
+3. $\bar{X}_n$ and $S^2$ are **independent**.
+
+# Derived Distributions 
+
+## Student’s $t$
+
+**Definition**
+
+Let
+
+$$
+Z \sim N(0,1), \quad V \sim \chi^2_\nu,
+$$
+
+with $Z$ and $V$ independent. Define
+
+$$
+T = \frac{Z}{\sqrt{V/\nu}}.
+$$
+
+Then $T$ has a **Student’s $t$ distribution** with $\nu$ degrees of freedom, denoted
+
+$$
+T \sim t_\nu.
+$$
+
+### Properties of the $t$ Distribution
+
+1. The $t$ density is symmetric about $0$.
+
+2. $E(T) = 0$ for $\nu > 1$.
+
+3. The variance is
+
+$$
+\text{Var}(T) = \frac{\nu}{\nu-2}, \quad \nu > 2,
+$$
+and is infinite for $\nu \le 2$.
+
+4. For $\nu = 1$, the $t$ distribution reduces to the **Cauchy distribution** with density
+$$
+f(t) = \frac{1}{\pi(1+t^2)}.
+$$
+
+5. As $\nu \to \infty$, the $t_\nu$ distribution converges to $N(0,1)$.
+
+## Snedecor’s $F$
+
+**Definition**
+
+Let
+
+$$
+V_1 \sim \chi^2_{\nu_1}, \quad V_2 \sim \chi^2_{\nu_2},
+$$
+
+with $V_1$ and $V_2$ independent. Define
+
+$$
+X = \frac{V_1/\nu_1}{V_2/\nu_2}.
+$$
+
+Then
+
+$$
+X \sim F_{\nu_1,\nu_2}.
+$$
+
+**Note.**
+$$
+F_{\nu_1,\nu_2} \neq F_{\nu_2,\nu_1},
+\qquad
+X^{-1} \sim F_{\nu_2,\nu_1}.
+$$
+
+### Properties of the $F$ Distribution
+
+Let
+
+$$
+X = \frac{\chi^2_{\nu_1}/\nu_1}{\chi^2_{\nu_2}/\nu_2} \sim F_{\nu_1,\nu_2}.
+$$
+
+1. **Expectation**
+
+$$
+E(X) = \frac{\nu_2}{\nu_2 - 2}, \quad \nu_2 > 2.
+$$
+
+2. If $\nu_1 = 1$, then
+
+$$
+X \sim t_{\nu_2}^2.
+$$
+
+3. The reciprocal satisfies
+
+$$
+X^{-1} \sim F_{\nu_2,\nu_1}.
+$$
+
+4. If $\nu_2 \to \infty$, then
+
+$$
+X \sim \frac{\chi^2_{\nu_1}}{\nu_1}.
+$$
+
+5. The transformation
+
+$$
+\frac{(\nu_1/\nu_2)X}{1 + (\nu_1/\nu_2)X}
+$$
+
+has a
+
+$$
+\text{Beta}\!\left(\frac{\nu_1}{2}, \frac{\nu_2}{2}\right)
+$$
+
+distribution. Equivalently,
+
+$$
+\frac{\chi^2_{\nu_1}}{\chi^2_{\nu_1} + \chi^2_{\nu_2}}
+\sim
+\text{Beta}\!\left(\frac{\nu_1}{2}, \frac{\nu_2}{2}\right).
+$$
+
+# Inequalities (Again)
+
+
+
+# Convergence 
+
 
