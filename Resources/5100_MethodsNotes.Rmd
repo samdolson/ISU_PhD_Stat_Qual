@@ -2025,3 +2025,499 @@ Because these matrices have the same column spaces as the original matrices, the
 
 # ANOVA Balanced Two Factor 
 
+The following assumes a balanced design, i.e., every unique combination of factors and levels occur equally often. 
+
+*Always begin by writing out the model.*
+
+For $i = 1,2$, $j = 1,2,3$, and $k = 1,2$, let $y_{ijk}$ denote the weight gain of the $k$th pig that received diet $i$ and drug $j$, and suppose
+
+$$
+y_{ijk}
+= \mu + \alpha_i + \beta_j + \gamma_{ij} + \varepsilon_{ijk},
+\qquad (i = 1,2;\ j = 1,2,3;\ k = 1,2),
+$$
+
+where
+
+$$
+\mu,\ \alpha_1,\ \alpha_2,\ \beta_1,\ \beta_2,\ \beta_3,\ 
+\gamma_{11},\ \gamma_{12},\ \gamma_{13},\ 
+\gamma_{21},\ \gamma_{22},\ \gamma_{23}
+$$
+
+are unknown real-valued parameters, and
+
+$$
+\varepsilon_{111},\ \varepsilon_{112},\ \varepsilon_{121},\ \varepsilon_{122},\ 
+\varepsilon_{131},\ \varepsilon_{132},\ 
+\varepsilon_{211},\ \varepsilon_{212},\ 
+\varepsilon_{221},\ \varepsilon_{222},\ 
+\varepsilon_{231},\ \varepsilon_{232}
+\stackrel{\text{i.i.d.}}{\sim} N(0, \sigma^2),
+$$
+
+for some unknown $\sigma^2 > 0$.
+
+## A Sequence of Models for the Mean
+
+We could consider a sequence of progressively more complex models for the response mean that lead up to our full cell-means model:
+
+1. **Intercept-only model**
+
+$$
+\mathbb{E}(y_{ijk}) = \mu
+$$
+
+2. **Diet main effects**
+
+$$
+\mathbb{E}(y_{ijk}) = \mu + \alpha_i
+$$
+
+3. **Diet and drug main effects**
+
+$$
+\mathbb{E}(y_{ijk}) = \mu + \alpha_i + \beta_j
+$$
+
+4. **Full model with interaction**
+
+$$
+\mathbb{E}(y_{ijk}) = \mu + \alpha_i + \beta_j + \gamma_{ij}
+\quad \Longleftrightarrow \quad
+\mathbb{E}(y_{ijk}) = \mu_{ij}
+$$
+
+## ANOVA Table for Our Two-Factor Example
+
+Sequential sums of squares measure how much the error sum of squares decreases as terms are added to the model.
+
+| Source | Sum of Squares | DF |
+|------|---------------|----|
+| Diets $\mid 1$ | $y^\top (P_2 - P_1) y$ | $2 - 1 = 1$ |
+| Drugs $\mid 1,\text{Diets}$ | $y^\top (P_3 - P_2) y$ | $4 - 2 = 2$ |
+| Diets $\times$ Drugs $\mid 1,\text{Diets},\text{Drugs}$ | $y^\top (P_4 - P_3) y$ | $6 - 4 = 2$ |
+| Error | $y^\top (I - P_4) y$ | $12 - 6 = 6$ |
+| C. Total | $y^\top (I - P_1) y$ | $12 - 1 = 11$ |
+
+Sequential SS correspond to conditioning on factors that previously entered the model.
+
+## What Do the F-Tests in This ANOVA Table Test?
+
+Recall that the null hypothesis for the $j$th $F$-test is true if and only if
+
+$$
+\beta^\top X^\top (P_{j+1} - P_j) X \beta = 0.
+$$
+
+We have the following equivalent conditions:
+
+$$
+\beta^\top X^\top (P_{j+1} - P_j) X \beta = 0
+\iff
+\beta^\top X^\top (P_{j+1} - P_j)^\top (P_{j+1} - P_j) X \beta = 0
+$$
+
+$$
+\iff \| (P_{j+1} - P_j) X \beta \|^2 = 0
+\iff (P_{j+1} - P_j) X \beta = 0
+\iff C \beta = 0,
+$$
+
+where $C$ is any full-row-rank matrix with the same row space as $(P_{j+1} - P_j)X$.
+
+### Diet Test
+
+$$
+(P_2 - P_1) X \beta = 0 \iff C \beta = 0,
+$$
+
+where
+
+$$
+C \beta
+=
+\begin{bmatrix}
+\frac{1}{3} & \frac{1}{3} & \frac{1}{3} &
+-\frac{1}{3} & -\frac{1}{3} & -\frac{1}{3}
+\end{bmatrix}
+\begin{bmatrix}
+\mu_{11} \\ \mu_{12} \\ \mu_{13} \\ \mu_{21} \\ \mu_{22} \\ \mu_{23}
+\end{bmatrix}
+=
+\bar{\mu}_{1\cdot} - \bar{\mu}_{2\cdot}.
+$$
+
+### Drug Test
+
+$$
+(P_3 - P_2) X \beta = 0 \iff C \beta = 0,
+$$
+
+where
+
+$$
+C \beta
+=
+\begin{bmatrix}
+\frac{1}{2} & -\frac{1}{2} & 0 & \frac{1}{2} & -\frac{1}{2} & 0 \\
+\frac{1}{2} & 0 & -\frac{1}{2} & \frac{1}{2} & 0 & -\frac{1}{2}
+\end{bmatrix}
+\begin{bmatrix}
+\mu_{11} \\ \mu_{12} \\ \mu_{13} \\ \mu_{21} \\ \mu_{22} \\ \mu_{23}
+\end{bmatrix}
+=
+\begin{bmatrix}
+\bar{\mu}_{\cdot 1} - \bar{\mu}_{\cdot 2} \\
+\bar{\mu}_{\cdot 1} - \bar{\mu}_{\cdot 3}
+\end{bmatrix}.
+$$
+
+### Diet-X-Drug Interaction Test
+
+$$
+(P_4 - P_3) X \beta = 0 \iff C \beta = 0,
+$$
+
+where
+
+$$
+C \beta
+=
+\begin{bmatrix}
+1 & -1 & 0 & -1 & 1 & 0 \\
+1 & 0 & -1 & -1 & 0 & 1
+\end{bmatrix}
+\begin{bmatrix}
+\mu_{11} \\ \mu_{12} \\ \mu_{13} \\ \mu_{21} \\ \mu_{22} \\ \mu_{23}
+\end{bmatrix}
+=
+\begin{bmatrix}
+\mu_{11} - \mu_{12} - \mu_{21} + \mu_{22} \\
+\mu_{11} - \mu_{13} - \mu_{21} + \mu_{23}
+\end{bmatrix}.
+$$
+
+### ANOVA for Balanced Two-Factor Experiments
+
+The diet–drug experiment is **balanced** in the sense that every treatment (defined by a diet–drug combination) has the same number of experimental units.
+
+Each experimental unit provides a single response measurement (weight gain), so the resulting dataset is balanced in the sense that each treatment has the same number of independent, constant-variance observations.
+
+Due to this balance, the tests for diets, drugs, and diets $\times$ drugs in the ANOVA table are exactly the same as the tests for diet main effects, drug main effects, and diet $\times$ drug interactions previously expressed as tests of $C\beta = 0$.
+
+# ANOVA Unbalanced Two Factor 
+
+When data are unbalanced, the Type I ANOVA test for two-way interactions is the same as the test for two-way interactions 
+discussed previously.
+
+However, the Type I ANOVA tests for individual factors are not the tests for main effects discussed previously.
+
+Furthermore, the Type I results for individual factors depend on the order that the factors appear in the Type I ANOVA table.
+
+## Example
+
+An experiment was conducted to study the effect of storage time and storage temperature on the amount of active ingredient in a drug lost during storage. A total of 16 vials of the drug, each containing approximately $30$ mg/mL of active ingredient, were assigned (using a completely randomized design) to the following treatments:
+
+1. Storage for 3 months at $20^\circ$ C  
+2. Storage for 3 months at $30^\circ$ C  
+3. Storage for 6 months at $20^\circ$ C  
+4. Storage for 6 months at $30^\circ$ C
+
+*Data*
+
+6 of the 16 vials were damaged during shipment to the lab where the active ingredient was measured. The amount of active ingredient was measured only for the 10 undamaged vials. The table below shows the amount of active ingredient lost during storage (in tenths of mg/mL) for each of the undamaged vials.
+
+| Storage Time | Storage Temperature $20^\circ$ C | $30^\circ$ C |
+|--------------|-----------------------------------|--------------|
+| 3 months     | 3, 5                              | 11, 13, 15   |
+| 6 months     | 5, 6, 6, 7                        | 16           |
+
+as temperature $\uparrow$, y $\uparrow$
+as length $\uparrow$, y $\uparrow$
+
+## A Cell Means Model for the Data
+
+Let $y_{ijk}$ denote the amount of active ingredient lost from the $k$th vial treated with the $i$th storage time and $j$th temperature.
+
+Let $n_{ij}$ denote the number of vials measured for the $i$th storage time and $j$th temperature.
+
+Suppose
+
+$$
+y_{ijk} = \mu_{ij} + \varepsilon_{ijk},
+\qquad (i = 1,2;\ j = 1,2;\ k = 1,\ldots,n_{ij}),
+$$
+
+where $\mu_{11}, \mu_{12}, \mu_{21}, \mu_{22}$ are unknown real-valued parameters and the $\varepsilon_{ijk}$ terms are i.i.d.\ normal random variables with mean $0$ and some unknown variance $\sigma^2 > 0$.
+
+We could consider a sequence of progressively more complex models for the response mean that lead up to our full cell-means model:
+
+1. **Intercept-only model**
+
+$$
+\mathbb{E}(y_{ijk}) = \mu
+$$
+
+2. **Add storage time**
+
+$$
+\mathbb{E}(y_{ijk}) = \mu + \alpha_i
+$$
+
+3. **Add storage time and temperature**
+
+$$
+\mathbb{E}(y_{ijk}) = \mu + \alpha_i + \beta_j
+$$
+
+4. **Full model with interaction**
+
+$$
+\mathbb{E}(y_{ijk}) = \mu + \alpha_i + \beta_j + \gamma_{ij}
+\quad \Longleftrightarrow \quad
+\mathbb{E}(y_{ijk}) = \mu_{ij}
+$$
+
+### ANOVA Table
+
+| Source | Sum of Squares | DF |
+|------|---------------|----|
+| Time $\mid 1$ | $y^\top (P_2 - P_1) y$ | $2 - 1 = 1$ |
+| Temp $\mid 1,\text{Time}$ | $y^\top (P_3 - P_2) y$ | $3 - 2 = 1$ |
+| Time $\times$ Temp $\mid 1,\text{Time},\text{Temp}$ | $y^\top (P_4 - P_3) y$ | $4 - 3 = 1$ |
+| Error | $y^\top (I - P_4) y$ | $10 - 4 = 6$ |
+| C. Total | $y^\top (I - P_1) y$ | $10 - 1 = 9$ |
+
+### What Do the $F$-Tests in This ANOVA Table Test?
+
+Recall the null hypothesis for $F_j$ is true if and only if
+
+$$
+\beta^\top X^\top (P_{j+1} - P_j) X \beta = 0.
+$$
+
+We have the following equivalent conditions:
+
+$$
+\beta^\top X^\top (P_{j+1} - P_j) X \beta = 0
+\iff
+\beta^\top X^\top (P_{j+1} - P_j)^\top (P_{j+1} - P_j) X \beta = 0
+$$
+
+$$
+\iff \| (P_{j+1} - P_j) X \beta \|^2 = 0
+\iff (P_{j+1} - P_j) X \beta = 0
+\iff C \beta = 0,
+$$
+
+where $C$ is any full-row-rank matrix with the same row space as $(P_{j+1} - P_j) X$.
+
+### Interpreting $(P_{j+1} - P_j)X$
+
+Let’s take a look at $(P_{j+1} - P_j)X$ for each test in the ANOVA table.
+
+When computing $(P_{j+1} - P_j)X$, we can use any model matrix $X$ that specifies one unrestricted treatment mean for each of the four treatments.
+
+The entries in any rows of $(P_{j+1} - P_j)X$ are coefficients defining linear combinations of the elements of the parameter vector $\beta$ corresponding to the chosen model matrix $X$.
+
+### Time $\mid 1$ ANOVA Test
+
+$$
+(P_2 - P_1) X \beta = 0 \iff C \beta = 0,
+$$
+
+where
+
+$$
+C \beta =
+\begin{bmatrix}
+\frac{2}{5} & \frac{3}{5} & -\frac{4}{5} & -\frac{1}{5}
+\end{bmatrix}
+\begin{bmatrix}
+\mu_{11} \\ \mu_{12} \\ \mu_{21} \\ \mu_{22}
+\end{bmatrix}
+$$
+
+$$
+=
+\left( \frac{2}{5} \mu_{11} + \frac{3}{5} \mu_{12} \right)
+-
+\left( \frac{4}{5} \mu_{21} + \frac{1}{5} \mu_{22} \right).
+$$
+
+This weighted average reflects the sample sizes in the cells.
+
+### Time $\mid 1$ ANOVA Test $\neq$ Time Main Effect Test
+
+**Null for Time $\mid 1$ ANOVA test:**
+
+$$
+\frac{2}{5} \mu_{11} + \frac{3}{5} \mu_{12}
+=
+\frac{4}{5} \mu_{21} + \frac{1}{5} \mu_{22}.
+$$
+
+**Null for Time main effect test:**
+
+$$
+\frac{1}{2} \mu_{11} + \frac{1}{2} \mu_{12}
+=
+\frac{1}{2} \mu_{21} + \frac{1}{2} \mu_{22},
+$$
+
+i.e.,
+
+$$
+\bar{\mu}_{1\cdot} = \bar{\mu}_{2\cdot}.
+$$
+
+## Two Factors: Different Types of Sums of Squares
+
+| Source | Type I | Type II | Type III |
+|------|--------|---------|----------|
+| $A$  | $SS(A \mid 1)$ | $SS(A \mid 1, B)$ | $SS(A \mid 1, B, AB)$ |
+| $B$  | $SS(B \mid 1, A)$ | $SS(B \mid 1, A)$ | $SS(B \mid 1, A, AB)$ |
+| $AB$ | $SS(AB \mid 1, A, B)$ | $SS(AB \mid 1, A, B)$ | $SS(AB \mid 1, A, B)$ |
+| Error | $SSE$ | $SSE$ | $SSE$ |
+| C. Total | $SS_{Total}$ | ? | ? |
+
+- **Type I (Sequential)**: reduction in $SSE$ due to a factor, given the terms that entered the model previously.
+- **Type II**: accounts for all terms that do *not* involve the factor under consideration.
+- **Type III**: reduction in $SSE$ due to a factor *given all other terms in the model*.
+
+## Three Factors: Different Types of Sums of Squares
+
+<!-- | Source | Type I | Type II | Type III | -->
+<!-- |------|--------|---------|----------| -->
+<!-- | $A$ | $SS(A \mid 1)$ | $SS(A \mid 1, B, C, BC)$ | $SS(A \mid 1, B, C, AB, AC, BC, ABC)$ | -->
+<!-- | $B$ | $SS(B \mid 1, A)$ | $SS(B \mid 1, A, C, AC)$ | $SS(B \mid 1, A, C, AB, AC, BC, ABC)$ | -->
+<!-- | $C$ | $SS(C \mid 1, A, B)$ | $SS(C \mid 1, A, B, AB)$ | $SS(C \mid 1, A, B, AB, AC, BC, ABC)$ | -->
+<!-- | $AB$ | $SS(AB \mid 1, A, B, C)$ | $SS(AB \mid 1, A, B, C, AC, BC)$ | $SS(AB \mid 1, A, B, C, AC, BC, ABC)$ | -->
+<!-- | $AC$ | $SS(AC \mid 1, A, B, C, AB)$ | $SS(AC \mid 1, A, B, C, AB, BC)$ | $SS(AC \mid 1, A, B, C, AB, BC, ABC)$ | -->
+<!-- | $BC$ | $SS(BC \mid 1, A, B, C, AB, AC)$ | $SS(BC \mid 1, A, B, C, AB, AC)$ | $SS(BC \mid 1, A, B, C, AB, AC, ABC)$ | -->
+<!-- | $ABC$ | $SS(ABC \mid 1, A, B, C, AB, AC, BC)$ | $SS(ABC \mid 1, A, B, C, AB, AC, BC)$ | $SS(ABC \mid 1, A, B, C, AB, AC, BC)$| -->
+<!-- | Error | $SSE$ | $SSE$ | $SSE$ | -->
+
+```{r message=FALSE, warning=FALSE, echo=F}
+library(knitr)
+library(kableExtra)
+
+tab <- data.frame(
+  Source = c("$A$", "$B$", "$C$", "$AB$", "$AC$", "$BC$", "$ABC$", "Error"),
+  `Type I` = c(
+    "$SS(A \\mid 1)$",
+    "$SS(B \\mid 1, A)$",
+    "$SS(C \\mid 1, A, B)$",
+    "$SS(AB \\mid 1, A, B, C)$",
+    "$SS(AC \\mid 1, A, B, C, AB)$",
+    "$SS(BC \\mid 1, A, B, C, AB, AC)$",
+    "$SS(ABC \\mid 1, A, B, C, AB, AC, BC)$",
+    "$SSE$"
+  ),
+  `Type II` = c(
+    "$SS(A \\mid 1, B, C, BC)$",
+    "$SS(B \\mid 1, A, C, AC)$",
+    "$SS(C \\mid 1, A, B, AB)$",
+    "$SS(AB \\mid 1, A, B, C, AC, BC)$",
+    "$SS(AC \\mid 1, A, B, C, AB, BC)$",
+    "$SS(BC \\mid 1, A, B, C, AB, AC)$",
+    "$SS(ABC \\mid 1, A, B, C, AB, AC, BC)$",
+    "$SSE$"
+  ),
+  `Type III` = c(
+    "$SS(A \\mid 1, B, C, AB, AC, BC, ABC)$",
+    "$SS(B \\mid 1, A, C, AB, AC, BC, ABC)$",
+    "$SS(C \\mid 1, A, B, AB, AC, BC, ABC)$",
+    "$SS(AB \\mid 1, A, B, C, AC, BC, ABC)$",
+    "$SS(AC \\mid 1, A, B, C, AB, BC, ABC)$",
+    "$SS(BC \\mid 1, A, B, C, AB, AC, ABC)$",
+    "$SS(ABC \\mid 1, A, B, C, AB, AC, BC)$",
+    "$SSE$"
+  ),
+  check.names = FALSE
+)
+
+kable(tab, format = "latex", booktabs = TRUE, escape = FALSE) %>%
+  kable_styling(latex_options = c("hold_position", "scale_down"))
+```
+
+Notes:
+
+- No interaction involving the factor under consideration is included.
+- Unlike Type III sums of squares, we do **not** account for the $ABC$ interaction when testing lower-order terms.
+
+## Sums of Squares for Balanced Data
+
+For **balanced data**, the three types of sums of squares are identical:
+
+$$
+\text{Type I} = \text{Type II} = \text{Type III}.
+$$
+
+This equality is not obvious (at least to most normal humans), but it is true.  
+We will not attempt to prove this in 510.
+
+The ANOVA $F$-tests in the ANOVA table can be used to test for factor main effects and interactions.
+
+## Sums of Squares for Unbalanced Data
+
+For **unbalanced data**, the types of sums of squares differ.
+
+- Type I sums of squares always add to the total sum of squares, even when data are unbalanced.
+- Type II and Type III sums of squares do not add to anything special when data are unbalanced.
+- The ANOVA $F$-tests in the **Type III** ANOVA table can be used to test for factor main effects and interactions.
+- Type I and Type II ANOVA $F$-tests do **not**, in general, test for factor main effects or interactions (except for the $F$-test for the highest-order interaction, which is the same for all three types).
+
+## Type IV Sums of Squares
+
+In addition to computing Type I, II, and III sums of squares, SAS can compute Type IV sums of squares.
+
+Type IV sums of squares are only relevant for factorial designs with missing cells.
+
+When cells are missing, I recommend determining the linear combinations of the estimable cell means that are of scientific interest, and then conducting the corresponding tests as tests of $H_0 : C \beta = d$.
+
+## Calculation of Type I, II, and III Sums of Squares
+
+Every Type I, II, or III sum of squares is the error sums of squares for a reduced model minus the error sum of squares for a model that adds one term to the reduced model;
+
+$$
+y^T (I - P_{X_{\text{reduced}}}) y - y^T (I - P_{X_{\text{reduced + term}}}) y = y^T (P_{X_{\text{reduced + term}}} - P_{X_{\text{reduced}}}) y
+$$
+
+where $C(X_{\text{reduced}}) \subset C(X_{\text{reduced + term}}) \subseteq C(X)$.
+
+As usual, $X$ represents the model matrix for the most complex model under consideration (a.k.a., the full model).
+
+For all Type III sums of squares, the reduced+term model is the full model.
+
+### Alternative Computation of Sums of Squares
+
+Let $SS = y^T (P_{X_{\text{reduced+term}}} - P_{X_{\text{reduced}}})y$ represent any Type I, II, or III sum of squares.
+
+Let $q = \text{rank}(X_{\text{reduced+term}}) - \text{rank}(X_{\text{reduced}})$ be the degrees of freedom associated with $SS$.
+
+Let $C$ be any $q \times p$ matrix whose rows are a basis for the row space of $(P_{X_{\text{reduced+term}}} - P_{X_{\text{reduced}}})X$.
+
+$$
+y^T(P_{j+1} - P_j)y = (C\hat{\beta})^T \{ C(X^TX)^{-1}C^T \}^{-1} C\hat{\beta}
+$$
+
+Then the ANOVA $F$ statistic
+
+$$
+\frac{SS/q}{MSE} = \frac{\hat{\beta}^T C^T [C(X^TX)^{-1}C^T]^{-1}C\hat{\beta}/q}{\hat{\sigma}^2}.
+$$
+
+Thus, any $SS$ can be computed as $\hat{\beta}^T C^T [C(X^TX)^{-1}C^T]^{-1}C\hat{\beta}$ for an appropriate matrix $C$.
+
+# Orthogonal Contrasts 
+
+
+
+# Aitken Model
+
+
+
+# Linear Mixed Effects 
+
