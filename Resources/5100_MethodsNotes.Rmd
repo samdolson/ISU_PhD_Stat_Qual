@@ -308,8 +308,7 @@ $$
 
 The OLS estimator is unbiased because, for all $\beta \in \mathbb{R}^p$,
 
-$$
-\begin{aligned}
+\begin{align*}
 E(C\hat{\beta})
 &= E\!\left(C(X^\top X)^{-}X^\top y\right) \\
 &= C(X^\top X)^{-}X^\top E(y) \\
@@ -317,8 +316,7 @@ E(C\hat{\beta})
 &= AP_X X\beta \\
 &= AX\beta \\
 &= C\beta.
-\end{aligned}
-$$
+\end{align*}
 
 ## Gauss–Markov Model (GMM)
 
@@ -533,3 +531,1497 @@ $$
 $$
 
 # Reduced vs. Full 
+
+## Model and Hypotheses
+
+Assume the Gauss–Markov model with normal errors:
+
+$$
+y = X\beta + \varepsilon, \qquad \varepsilon \sim \mathcal{N}(0, \sigma^2 I).
+$$
+
+Suppose $\mathcal{C}(X_0) \subset \mathcal{C}(X)$ and we wish to test
+
+$$
+H_0 : E(y) \in \mathcal{C}(X_0)
+\quad \text{vs.} \quad
+H_A : E(y) \in \mathcal{C}(X) \setminus \mathcal{C}(X_0).
+$$
+
+- The *reduced* model corresponds to the null hypothesis and states that
+
+$$
+E(y) \in \mathcal{C}(X_0),
+$$
+  
+  a specified subspace of $\mathcal{C}(X)$.
+
+- The *full* model states that $E(y)$ can be anywhere in $\mathcal{C}(X)$.
+
+*Example* 
+
+Suppose a reduced model is that every group has the same mean, and suppose the full model has every group has a unique mean.
+
+Given:
+
+$$
+X_0 = 
+\begin{bmatrix}
+1 \\
+1 \\
+1 \\
+1 \\
+1 \\
+1
+\end{bmatrix}
+$$
+
+$$
+X = 
+\begin{bmatrix}
+1 & 0 & 0 \\
+1 & 0 & 0 \\
+0 & 1 & 0 \\
+0 & 1 & 0 \\
+0 & 0 & 1 \\ 
+0 & 0 & 1
+\end{bmatrix}
+$$
+
+### Model Interpretation:
+
+- The **reduced model** says we assume the same mean for all observations:
+  
+$$
+E(y) = \mu
+$$
+  
+  This corresponds to the design matrix $X_0$.
+
+- The **full model** says there are 3 distinct means: each group (of size 2) has its own mean.
+  
+  This corresponds to the design matrix $X$, which is a $4 \times 3$ matrix (though it codes for 3 groups).
+
+## Test Statistic
+
+For the general case, consider the test statistic
+
+$$
+F
+=
+\frac{
+y^\top (P_X - P_{X_0}) y \,/\, [\operatorname{rank}(X) - \operatorname{rank}(X_0)]
+}{
+y^\top (I - P_X) y \,/\, [n - \operatorname{rank}(X)]
+}.
+$$
+
+- When the reduced model is correct, the numerator and denominator of the
+  $F$ statistic are both unbiased estimators of $\sigma^2$, so $F$ should be
+  close to $1$.
+
+- When the reduced model is not correct, the numerator of the $F$ statistic
+  estimates something larger than $\sigma^2$, so $F$ should be larger than $1$.
+  Thus, values of $F$ much larger than $1$ are not consistent with the reduced
+  model being correct.
+
+**Deriving the Distribution of $F$**
+
+Our main assumption about the model is
+
+$$
+\varepsilon \sim \mathcal{N}(0, \sigma^2 I)
+\quad \Longrightarrow \quad
+y \sim \mathcal{N}(X\beta, \sigma^2 I).
+$$
+
+Recall the following result:
+
+- Suppose $\Sigma$ is an $n \times n$ positive definite matrix.
+- Suppose $A$ is an $n \times n$ symmetric matrix of rank $m$ such that
+  $A \Sigma$ is idempotent (i.e., $A \Sigma A \Sigma = A \Sigma$).
+
+Then, if $y \sim \mathcal{N}(\mu, \Sigma)$,
+
+$$
+y^\top A y \sim \chi_m^2\!\left( \frac{\mu^\top A \mu}{2} \right).
+$$
+
+### Distribution of the Numerator
+
+For the numerator of our $F$ statistic, we have
+$$
+\mu = X\beta, \qquad \Sigma = \sigma^2 I, \qquad
+A = \frac{P_X - P_{X_0}}{\sigma^2}.
+$$
+
+The rank is
+
+\begin{align*}
+m
+&= \operatorname{rank}(A)
+ = \operatorname{rank}\!\left( \frac{P_X - P_{X_0}}{\sigma^2} \right)
+ = \operatorname{rank}(P_X - P_{X_0}) \\
+&= \operatorname{tr}(P_X - P_{X_0})
+ = \operatorname{tr}(P_X) - \operatorname{tr}(P_{X_0}) \\
+&= \operatorname{rank}(P_X) - \operatorname{rank}(P_{X_0})
+ = \operatorname{rank}(X) - \operatorname{rank}(X_0).
+\end{align*}
+
+Therefore,
+
+$$
+\frac{y^\top (P_X - P_{X_0}) y}{\sigma^2}
+\sim
+\chi^2_{\operatorname{rank}(X) - \operatorname{rank}(X_0)}(\theta),
+$$
+
+where
+
+$$
+\theta
+=
+\frac{1}{2}
+\beta^\top X^\top
+\left( \frac{P_X - P_{X_0}}{\sigma^2} \right)
+X \beta.
+$$
+
+### Distribution of the Denominator
+
+The denominator (mean squared error) is
+
+$$
+\mathrm{MSE}
+=
+\frac{y^\top (I - P_X) y}{n - \operatorname{rank}(X)}.
+$$
+
+Its distribution is
+
+$$
+\frac{y^\top (I - P_X) y}{\sigma^2}
+\sim
+\chi^2_{\,n - \operatorname{rank}(X)}.
+$$
+
+This distributional result holds regardless of whether or not the reduced modelis correct.
+
+### Independence of Numerator and Denominator
+
+We can show that
+
+$$
+\frac{y^\top (P_X - P_{X_0}) y}{\sigma^2}
+\;\perp\;
+\frac{y^\top (I - P_X) y}{\sigma^2},
+$$
+
+because
+
+$$
+\left( \frac{P_X - P_{X_0}}{\sigma^2} \right)
+(\sigma^2 I)
+\left( \frac{I - P_X}{\sigma^2} \right)
+= 0.
+$$
+
+Indeed,
+
+\begin{align*}
+\frac{1}{\sigma^2}
+\bigl(
+P_X - P_X P_X - P_{X_0} + P_{X_0} P_X
+\bigr)
+&=
+\frac{1}{\sigma^2}
+\bigl(
+P_X - P_X - P_{X_0} + P_{X_0}
+\bigr) \\
+&= 0.
+\end{align*}
+
+### Distribution of F
+
+Thus, it follows that
+
+$$
+F
+=
+\frac{
+y^\top (P_X - P_{X_0}) y \,/\, [\operatorname{rank}(X) - \operatorname{rank}(X_0)]
+}{
+y^\top (I - P_X) y \,/\, [n - \operatorname{rank}(X)]
+}
+\sim
+F_{\operatorname{rank}(X) - \operatorname{rank}(X_0),\, n - \operatorname{rank}(X)}(\theta),
+$$
+
+where
+
+$$
+\theta
+=
+\frac{
+\beta^\top X^\top (P_X - P_{X_0}) X \beta
+}{
+2 \sigma^2
+}.
+$$
+
+## Noncentrality Parameter
+
+- If $H_0$ is true, i.e., if $E(y) = X\beta \in \mathcal{C}(X_0)$, then the
+  noncentrality parameter $\theta$ is $0$ because
+  
+$$
+(P_X - P_{X_0}) X\beta
+= P_X X\beta - P_{X_0} X\beta
+= X\beta - X\beta
+= 0.
+$$
+
+  Hence,
+  
+$$
+\frac{y^\top (P_X - P_{X_0}) y}{\sigma^2}
+\sim
+\chi^2_{\operatorname{rank}(X) - \operatorname{rank}(X_0)},
+$$
+
+  a central $\chi^2$ distribution.
+
+- If $H_0$ is false and $E(y) = X\beta \notin \mathcal{C}(X_0)$, then
+  $(P_X - P_{X_0}) X\beta \neq 0$ and $\theta > 0$. Hence,
+  
+$$
+\frac{y^\top (P_X - P_{X_0}) y}{\sigma^2}
+\sim
+\chi^2_{\operatorname{rank}(X) - \operatorname{rank}(X_0)}(\theta).
+$$
+
+In general, the noncentrality parameter quantifies how far the mean of $y$
+is from $\mathcal{C}(X_0)$ because
+
+\begin{align*}
+\beta^\top X^\top (P_X - P_{X_0}) X\beta
+&=
+\beta^\top X^\top (P_X - P_{X_0})^\top (P_X - P_{X_0}) X\beta \\
+&=
+\left\| (P_X - P_{X_0}) X\beta \right\|^2
+=
+\left\| P_X X\beta - P_{X_0} X\beta \right\|^2 \\
+&=
+\left\| X\beta - P_{X_0} X\beta \right\|^2
+=
+\left\| E(y) - P_{X_0} E(y) \right\|^2 .
+\end{align*}
+
+If $E(y)$ indeed lies in $\mathcal{C}(X_0)$, then $P_{X_0} E(y) = E(y)$.
+
+## Useful Identities
+
+Note that
+
+\begin{align*}
+y^\top (P_X - P_{X_0}) y
+&=
+y^\top \bigl[(I - P_{X_0}) - (I - P_X)\bigr] y \\
+&=
+y^\top (I - P_{X_0}) y
+-
+y^\top (I - P_X) y \\
+&=
+\mathrm{SSE}_{\text{REDUCED}} - \mathrm{SSE}_{\text{FULL}} .
+\end{align*}
+
+Also,
+
+\begin{align*}
+\operatorname{rank}(X) - \operatorname{rank}(X_0)
+&=
+[n - \operatorname{rank}(X_0)] - [n - \operatorname{rank}(X)] \\
+&=
+\mathrm{DFE}_{\text{REDUCED}} - \mathrm{DFE}_{\text{FULL}},
+\end{align*}
+
+where $\mathrm{DFE}$ denotes degrees of freedom for error.
+
+*Result* 
+
+Thus, the $F$ statistic has the familiar form
+
+$$
+F
+=
+\frac{
+(\mathrm{SSE}_{\text{REDUCED}} - \mathrm{SSE}_{\text{FULL}})
+/
+(\mathrm{DFE}_{\text{REDUCED}} - \mathrm{DFE}_{\text{FULL}})
+}{
+\mathrm{SSE}_{\text{FULL}} / \mathrm{DFE}_{\text{FULL}}
+}.
+$$
+
+
+## Equivalence of $F$-Tests
+
+It turns out that this reduced vs.\ full model $F$-test is equivalent to the
+$F$-test for testing
+
+$$
+H_0 : C\beta = d
+\quad \text{vs.} \quad
+H_A : C\beta \neq d,
+$$
+
+with an appropriately chosen $C$ and $d$.
+
+# Two-Factor Cell-Means Models
+
+**An Example Two-Factor Experiment**
+
+Researchers were interested in studying the effects of 2 diets (low fiber, high fiber) and 3 drugs (D1, D2, D3) on weight gained by Yorkshire pigs. A total of 12 pigs were assigned to the 6 diet $\times$ drug combinations using a balanced and completely randomized experimental design. Pigs were housed in individual pens, injected with their assigned drugs once per week, and fed their assigned diets for a 6-week period. The amount of weight gained during the 6-week period was recorded for each pig.
+
+## Factors, Levels, Design
+
+This experiment involves 2 factors: **Diet** and **Drug**.
+
+- The factor **Diet** has 2 levels: low fiber and high fiber.
+- The factor **Drug** has 3 levels: D1, D2, and D3.
+
+**Treatment Design vs. Experimental Design**
+
+- A combination of one level from each factor forms a *treatment*.
+
+- The *treatment design* used in this experiment is known as a **full-factorial treatment design** because each possible combination of one level from each factor was applied to at least one experimental unit.
+
+- The *experimental design* is a balanced **completely randomized design (CRD)** because all possible balanced assignments of the 12 pigs to the 6 treatment groups were equally likely.
+
+## The Cell-Means Model
+
+For $i = 1,2$, $j = 1,2,3$, and $k = 1,2$, let $y_{ijk}$ denote the weight gain
+of the $k$th pig that received diet $i$ and drug $j$, and suppose
+
+$$
+y_{ijk} = \mu_{ij} + \varepsilon_{ijk},
+\qquad
+\varepsilon_{ijk} \stackrel{\text{iid}}{\sim} \mathcal{N}(0,\sigma^2).
+$$
+
+Here,
+
+$$
+(\mu_{11}, \mu_{12}, \mu_{13}, \mu_{21}, \mu_{22}, \mu_{23}) \in \mathbb{R}
+\quad \text{and} \quad
+\sigma^2 \in \mathbb{R}^+
+$$
+
+are unknown parameters. The $\mu_{ij}$ represent the *treatment (cell) means*.
+
+A cell-means table is given by
+
+|        | Drug 1 | Drug 2 | Drug 3 |
+|--------|--------|--------|--------|
+| Diet 1 | $\mu_{11}$ | $\mu_{12}$ | $\mu_{13}$ |
+| Diet 2 | $\mu_{21}$ | $\mu_{22}$ | $\mu_{23}$ |
+
+
+## Estimability of $\beta$
+
+For the General Linear Model, the parameter vector $\beta$ is estimable
+whenever $X$ has full column rank, i.e.,
+
+$$
+\operatorname{rank}(X) = p.
+$$
+
+### Least Squares Means (LSMEANS) in SAS
+
+SAS can be used to compute LSMEANS.
+
+LSMEANS are simply OLS estimators of cell or marginal means.
+
+Each LSMEAN has the form
+
+$$
+c^\top \hat{\beta}
+$$
+
+for an appropriate vector $c$.
+
+For example, the LSMEAN for Diet 1 is $c^\top \hat{\beta}$ with
+
+$$
+c^\top
+=
+\left[
+\frac{1}{3},\,
+\frac{1}{3},\,
+\frac{1}{3},\,
+0,\,
+0,\,
+0
+\right],
+\qquad
+\hat{\beta}
+=
+\left[
+\bar{y}_{11\cdot},\,
+\bar{y}_{12\cdot},\,
+\bar{y}_{13\cdot},\,
+\bar{y}_{21\cdot},\,
+\bar{y}_{22\cdot},\,
+\bar{y}_{23\cdot}
+\right]^\top .
+$$
+
+Thus, the LSMEAN for Diet 1 is
+
+$$
+\frac{\bar{y}_{11\cdot} + \bar{y}_{12\cdot} + \bar{y}_{13\cdot}}{3},
+$$
+
+an estimator of the marginal mean $\mu_{1\cdot}$.
+
+Note that the LSMEAN for Diet 1 is simply an average of the estimated means
+for treatments involving Diet 1.
+
+When data are balanced, the LSMEAN for Diet 1 is also just the average of
+responses for all pigs that were fed Diet 1.
+
+When data are unbalanced, the LSMEAN for Diet 1 may not equal the average of
+responses for all pigs that were fed Diet 1.
+
+## Standard Error
+
+A *standard error* is the estimated standard deviation of a statistic.
+
+A standard error is usually found by estimating the variance of a statistic
+and then taking the square root of the estimate.
+
+Because each LSMEAN has the form $c^\top \hat{\beta}$ for an appropriate
+vector $c$, the standard error for an LSMEAN is given by
+
+$$
+\sqrt{\widehat{\operatorname{Var}}(c^\top \hat{\beta})}
+=
+\sqrt{\hat{\sigma}^2\, c^\top (X^\top X)^{-} c}.
+$$
+
+## Effects We Can Estimate
+
+- Simple effects  
+- Main effects  
+- Interactions  
+
+### Simple Effects
+
+A **simple effect** is the difference between cell means that differ in level for only one factor.
+
+In our two-factor example, simple effects are differences between cell means within any row or within any column.
+
+Consider a two-factor layout:
+
+- **Simple effect of diet within drug 1** compares $\mu_{11}$ (diet 1, drug 1) and $\mu_{21}$ (diet 2, drug 1).
+- Similarly, **simple effect of drug** can be examined within a fixed diet level.
+
+For example:
+- Drug 1, Diet 1 vs. Diet 2 → Simple effect of Diet within Drug 1
+- Diet 1, Drug 2 vs. Drug 3 → Simple effect of Drug within Diet 1
+
+**Note:** A contrast such as $\mu_{22} - \mu_{13}$ is **not** a simple effect, because it differs in both factors (diet and drug).
+
+*Continued*
+
+The simple effect of **Diet for Drug 1** is:
+
+$$
+\mu_{11} - \mu_{21}
+$$
+
+The simple effect of **Drug 2 vs. Drug 3 for Diet 2** is:
+
+$$
+\mu_{22} - \mu_{23}
+$$
+
+Where $\mu_{ij}$ denotes the mean response for diet $i$ and drug $j$.
+
+### Main Effects
+
+A *main effect* is the difference between marginal means associated with two levels of a factor.
+
+In our two-factor example, the *main effect* of Diet is
+$$
+\bar{\mu}_{1\cdot} - \bar{\mu}_{2\cdot}.
+$$
+
+In our two-factor example, the *main effects* of Drug involve the differences
+
+$$
+\bar{\mu}_{\cdot 1} - \bar{\mu}_{\cdot 2}, \quad
+\bar{\mu}_{\cdot 1} - \bar{\mu}_{\cdot 3}, \quad
+\text{and} \quad
+\bar{\mu}_{\cdot 2} - \bar{\mu}_{\cdot 3}.
+$$
+
+If
+
+$$
+\bar{\mu}_{1\cdot} = \bar{\mu}_{2\cdot},
+$$
+
+it would be customary to say, “There is no Diet main effect.”
+
+If
+
+$$
+\bar{\mu}_{\cdot 1} = \bar{\mu}_{\cdot 2} = \bar{\mu}_{\cdot 3},
+$$
+it would be customary to say, “There are no Drug main effects.”
+
+### Interaction Effects
+
+The linear combination
+
+$$
+\mu_{ij} - \mu_{ij'} - \mu_{i'j} + \mu_{i'j'}
+$$
+
+for $i \neq i'$ and $j \neq j'$ is an interaction effect.
+
+Every interaction can be expressed using this format.
+
+For example,
+
+$$
+\mu_{11} - \mu_{12} - \mu_{21} + \mu_{22}
+= (\mu_{11} - \mu_{12}) - (\mu_{21} - \mu_{22})
+= (\mu_{11} - \mu_{21}) - (\mu_{12} - \mu_{22})
+$$
+
+is an interaction effect.
+
+These contrasts are equal if there is no interaction.
+
+*Continued*
+
+When all interaction effects are zero, we may say there are “no interactions” between the factors, or that the two factors do not interact.
+
+When there are no interactions between factors, the simple effects of either factor are the same across all levels of the other factor.
+
+For example, when there are no interactions between the factors Diet and Drug, the simple effect of Diet is the same for each level of Drug.
+
+Likewise, any simple effect of Drug is the same for both diets.
+
+## Testing for Non-Zero Effects
+
+We can test whether simple effects, main effects, or interaction effects are zero versus non-zero using tests of the form
+
+$$
+H_0 : C\boldsymbol{\beta} = \mathbf{0}
+\quad \text{vs.} \quad
+H_A : C\boldsymbol{\beta} \neq \mathbf{0}.
+$$
+
+To properly set up $C$, look at $\boldsymbol{\beta}$ and how the parameters are arranged in $\boldsymbol{\beta}$.
+
+# Alternative Parametrization of Two-Factor Cell-Means Models 
+
+An alternative parameterization of the cell-means model is
+
+$$
+y_{ijk} = \mu + \alpha_i + \beta_j + \gamma_{ij} + \varepsilon_{ijk},
+\qquad
+(i = 1,2;\; j = 1,2,3;\; k = 1,2).
+$$
+
+Here,
+- $\mu$ is the intercept (overall mean),
+- $\alpha_i$ is the effect associated with Diet,
+- $\beta_j$ is the effect associated with Drug,
+- $\gamma_{ij}$ is the interaction between Diet and Drug.
+
+The parameters
+
+$$
+\mu,\;
+\alpha_1,\alpha_2,\;
+\beta_1,\beta_2,\beta_3,\;
+\gamma_{11},\gamma_{12},\gamma_{13},\gamma_{21},\gamma_{22},\gamma_{23}
+$$
+
+are unknown real-valued parameters, and
+
+$$
+\varepsilon_{111}, \varepsilon_{112}, \varepsilon_{121}, \varepsilon_{122},
+\varepsilon_{131}, \varepsilon_{132},
+\varepsilon_{211}, \varepsilon_{212}, \varepsilon_{221}, \varepsilon_{222},
+\varepsilon_{231}, \varepsilon_{232}
+$$
+
+are independent and identically distributed with
+
+$$
+\varepsilon_{ijk} \overset{\text{iid}}{\sim} \mathcal{N}(0,\sigma^2),
+$$
+
+for some unknown $\sigma^2 > 0$.
+
+## Table of Treatments and Means
+
+| Treatment | Diet | Drug | Mean |
+|----------|------|------|------|
+| 1 | 1 | 1 | $\mu + \alpha_1 + \beta_1 + \gamma_{11}$ |
+| 2 | 1 | 2 | $\mu + \alpha_1 + \beta_2 + \gamma_{12}$ |
+| 3 | 1 | 3 | $\mu + \alpha_1 + \beta_3 + \gamma_{13}$ |
+| 4 | 2 | 1 | $\mu + \alpha_2 + \beta_1 + \gamma_{21}$ |
+| 5 | 2 | 2 | $\mu + \alpha_2 + \beta_2 + \gamma_{22}$ |
+| 6 | 2 | 3 | $\mu + \alpha_2 + \beta_3 + \gamma_{23}$ |
+
+Diet 1 = Low Fiber, Diet 2 = High Fiber  
+Drug 1 = D1, Drug 2 = D2, Drug 3 = D3
+
+## Cell and Marginal Means
+
+Any linear combination of the entries in this table is estimable.
+
+The cell means are
+
+$$
+\mu + \alpha_i + \beta_j + \gamma_{ij}.
+$$
+
+The Diet marginal means are
+
+$$
+\bar{\mu}_{1\cdot} = \mu + \alpha_1 + \bar{\beta}_{\cdot} + \bar{\gamma}_{1\cdot},
+\qquad
+\bar{\mu}_{2\cdot} = \mu + \alpha_2 + \bar{\beta}_{\cdot} + \bar{\gamma}_{2\cdot}.
+$$
+
+Thus, the main effect of Diet is
+
+$$
+\bar{\mu}_{1\cdot} - \bar{\mu}_{2\cdot}
+= \alpha_1 - \alpha_2 + \bar{\gamma}_{1\cdot} - \bar{\gamma}_{2\cdot}.
+$$
+
+An example of a simple effect of Drug within Diet 1 is
+
+$$
+(\mu + \alpha_1 + \beta_1 + \gamma_{11})
+-
+(\mu + \alpha_1 + \beta_2 + \gamma_{12})
+=
+\beta_1 - \beta_2 + \gamma_{11} - \gamma_{12}.
+$$
+
+## Estimable Functions
+
+Simple effect of Diet for Drug 1:
+
+$$
+\alpha_1 - \alpha_2 + \gamma_{11} - \gamma_{21}.
+$$
+
+Simple effect of Drug 1 vs. Drug 3 for Diet 2:
+
+$$
+\beta_1 - \beta_3 + \gamma_{21} - \gamma_{23}.
+$$
+
+Main effect of Diet:
+
+$$
+\alpha_1 - \alpha_2 + \bar{\gamma}_{1\cdot} - \bar{\gamma}_{2\cdot}.
+$$
+
+Interaction effect involving Diets 1 and 2 and Drugs 1 and 3:
+
+$$
+\Big[
+(\mu + \alpha_1 + \beta_1 + \gamma_{11})
+-
+(\mu + \alpha_2 + \beta_1 + \gamma_{21})
+\Big]
+-
+\Big[
+(\mu + \alpha_1 + \beta_3 + \gamma_{13})
+-
+(\mu + \alpha_2 + \beta_3 + \gamma_{23})
+\Big]
+$$
+
+which simplifies to
+
+$$
+\gamma_{11} - \gamma_{13} - \gamma_{21} + \gamma_{23}.
+$$
+
+## Estimation and Testing
+
+As before, estimation or testing involves finding an appropriate matrix $C$
+to estimate $C\boldsymbol{\beta}$ or test
+$$
+H_0 : C\boldsymbol{\beta} = 0.
+$$
+
+## Tests Based on Reduced vs. Full Model Comparison
+
+Any of the tests we have discussed could alternatively be carried out using a statistic of the form
+
+$$
+F =
+\frac{
+\mathbf{y}^\top (P_X - P_{X_0}) \mathbf{y} \,/\, [\operatorname{rank}(X) - \operatorname{rank}(X_0)]
+}{
+\mathbf{y}^\top (I - P_X) \mathbf{y} \,/\, [n - \operatorname{rank}(X)]
+},
+$$
+
+for an appropriate reduced model matrix $X_0$.
+
+It is not always easy to specify an appropriate matrix $X_0$.
+
+## Misc 
+
+### Testing for Main Effects When Factors Interact
+
+Some statisticians argue against testing for main effects when there are interactions between factors.
+
+Others believe that, depending on the scientific questions of interest, any contrasts of treatment means may be worth examining.
+
+Be aware that “no main effects” does not necessarily mean “no effects.”
+
+### Unbalanced Data and Missing Cells
+
+Although we have focused on a balanced two-factor experiment with 2 experimental units per treatment, the techniques presented in these slides work the same way whether data are balanced or not, as long as each treatment has a response for at least one experimental unit and some treatments have more than one.
+
+If there are no experimental units for one or more treatments, then the treatment design may not be a full-factorial treatment design, and we may have a *missing cell* or *missing cells*.
+
+### Missing Cells
+
+Consider the following layout with a missing cell (no data for Diet 2 with Drug 2):
+
+|           | Drug 1 | Drug 2 | Drug 3 |
+|-----------|--------|--------|--------|
+| **Diet 1** | $\mu_{11}$ | $\mu_{12}$ | $\mu_{13}$ |
+| **Diet 2** | $\mu_{21}$ | **Missing** | $\mu_{23}$ |
+
+In this example, we have no data for the treatment combination Diet 2 with Drug 2.
+
+In this case, we could fit a model with the 5 means:
+
+$$
+\mu_{11}, \quad \mu_{12}, \quad \mu_{13}, \quad \mu_{21}, \quad \text{and} \quad \mu_{23}.
+$$
+
+We could estimate any linear combination of these 5 means.
+
+**However**, linear combinations involving $\mu_{22}$ are **not estimable** because there is no data for that treatment combination.
+
+# Two Factor Additive Models 
+
+When factors do not interact, it makes sense to consider the *additive model*:
+
+$$
+y_{ijk} = \mu + \alpha_i + \beta_j + \varepsilon_{ijk},
+\qquad
+(i = 1,2;\; j = 1,2,3;\; k = 1,2).
+$$
+
+Here,
+- $\mu, \alpha_1, \alpha_2, \beta_1, \beta_2, \beta_3$ are unknown real-valued parameters, and
+- 
+$$\varepsilon_{111}, \varepsilon_{112}, \varepsilon_{121}, \varepsilon_{122},
+\varepsilon_{131}, \varepsilon_{132},
+\varepsilon_{211}, \varepsilon_{212}, \varepsilon_{221}, \varepsilon_{222},
+\varepsilon_{231}, \varepsilon_{232}$$ 
+
+are independent and identically distributed with
+
+$$
+\varepsilon_{ijk} \overset{\text{iid}}{\sim} \mathcal{N}(0,\sigma^2),
+$$
+for some unknown $\sigma^2 > 0$.
+
+## Cell Means for the Additive Model
+
+- All interactions are zero for the additive model.
+- The simple effect of Diet is $\alpha_1 - \alpha_2$ for all levels of Drug.
+- The simple effect of Drug $j$ vs. Drug $j'$ is $\beta_j - \beta_{j'}$, regardless of Diet.
+
+The table of cell means is:
+
+|        | Drug 1 | Drug 2 | Drug 3 |
+|------|--------|--------|--------|
+| Diet 1 | $\mu + \alpha_1 + \beta_1$ | $\mu + \alpha_1 + \beta_2$ | $\mu + \alpha_1 + \beta_3$ |
+| Diet 2 | $\mu + \alpha_2 + \beta_1$ | $\mu + \alpha_2 + \beta_2$ | $\mu + \alpha_2 + \beta_3$ |
+
+The marginal mean difference for Diet is
+
+$$
+\bar{\mu}_{1\cdot} - \bar{\mu}_{2\cdot} = \alpha_1 - \alpha_2.
+$$
+
+Estimation of $\alpha_1$ and $\alpha_2$ uses all available data across all three levels of Drug.
+
+## Marginal Means for the Additive Model
+
+Averaging over Drug yields the Diet marginal means:
+
+$$
+\mu + \alpha_1 + \bar{\beta},
+\qquad
+\mu + \alpha_2 + \bar{\beta},
+$$
+
+where
+
+$$
+\bar{\beta} = \frac{\beta_1 + \beta_2 + \beta_3}{3}.
+$$
+
+Thus, the difference between Diet marginal means is
+
+$$
+(\mu + \alpha_1 + \bar{\beta}) - (\mu + \alpha_2 + \bar{\beta})
+= \alpha_1 - \alpha_2.
+$$
+
+Averaging over Diet yields the Drug marginal means:
+
+$$
+\mu + \bar{\alpha} + \beta_j,
+$$
+
+where
+
+$$
+\bar{\alpha} = \frac{\alpha_1 + \alpha_2}{2}.
+$$
+
+Differences such as $\beta_1 - \beta_2$ or $\beta_2 - \beta_3$ represent main effects of Drug.
+
+## Tests for Main Effects in the Additive Model
+
+No Diet main effect is equivalent to
+
+$$
+\alpha_1 = \alpha_2.
+$$
+
+No Drug main effects is equivalent to
+
+$$
+\beta_1 = \beta_2 = \beta_3.
+$$
+
+## LSMEANS for the Additive Model
+
+LSMEANS are OLS estimators of the quantities in the margins below.
+
+The Diet marginal LSMEANS are
+
+$$
+\mu + \alpha_1 + \bar{\beta},
+\qquad
+\mu + \alpha_2 + \bar{\beta}.
+$$
+
+The Drug marginal LSMEANS are
+
+$$
+\mu + \bar{\alpha} + \beta_1,
+\quad
+\mu + \bar{\alpha} + \beta_2,
+\quad
+\mu + \bar{\alpha} + \beta_3.
+$$
+
+For example, the LSMEAN for Diet 1 can be written as
+
+$$
+c^\top \hat{\boldsymbol{\beta}}
+=
+\begin{bmatrix}
+1 & 1 & 0 & \tfrac{1}{3} & \tfrac{1}{3} & \tfrac{1}{3}
+\end{bmatrix}
+\begin{bmatrix}
+\hat{\mu} \\
+\hat{\alpha}_1 \\
+\hat{\alpha}_2 \\
+\hat{\beta}_1 \\
+\hat{\beta}_2 \\
+\hat{\beta}_3
+\end{bmatrix}
+=
+\hat{\mu} + \hat{\alpha}_1 + \frac{\hat{\beta}_1 + \hat{\beta}_2 + \hat{\beta}_3}{3}.
+$$
+
+Here, $\hat{\boldsymbol{\beta}}$ is any solution to the Normal Equations.
+
+Although $\hat{\boldsymbol{\beta}}$ depends on which of infinitely many solutions is used, the quantity $c^\top \hat{\boldsymbol{\beta}}$ is the same for all solutions.
+
+## R Full-Rank Formulation
+
+Under the R full-rank (treatment-coded) formulation for the additive model, the table of means is:
+
+|        | Drug 1 | Drug 2 | Drug 3 | Diet Marginal |
+|------|--------|--------|--------|---------------|
+| Diet 1 | $\mu$ | $\mu + \beta_2$ | $\mu + \beta_3$ | $\mu + \dfrac{\beta_2 + \beta_3}{3}$ |
+| Diet 2 | $\mu + \alpha_2$ | $\mu + \alpha_2 + \beta_2$ | $\mu + \alpha_2 + \beta_3$ | $\mu + \alpha_2 + \dfrac{\beta_2 + \beta_3}{3}$ |
+| Drug Marginal | $\mu + \dfrac{\alpha_2}{2}$ | $\mu + \dfrac{\alpha_2}{2} + \beta_2$ | $\mu + \dfrac{\alpha_2}{2} + \beta_3$ | $\mu + \dfrac{\alpha_2}{2} + \dfrac{\beta_2 + \beta_3}{3}$ |
+
+### Main Effects
+
+This parameterization differs from the earlier sum-to-zero setup and instead uses a full-rank model matrix.
+
+No Diet main effect is equivalent to
+
+$$
+\alpha_2 = 0.
+$$
+
+No Drug main effects is equivalent to
+
+$$
+\beta_2 = \beta_3 = 0.
+$$
+
+Under $\beta_2 = \beta_3 = 0$, all Drug marginal means collapse to the same value.
+
+### Diet Main Effect
+
+The null hypothesis of no Diet main effect is
+
+$$
+H_0 : \alpha_2 = 0.
+$$
+
+This can be written in matrix form as
+
+$$
+C^\top \boldsymbol{\beta} = 0,
+$$
+
+where
+
+$$
+C^\top =
+\begin{bmatrix}
+0 & 1 & 0 & 0
+\end{bmatrix},
+\qquad
+\boldsymbol{\beta} =
+\begin{bmatrix}
+\mu \\
+\alpha_2 \\
+\beta_2 \\
+\beta_3
+\end{bmatrix}.
+$$
+
+### Drug Main Effects
+
+The null hypothesis of no Drug main effects is
+
+$$
+H_0 : \beta_2 = \beta_3 = 0.
+$$
+
+This can be written as
+
+$$
+C \boldsymbol{\beta} =
+\begin{bmatrix}
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}
+\begin{bmatrix}
+\mu \\
+\alpha_2 \\
+\beta_2 \\
+\beta_3
+\end{bmatrix}
+=
+\begin{bmatrix}
+0 \\
+0
+\end{bmatrix}.
+$$
+
+# ANOVA 
+
+## Setup and Notation
+
+We consider the general linear model
+
+$$
+\mathbf{y} = \mathbf{X}\boldsymbol{\beta} + \boldsymbol{\varepsilon},
+\qquad
+\boldsymbol{\varepsilon} \sim \mathcal{N}(\mathbf{0}, \sigma^2 \mathbf{I}).
+$$
+
+Let
+
+$$
+\mathbf{X}_1 = \mathbf{1}, 
+\qquad 
+\mathbf{X}_m = \mathbf{X},
+\qquad
+\mathbf{X}_{m+1} = \mathbf{I}.
+$$
+
+Suppose $\mathbf{X}_2, \ldots, \mathbf{X}_m$ are matrices satisfying the nested column space condition
+
+$$
+\mathcal{C}(\mathbf{X}_1) \subset \mathcal{C}(\mathbf{X}_2) \subset \cdots \subset \mathcal{C}(\mathbf{X}_m).
+$$
+
+Let
+
+$$
+\mathbf{P}_j = \mathbf{P}_{\mathbf{X}_j},
+\qquad
+r_j = \mathrm{rank}(\mathbf{X}_j),
+\qquad
+j = 1, \ldots, m+1.
+$$
+
+## The Total Sum of Squares
+
+The **total sum of squares** (also called the corrected total sum of squares) is
+
+$$
+\sum_{i=1}^n (y_i - \bar{y})^2.
+$$
+
+In matrix form,
+
+$$
+\sum_{i=1}^n (y_i - \bar{y})^2
+= (\mathbf{y} - \bar{y}\mathbf{1})^\top (\mathbf{y} - \bar{y}\mathbf{1})
+= (\mathbf{y} - \mathbf{P}_1 \mathbf{y})^\top (\mathbf{y} - \mathbf{P}_1 \mathbf{y}).
+$$
+
+Since $\mathbf{P}_1$ is symmetric and idempotent,
+
+$$
+\sum_{i=1}^n (y_i - \bar{y})^2
+= \mathbf{y}^\top (\mathbf{I} - \mathbf{P}_1)\mathbf{y}.
+$$
+
+### Partitioning the Total Sum of Squares
+
+Recall that $\mathbf{X}_{m+1} = \mathbf{I}$, so $\mathbf{P}_{m+1} = \mathbf{I}$. Then
+
+$$
+\mathbf{y}^\top(\mathbf{I} - \mathbf{P}_1)\mathbf{y}
+= \mathbf{y}^\top(\mathbf{P}_{m+1} - \mathbf{P}_1)\mathbf{y}.
+$$
+
+Insert intermediate projections:
+
+$$
+\mathbf{y}^\top(\mathbf{P}_{m+1} - \mathbf{P}_1)\mathbf{y}
+= \mathbf{y}^\top \left(
+\sum_{j=2}^{m+1} \mathbf{P}_j
+-
+\sum_{j=1}^{m} \mathbf{P}_j
+\right)\mathbf{y}.
+$$
+
+Rearranging,
+
+$$
+\mathbf{y}^\top(\mathbf{I} - \mathbf{P}_1)\mathbf{y}
+=
+\mathbf{y}^\top(\mathbf{P}_{m+1} - \mathbf{P}_m)\mathbf{y}
++ \cdots
++ \mathbf{y}^\top(\mathbf{P}_2 - \mathbf{P}_1)\mathbf{y}.
+$$
+
+Equivalently,
+
+$$
+\mathbf{y}^\top(\mathbf{I} - \mathbf{P}_1)\mathbf{y}
+=
+\sum_{j=1}^{m}
+\mathbf{y}^\top(\mathbf{P}_{j+1} - \mathbf{P}_j)\mathbf{y}.
+$$
+
+### Sums of Squares Representation
+
+The quantities in
+
+$$
+\mathbf{y}^\top(\mathbf{I} - \mathbf{P}_1)\mathbf{y}
+=
+\sum_{j=1}^{m}
+\mathbf{y}^\top(\mathbf{P}_{j+1} - \mathbf{P}_j)\mathbf{y}
+$$
+
+are often arranged in an ANOVA table.
+
+We define
+
+$$
+\mathrm{SS}(j+1 \mid j)
+=
+\mathbf{y}^\top(\mathbf{P}_{j+1} - \mathbf{P}_j)\mathbf{y}.
+$$
+
+In particular,
+
+$$
+\mathrm{SSE}
+=
+\mathbf{y}^\top(\mathbf{I} - \mathbf{P}_{\mathbf{X}})\mathbf{y}.
+$$
+
+**Interpretation** of Sequential Sums of Squares
+
+Note that
+
+$$
+\begin{aligned}
+\mathrm{SS}(j+1 \mid j)
+&= \mathbf{y}^\top(\mathbf{P}_{j+1} - \mathbf{P}_j)\mathbf{y} \\
+&= \mathbf{y}^\top(\mathbf{I} - \mathbf{P}_j)\mathbf{y}
+   - \mathbf{y}^\top(\mathbf{I} - \mathbf{P}_{j+1})\mathbf{y} \\
+&= \mathrm{SSE}_j - \mathrm{SSE}_{j+1}.
+\end{aligned}
+$$
+
+Thus, $\mathrm{SS}(j+1 \mid j)$ is the **reduction in error sum of squares** when projecting $\mathbf{y}$ onto
+
+$$
+\mathcal{C}(\mathbf{X}_{j+1})
+\quad \text{instead of} \quad
+\mathcal{C}(\mathbf{X}_j).
+$$
+
+### Sequential (Type I) Sums of Squares
+
+The quantities
+
+$$
+\mathrm{SS}(j+1 \mid j),
+\qquad j = 1, \ldots, m-1,
+$$
+
+are called **Sequential Sums of Squares**.
+
+In SAS terminology, these are known as **Type I Sums of Squares**.
+
+Generally, the Type (I, II, III, IV) will refer to what elements of the ANOVA table are being conditioned on, particularly the first element of the table. 
+
+## Properties of the Matrices of the Quadratic Forms
+
+The matrices of the quadratic forms in the ANOVA table have several useful properties:
+
+- **Symmetry**  
+  $A = A^T$
+
+- **Idempotency**  
+  $A^2 = A$
+
+- **Rank relationship**  
+  $\text{rank}(P_{j+1} - P_j) = r_{j+1} - r_j$
+
+- **Zero Cross-Products**  
+  $(P_{j+1} - P_j)(P_{k+1} - P_k) = 0$ for $j \neq k$
+
+## Distribution of Scaled ANOVA Sums of Squares
+
+Given $y \sim N(X\beta, \sigma^2 I)$ and an idempotent matrix $A$:
+
+$$
+y^T A y \sim \sigma^2 \chi^2_{\text{rank}(A)}\left( \frac{\beta^T X^T A X \beta}{2\sigma^2} \right)
+$$
+
+Specifically, for the projection matrices $P_j$ in the nested sequence:
+
+Because  
+
+$$
+\frac{P_{j+1} - P_j}{\sigma^2} \cdot \sigma^2 I = P_{j+1} - P_j
+$$
+
+is idempotent,
+
+we have:
+
+$$
+y^T (P_{j+1} - P_j) y \sim \sigma^2 \chi^2_{r_{j+1} - r_j}\left( \frac{\beta^T X^T (P_{j+1} - P_j) X \beta}{2\sigma^2} \right)
+$$
+
+for all $j = 1, \ldots, m$.
+
+## ANOVA Tables 
+
+ANOVA with Degrees of Freedom
+
+Consider the sequential sums of squares
+
+$$
+\mathbf{y}^\top(\mathbf{P}_{j+1} - \mathbf{P}_j)\mathbf{y},
+\qquad j = 1, \ldots, m.
+$$
+
+Each line in the ANOVA table corresponds to a number of degrees of freedom equal to the increase in rank when moving from $\mathbf{X}_j$ to $\mathbf{X}_{j+1}$.
+
+### ANOVA Table with degrees of freedom is:
+
+| Sum of Squares | Degrees of Freedom | DF |
+|---------------|-------------------|----|
+| $\mathbf{y}^\top(\mathbf{P}_2 - \mathbf{P}_1)\mathbf{y}$ | $\mathrm{rank}(\mathbf{X}_2) - \mathrm{rank}(\mathbf{X}_1)$ | $r_2 - 1$ |
+| $\mathbf{y}^\top(\mathbf{P}_3 - \mathbf{P}_2)\mathbf{y}$ | $\mathrm{rank}(\mathbf{X}_3) - \mathrm{rank}(\mathbf{X}_2)$ | $r_3 - r_2$ |
+| $\vdots$ | $\vdots$ | $\vdots$ |
+| $\mathbf{y}^\top(\mathbf{P}_m - \mathbf{P}_{m-1})\mathbf{y}$ | $\mathrm{rank}(\mathbf{X}_m) - \mathrm{rank}(\mathbf{X}_{m-1})$ | $r - r_{m-1}$ |
+| $\mathbf{y}^\top(\mathbf{P}_{m+1} - \mathbf{P}_m)\mathbf{y}$ | $\mathrm{rank}(\mathbf{X}_{m+1}) - \mathrm{rank}(\mathbf{X}_m)$ | $n - r$ |
+| $\mathbf{y}^\top(\mathbf{I} - \mathbf{P}_1)\mathbf{y}$ | $\mathrm{rank}(\mathbf{X}_{m+1}) - \mathrm{rank}(\mathbf{X}_1)$ | $n - 1$ |
+
+
+### ANOVA Table with Mean Squares
+
+Dividing each sum of squares by its corresponding degrees of freedom yields the mean squares.
+
+| Sum of Squares | Degrees of Freedom | Mean Square |
+|---------------|-------------------|-------------|
+| $\mathrm{SS}(2 \mid 1)$ | $r_2 - 1$ | $\mathrm{MS}(2 \mid 1)$ |
+| $\mathrm{SS}(3 \mid 2)$ | $r_3 - r_2$ | $\mathrm{MS}(3 \mid 2)$ |
+| $\vdots$ | $\vdots$ | $\vdots$ |
+| $\mathrm{SS}(m \mid m-1)$ | $r - r_{m-1}$ | $\mathrm{MS}(m \mid m-1)$ |
+| $\mathrm{SSE}$ | $n - r$ | $\mathrm{MSE} = \hat{\sigma}^2$ |
+| $\mathrm{SST}_0$ | $n - 1$ |  |
+
+### Independence of ANOVA Sums of Squares
+
+Because
+
+$$
+(\mathbf{P}_{j+1} - \mathbf{P}_j)(\sigma^2 \mathbf{I})(\mathbf{P}_{\ell+1} - \mathbf{P}_\ell) = \mathbf{0}
+\qquad \text{for } j \neq \ell,
+$$
+
+any two ANOVA sums of squares (not including $\mathrm{SST}_0$) are independent.
+
+It is also true that the ANOVA sums of squares (not including $\mathrm{SST}_0$) are *mutually independent* by Cochran’s Theorem, although this stronger result is not usually needed.
+
+## ANOVA F Statistics
+
+For $j = 1, \ldots, m-1$, define the ANOVA $F$ statistic
+
+$$
+F_j
+=
+\frac{\mathrm{MS}(j+1 \mid j)}{\mathrm{MSE}}
+=
+\frac{\mathbf{y}^\top(\mathbf{P}_{j+1} - \mathbf{P}_j)\mathbf{y}/(r_{j+1} - r_j)}
+     {\mathbf{y}^\top(\mathbf{I} - \mathbf{P}_{\mathbf{X}})\mathbf{y}/(n - r)}.
+$$
+
+Under the general linear model,
+
+$$
+F_j \sim F_{r_{j+1}-r_j,\; n-r}(\delta_j),
+$$
+
+where the non-centrality parameter is
+
+$$
+\delta_j
+=
+\frac{\boldsymbol{\beta}^\top \mathbf{X}^\top(\mathbf{P}_{j+1} - \mathbf{P}_j)\mathbf{X}\boldsymbol{\beta}}
+     {2\sigma^2}.
+$$
+
+### Relationship with Reduced vs. Full Model $F$ Statistic
+
+The sequential ANOVA $F_j$ statistic can be written as
+
+$$
+F_j
+=
+\frac{\mathbf{y}^\top(\mathbf{P}_{j+1} - \mathbf{P}_j)\mathbf{y}/(r_{j+1} - r_j)}
+     {\mathbf{y}^\top(\mathbf{I} - \mathbf{P}_{\mathbf{X}})\mathbf{y}/(n - r)}
+=
+\frac{\mathrm{MS}(j+1 \mid j)}{\mathrm{MSE}}.
+$$
+
+This matches the reduced vs. full model $F$ statistic
+
+$$
+F
+=
+\frac{\mathbf{y}^\top(\mathbf{P}_{\mathbf{X}} - \mathbf{P}_{\mathbf{X}_0})\mathbf{y}/(r - r_0)}
+     {\mathbf{y}^\top(\mathbf{I} - \mathbf{P}_{\mathbf{X}})\mathbf{y}/(n - r)}.
+$$
+
+### What Do ANOVA $F$-Statistics Test?
+
+In general, an $F$ statistic tests
+
+$$
+H_0 : \text{the non-centrality parameter is } 0
+\qquad \text{vs.} \qquad
+H_A : \text{the non-centrality parameter is not } 0.
+$$
+
+For the sequential ANOVA statistic $F_j$, the non-centrality parameter is
+
+$$
+\delta_j
+=
+\frac{\boldsymbol{\beta}^\top \mathbf{X}^\top(\mathbf{P}_{j+1} - \mathbf{P}_j)\mathbf{X}\boldsymbol{\beta}}
+     {2\sigma^2}.
+$$
+
+Thus, $F_j$ can be used to test
+
+$$
+H_{0j} :
+\boldsymbol{\beta}^\top \mathbf{X}^\top(\mathbf{P}_{j+1} - \mathbf{P}_j)\mathbf{X}\boldsymbol{\beta}
+= 0
+\quad \text{vs.} \quad
+H_{Aj} :
+\boldsymbol{\beta}^\top \mathbf{X}^\top(\mathbf{P}_{j+1} - \mathbf{P}_j)\mathbf{X}\boldsymbol{\beta}
+\neq 0.
+$$
+
+### What Do ANOVA $F$-Statistics Test Pt. II?
+
+**Estimability does not necessarily imply testability.**
+
+In general, for the $j$-th sequential test we have:
+
+$$
+H_{0j}: (P_{j+1} - P_j)X\beta = 0 \quad \text{vs.} \quad H_{Aj}: (P_{j+1} - P_j)X\beta \neq 0
+$$
+
+which, in testable form, is:
+
+$$
+H_{0j}: C_j\beta = 0 \quad \text{vs.} \quad H_{Aj}: C_j\beta \neq 0,
+$$
+
+where $C_j$ is any matrix whose $q = r_{j+1} - r_j$ rows form a basis for the row space of $(P_{j+1} - P_j)X$.
+
+### Hypothesis Testing Interpretation
+
+Recall that $C\boldsymbol{\beta}$ is estimable if and only if
+
+$$
+C = A\mathbf{X}
+$$
+
+for some matrix $A$.
+
+The hypotheses above can be written as
+
+$$
+H_{0j} : (\mathbf{P}_{j+1} - \mathbf{P}_j)\mathbf{X}\boldsymbol{\beta} = 0
+\quad \text{vs.} \quad
+H_{Aj} : (\mathbf{P}_{j+1} - \mathbf{P}_j)\mathbf{X}\boldsymbol{\beta} \neq 0.
+$$
+
+This is of the form
+
+$$
+H_{0j} : C_j^* \boldsymbol{\beta} = 0
+\quad \text{vs.} \quad
+H_{Aj} : C_j^* \boldsymbol{\beta} \neq 0,
+$$
+
+where
+
+$$
+C_j^* = (\mathbf{P}_{j+1} - \mathbf{P}_j)\mathbf{X}.
+$$
+
+As written, $H_{0j}$ is not directly testable because $C_j^*$ has $n$ rows but rank
+
+$$
+\mathrm{rank}(C_j^*) = r_{j+1} - r_j < n.
+$$
+
+We can rewrite $H_{0j}$ as a testable hypothesis by replacing $C_j^*$ with any matrix $C_j$ whose
+
+$$
+q = r_{j+1} - r_j
+$$
+
+rows form a basis for the row space of $C_j^*$.
+
+## Example: Multiple Regression
+
+In multiple linear regression, we consider a sequence of nested models:
+
+$$
+X_1 = 1
+$$
+
+$$
+X_2 = [1, x_1]
+$$
+
+$$
+X_3 = [1, x_1, x_2]
+$$
+
+$$
+\vdots
+$$
+
+$$
+X_m = [1, x_1, \dots, x_{m-1}]
+$$
+
+Here, $SS(j + 1 | j)$ is the decrease in SSE that results when the explanatory variable $x_j$ is added to a model containing an intercept and explanatory variables $x_1, \dots, x_{j-1}$.
+
+## Example: Polynomial Regression
+
+For polynomial regression, the sequence is:
+
+$$
+X_1 = 1
+$$
+
+$$
+X_2 = [1, x]
+$$
+
+$$
+X_3 = [1, x, x^2]
+$$
+
+$$
+\vdots
+$$
+
+$$
+X_m = [1, x, x^2, \dots, x^{m-1}]
+$$
+
+Here, $SS(j + 1 | j)$ is the decrease in SSE that results when the term $x^j$ is added to a model containing an intercept and the lower-order terms $x, x^2, \dots, x^{j-1}$.
+
+## Aside: Centering and Standardizing for Numerical Stability
+
+It is typically best for numerical stability to center and scale a quantitative explanatory variable prior to computing higher-order terms.
+
+In the plant density example, we could replace $x$ by
+
+$$
+\frac{x - 30}{10}
+$$
+
+and work with the transformed matrices.
+
+Because these matrices have the same column spaces as the original matrices, the ANOVA table entries are **mathematically identical** for either set of matrices.
+
+# ANOVA Balanced Two Factor 
+
