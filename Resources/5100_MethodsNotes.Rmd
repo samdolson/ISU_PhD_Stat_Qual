@@ -7,7 +7,7 @@ output: pdf_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-Bookmark: 
+Bookmark: Finished Ch11. Still need Ch1. 
 
 # Key LM Results 
 
@@ -2513,11 +2513,788 @@ Thus, any $SS$ can be computed as $\hat{\beta}^T C^T [C(X^TX)^{-1}C^T]^{-1}C\hat
 
 # Orthogonal Contrasts 
 
+## Introduction
 
+Orthogonal contrasts are:
+
+- designed to be independent of one another (within the same model)
+- useful because they allow testing of multiple hypotheses simultaneously without inflating the probability of a Type I error.
+- constructed such that they do not overlap in terms of the information they provide about the data.
+
+## Orthogonal Linear Combinations
+
+**Under the model**
+
+$$
+y = X \beta + \epsilon, \, \epsilon \sim N(0, \sigma^2 I),
+$$
+
+two estimable linear combinations $c_1^T \beta$ and $c_2^T \beta$ are orthogonal if and only if their best linear unbiased estimators $c_1^T \hat{\beta}$ and $c_2^T \hat{\beta}$ are uncorrelated.
+
+**Blue's Theorem:**
+
+Recall $c_k^T \beta$ is estimable if and only if there exists $a_k$ such that  
+
+$$
+c_k^T = a_k^T X.
+$$
+
+$$
+\text{Cov}(c_1^T \hat{\beta}, c_2^T \hat{\beta}) 
+$$
+
+$$
+= \text{Cov}(a_1^T X \hat{\beta}, a_2^T X \hat{\beta}) = \text{Cov}(a_1^T P_X y, a_2^T P_X y)
+$$
+
+$$
+= a_1^T P_X \text{Cov}(y, y) P_X^T a_2 = a_1^T P_X \text{Var}(y) P_X^T a_2
+$$
+
+$$
+= a_1^T P_X \left( \sigma^2 I \right) P_X^T a_2 = \sigma^2 a_1^T P_X P_X a_2
+$$
+
+$$
+= \sigma^2 a_1^T P_X a_2 = \sigma^2 a_1^T X (X^T X)^{-} X^T a_2 = \sigma^2 c_1^T (X^T X)^{-} c_2.
+$$
+
+Thus, estimable linear combinations $c_1^T \beta$ and $c_2^T \beta$ are orthogonal if and only if $c_1^T (X^T X)^{-} c_2 = 0$.
+
+## Orthogonal Contrasts Definition
+
+A linear combination $c^T \beta$ is a contrast if and only if $c^T 1 = 0$.
+
+Two estimable contrasts $c_1^T \beta$ and $c_2^T \beta$ that are orthogonal are called **orthogonal contrasts**.
+
+That is,
+
+1. $c_1^T \beta$ and $c_2^T \beta$ are orthogonal:
+
+2.  
+
+$$
+\text{Cov}(c_1^T \hat{\beta}, c_2^T \hat{\beta}) = 0
+$$
+
+3. Contrast coefficients add to zero: $c_1^T 1 = c_2^T 1 = 0$.
+
+## Connection to the ANOVA Table
+
+| Source       | Sum of Squares | DF |
+|--------------|----------------|----|
+| Diets        | $y^\top (P_2 - P_1)y$ | $2 - 1 = 1$ |
+| Drugs        | $y^\top (P_3 - P_2)y$ | $4 - 2 = 2$ |
+| Diets × Drugs| $y^\top (P_4 - P_3)y$ | $6 - 4 = 2$ |
+| Error        | $y^\top (I - P_4)y$   | $12 - 6 = 6$ |
+| C. Total     | $y^\top (I - P_1)y$   | $12 - 1 = 11$ |
+
+## Connection to Orthogonal Contrasts
+
+**Drug main effect**  
+**Diet main effect**
+
+SS Formulas:
+
+$$
+y^T(P_2 - P_1)y = \frac{(c_1^T\hat{\beta})^2}{c_1^T(X^TX)^{-}c_1}
+$$
+
+$$
+y^T(P_3 - P_2)y = \frac{(c_2^T\hat{\beta})^2}{c_2^T(X^TX)^{-}c_2} + \frac{(c_3^T\hat{\beta})^2}{c_3^T(X^TX)^{-}c_3}
+$$
+
+$$
+y^T(P_4 - P_3)y = \frac{(c_4^T\hat{\beta})^2}{c_4^T(X^TX)^{-}c_4} + \frac{(c_5^T\hat{\beta})^2}{c_5^T(X^TX)^{-}c_5}
+$$
+
+$$
+y^T(I - P_4)y
+$$
+
+$$
+y^T(I - P_1)y
+$$
+
+Total DF = 11
+
+## Thoughts and Commentary 
+
+### Additional Partitioning of ANOVA Sums of Squares
+
+The previous example shows how the Drug and Diet × Drug sums of squares can each be partitioned into two single-degree of freedom sums of squares corresponding to estimable orthogonal contrasts.
+
+More generally, any ANOVA sum of squares with $q$ degrees of freedom can be partitioned into $q$ single-degree-of-freedom sums of squares corresponding to $q$ estimable orthogonal linear combinations $c_1^T\beta,\ldots,c_q^T\beta$.
+
+### ANOVA Partitioning is Not Always Necessary
+
+Just because we can partition ANOVA sums of squares does not mean we need to partition ANOVA sums of squares.
+
+The goals of an analysis typically involve constructing estimates or conducting tests of scientific interest.
+
+The tests of scientific interest do not necessarily involve orthogonal linear combinations.
+
+For example, suppose the goal of the researchers who conducted the diet-drug study is to determine which of the three drugs is best for enhancing weight gain of pigs on each diet.
+
+### Comments on the Analysis
+
+Note that the main analysis focuses on pairwise comparisons of drugs within each diet.
+
+This involves a set of six contrasts, but the contrasts are not pairwise orthogonal within either diet.
+
+The sums of squares for these contrasts do not add up to any ANOVA sums of squares, but they are the contrasts that best address the researchers' questions.
+
+If we want to control the probability of one or more type $I$ errors, we could use Bonferroni's method. In this case, the adjustment for multiple testing would not change the conclusions.
+
+### Cell Means vs. Additive Model
+
+We used the cell means model for analysis even though the interactions were not significant at the 0.05 level.
+
+I tend to prefer the cell means model in experiments with a full-factorial treatment design even if interactions are not significant.
+
+The cell means model is less restrictive than an additive model.
+
+The cell means model estimator of error variance $\sigma^2$ is not inflated by incorrectly specifying an additive mean structure when the additive mean structure is too restrictive.
+
+Using the cell means model honors the treatment structure.
+
+Using the cell means model avoids problems with using the data once to select a model and a second time to perform inference.
+
+Some other statisticians may favor a different strategy, especially in experiments with many factors or few degrees of freedom for error.
+
+# Brief Aside on Some Relevant Linear Algebra 
+
+## Orthogonal and Orthonormal Vectors
+
+The $m \times 1$ vectors $p_1, \ldots, p_n$ are said to be *orthogonal* if and only if  
+
+$$ 
+p_i^\top p_j = 0 \text{ for all } i \neq j. 
+$$
+
+The $m \times 1$ vectors $p_1, \ldots, p_n$ are said to be *orthonormal* if and only if 
+
+$$ 
+p_i^\top p_j = 
+\begin{cases} 
+0 & \text{if } i \neq j \\ 
+1 & \text{if } i = j 
+\end{cases} 
+$$
+
+## Orthogonal Matrices
+
+A square matrix $P$ is said to be *orthogonal* if and only if  
+
+$$ 
+P^\top P = I. 
+$$
+
+Note that because $P$ is square,  
+
+$$ 
+P^\top P = I 
+$$  
+implies that 
+
+$$ 
+(P^\top)^{-1} = P 
+$$  
+
+and  
+
+$$ 
+P^{-1} = P^\top. 
+$$  
+
+Thus, 
+
+$$ 
+P^\top P = PP^\top = I. 
+$$
+
+It follows that a square matrix $P$ is orthogonal if and only if the rows of $P$ are orthonormal vectors and the columns of $P$ are orthonormal vectors.
+
+## The Spectral Decomposition Theorem
+
+An $n \times n$ symmetric matrix $H$ may be decomposed as  
+
+$$ 
+H= P \Lambda P^T = \sum_{i=1}^n \lambda_i \, p_i \, p_i^T, 
+$$
+
+where  
+
+- $P = [p_1, \ldots, p_n]$ is an $n \times n$ orthogonal matrix whose columns $p_1, \ldots, p_n$ are the orthonormal eigenvectors of $H$, and  
+- $\Lambda = \text{diag}(\lambda_1, \ldots, \lambda_n)$ is a diagonal matrix whose diagonal entries $\lambda_1, \ldots, \lambda_n \in \mathbb{R}$ are the eigenvalues of $H$ (with $\lambda_i$ corresponding to $p_i$ for $i = 1, \ldots, n$).
 
 # Aitken Model
 
+An alternative decomposition is based on the Cholesky decomposition.
 
+Let
+
+$$
+y = X\beta + \varepsilon, \qquad E(\varepsilon) = 0, \qquad \operatorname{Var}(\varepsilon) = \sigma^2 V.
+$$
+
+This model is identical to the Gauss–Markov linear model except that
+
+$$
+\operatorname{Var}(\varepsilon) = \sigma^2 V \quad \text{instead of} \quad \sigma^2 I.
+$$
+
+- $V$ is assumed to be a known positive definite variance matrix.
+- $\sigma^2$ is an unknown positive variance parameter.
+
+We need a transformation of our model that results in a new model fulfilling the Gauss–Markov assumptions.
+
+## A Transformation of the Aitken Model
+
+Let $V^{1/2}$ be the symmetric square root of $V$.  
+Note that $V$ positive definite implies $V^{1/2}$ is positive definite and therefore nonsingular.
+
+Using $V^{-1/2}$ to denote $(V^{1/2})^{-1}$, we have
+
+$$
+V^{-1/2} y = V^{-1/2} X \beta + V^{-1/2} \varepsilon.
+$$
+
+Define
+
+$$
+z = V^{-1/2} y, \qquad W = V^{-1/2} X, \qquad \delta = V^{-1/2} \varepsilon.
+$$
+
+Then
+
+$$
+z = W \beta + \delta, \qquad E(\delta) = 0, \qquad \operatorname{Var}(\delta) = \sigma^2 I,
+$$
+
+because
+
+$$
+\begin{aligned}
+\operatorname{Var}(\delta)
+&= \operatorname{Var}(V^{-1/2}\varepsilon) \\
+&= V^{-1/2} \operatorname{Var}(\varepsilon) V^{-1/2} \\
+&= V^{-1/2} (\sigma^2 V) V^{-1/2} \\
+&= \sigma^2 I.
+\end{aligned}
+$$
+
+Thus, after transformation, we are back to the Gauss–Markov model we are familiar with.
+
+We can apply all the results we have established previously for the Gauss–Markov model.
+
+## Estimation of $E(y)$ under the Aitken Model
+
+Note that
+
+$$
+E(y) = E(V^{1/2} V^{-1/2} y) = V^{1/2} E(V^{-1/2} y) = V^{1/2} E(z).
+$$
+
+Because the Gauss–Markov model holds for $z$, the best estimator of $E(z)$ is
+
+$$
+\hat z = P_W z = W (W^\top W)^{-} W^\top z,
+$$
+
+where $W = V^{-1/2} X$.
+
+Substituting,
+
+$$
+\begin{aligned}
+\hat z
+&= V^{-1/2} X \bigl( (V^{-1/2} X)^\top (V^{-1/2} X) \bigr)^{-}
+   (V^{-1/2} X)^\top V^{-1/2} y \\
+&= V^{-1/2} X (X^\top V^{-1} X)^{-} X^\top V^{-1} y.
+\end{aligned}
+$$
+
+Thus, to estimate
+
+$$
+E(y) = V^{1/2} E(z),
+$$
+
+we use
+
+$$
+\hat y
+= V^{1/2} \hat z
+= X (X^\top V^{-1} X)^{-} X^\top V^{-1} y.
+$$
+
+## Estimation of Linear Functions under the Aitken Model
+
+Likewise, if $C\beta$ is estimable, the BLUE is the ordinary least squares estimator
+
+$$
+C (W^\top W)^{-} W^\top z,
+$$
+
+which can be expressed as
+
+$$
+\begin{aligned}
+C (W^\top W)^{-} W^\top z
+&= C (X^\top V^{-1/2} V^{-1/2} X)^{-} X^\top V^{-1/2} V^{-1/2} y \\
+&= C (X^\top V^{-1} X)^{-} X^\top V^{-1} y.
+\end{aligned}
+$$
+
+The estimator
+
+$$
+C (X^\top V^{-1} X)^{-} X^\top V^{-1} y
+= C \hat\beta_V
+$$
+
+is called a **Generalized Least Squares (GLS)** estimator.
+
+This estimator is the BLUE of any estimable $C\beta$ under the Aitken Model.
+
+## Aitken Equations
+
+The GLS estimator
+
+$$
+\hat\beta_V = (X^\top V^{-1} X)^{-} X^\top V^{-1} y
+$$
+
+is a solution to the Aitken equations:
+
+$$
+X^\top V^{-1} X b = X^\top V^{-1} y.
+$$
+
+These follow from the normal equations
+
+$$
+W^\top W b = W^\top z,
+$$
+
+since
+
+$$
+\begin{aligned}
+W^\top W b &= W^\top z \\
+\iff X^\top V^{-1/2} V^{-1/2} X b &= X^\top V^{-1/2} V^{-1/2} y \\
+\iff X^\top V^{-1} X b &= X^\top V^{-1} y.
+\end{aligned}
+$$
+
+Thus,
+
+$$
+\hat\beta_V = (X^\top V^{-1} X)^{-} X^\top V^{-1} y
+$$
+
+is a solution to the generalized least squares problem.
+
+### Weighted Least Squares
+
+When $V$ is diagonal, the term **Weighted Least Squares (WLS)** is often used instead of GLS.
+
+If
+
+$$
+V = \operatorname{diag}(v_{11}, \dots, v_{nn}),
+$$
+
+the least squares problem becomes
+
+Find $b$ to minimize
+
+$$
+(y - Xb)^\top V^{-1} (y - Xb)
+= \sum_{i=1}^n \frac{1}{v_{ii}} (y_i - x_{(i)}^\top b)^2,
+$$
+
+where $x_{(i)}^\top$ is the $i$th row of $X$.
+
+## Inference Under the Aitken Model with Normal Errors
+
+- The Aitken Model with Normal errors:  
+  $$ y = X \beta + \epsilon, \, \epsilon \sim \mathcal{N}(0, \sigma^2 V). $$
+
+- Under the Aitken Model with Normal errors, we can back transform to convert known formulas in terms of $z$ and $W$ to formulas in terms of $y$ and $X$ to allow inference about estimable $C \beta$ under the Aitken Model with Normal errors.
+
+## An Example
+
+Researchers were interested in comparing the dry weight of maize seedlings from two different genotypes. For each genotype, nine seeds were planted in each of four trays. The eight trays in total were randomly positioned in a growth chamber. Three weeks after the emergence of the first seedling, emerged seedlings were harvested from each tray and weighed together after drying to obtain one weight for each tray. Although nine seeds were planted in each tray, fewer than nine seedlings emerged in many of the trays. Thus, weights were recorded on a per seedling basis, and the number of seedlings that emerged in each tray was also recorded.
+
+*A Model for the Data*
+
+Let $n_{ij}$ be the number of seedlings for the $j$th tray of genotype $i$  
+($i = 1, 2; \, j = 1, 2, 3, 4$).  
+
+Let $y_{ijk}$ be the dry weight of the $k$th seedling in the $j$th tray of genotype $i$  
+($i = 1, 2; \, j = 1, 2, 3, 4; \, k = 1, \ldots, n_{ij}$).  
+
+Suppose all seedling weights are independent and normally distributed with common variance $\sigma^2$ and genotype-specific means, $\mu_1$ for genotype 1 and $\mu_2$ for genotype 2:  
+
+$$ 
+y_{ijk} \overset{ind}{\sim} N(\mu_i, \sigma^2). 
+$$
+
+Now let $y_{ij} = \bar{y}_{ij}$  
+
+$$ 
+y_{ij} = \bar{y}_{ij} 
+$$
+
+It follows that  
+
+$$ 
+y_{ij} \sim N(\mu_i, \sigma^2/n_{ij}) 
+$$
+
+or, equivalently, 
+
+$$ 
+y_{ij} = \mu_i + \epsilon_{ij}, 
+$$  
+
+where
+
+$$ 
+\epsilon_{ij} \sim N(0, \sigma^2/n_{ij}). 
+$$
+
+### Model in Matrix and Vector Form
+
+$$
+\begin{bmatrix}
+y_{11} \\
+y_{12} \\
+y_{13} \\
+y_{14} \\
+y_{21} \\
+y_{22} \\
+y_{23} \\
+y_{24}
+\end{bmatrix}
+=
+\begin{bmatrix}
+1 & 0 \\
+1 & 0 \\
+1 & 0 \\
+1 & 0 \\
+0 & 1 \\
+0 & 1 \\
+0 & 1
+\end{bmatrix}
+\begin{bmatrix}
+\mu_1 \\
+\mu_2
+\end{bmatrix}
++
+\begin{bmatrix}
+\epsilon_{11} \\
+\epsilon_{12} \\
+\epsilon_{13} \\
+\epsilon_{14} \\
+\epsilon_{21} \\
+\epsilon_{22} \\
+\epsilon_{23} \\
+\epsilon_{24}
+\end{bmatrix}
+$$
+
+$$
+y = X \beta + \epsilon, \quad \epsilon \sim N(0, \sigma^2 V) 
+$$
 
 # Linear Mixed Effects 
+
+## Motivation
+
+In a linear model we distinguish between two types of effects:
+
+**fixed effects** vs. **random effects**
+
+Which effect to choose depends on
+
+1. the context of the data,  
+2. the research questions of interest, and  
+3. how the data are collected.
+
+### Fixed Effects
+
+Data have been gathered from all the levels of the factor that are of interest. Number of levels is typically small.
+
+### Random Effects
+
+Factor variable has many possible levels and levels typically represent a larger population of interest. However, observing all levels is not feasible and we only have a random sample of levels in the data.
+
+Examples:
+
+1. Assessing effectiveness of a new curriculum after statewide implementation: school effect  
+2. Operator or machine effect in Gauge R&R studies  
+3. Hospital effect  
+
+We are interested in whether the factor has a significant effect in explaining the response, but only in a general way.
+
+Some general remarks:
+
+- Data analysis differs depending on type of effect (fixed or random); hence misspecification of the type of effect can lead to incorrect conclusions.
+- Random factor analysis is usually used if there is reason to believe that the levels observed in the experiment could reasonably be a random sample of all levels.
+- An interaction term involving both a fixed and a random factor should be considered a random factor.
+- A factor that is nested in a random factor should be considered random.
+
+If a model contains both fixed and random effects, we call it a **mixed effects model**.
+
+## The Linear Mixed-Effects Model
+
+$$ 
+y = X \beta + Z u + e 
+$$
+
+- $X$ is an $n \times p$ matrix of known constants
+- $\beta \in \mathbb{R}^p$ is an unknown parameter vector
+- $Z$ is an $n \times q$ matrix of known constants
+- $u$ is a $q \times 1$ random vector — We model its Variance
+- $e$ is an $n \times 1$ vector of random errors
+
+Also: 
+
+- The elements of $\beta$ are considered to be non-random and are called *fixed effects*.
+- The elements of $u$ are random variables and are called *random effects*.
+- The elements of the error vector $e$ are always considered to be random variables.
+
+Because the model includes both fixed and random effects (in addition to the random errors), it is called a *mixed-effects* model, or more simply, a *mixed model*.
+
+The model is called a *linear mixed-effects* model because (as we will soon see)
+
+$$
+E(y \mid u) = X\beta + Zu,
+$$
+
+which is a linear function of fixed and random effects.
+
+### Model Assumptions
+
+We assume that
+
+$$
+E(e) = 0, \qquad \operatorname{Var}(e) = R,
+$$
+
+and
+
+$$
+E(u) = 0, \qquad \operatorname{Var}(u) = G,
+$$
+
+with
+
+$$
+\operatorname{Cov}(e, u) = 0.
+$$
+
+The random effects do not affect the mean structure.
+
+### Mean and Variance of $y$
+
+The marginal mean of $y$ is
+
+$$
+\begin{aligned}
+E(y)
+&= E(X\beta + Zu + e) \\
+&= X\beta + Z E(u) + E(e) \\
+&= X\beta.
+\end{aligned}
+$$
+
+The marginal variance of $y$ is
+
+$$
+\begin{aligned}
+\operatorname{Var}(y)
+&= \operatorname{Var}(X\beta + Zu + e) \\
+&= \operatorname{Var}(Zu + e) \\
+&= \operatorname{Var}(Zu) + \operatorname{Var}(e) \\
+&= Z \operatorname{Var}(u) Z^\top + R \\
+&= Z G Z^\top + R \equiv \Sigma.
+\end{aligned}
+$$
+
+### Normality Assumption
+
+We usually consider the special case in which
+
+$$
+\begin{bmatrix}
+u \\
+e
+\end{bmatrix}
+\sim \mathcal{N}
+\left(
+\begin{bmatrix}
+0 \\
+0
+\end{bmatrix},
+\begin{bmatrix}
+G & 0 \\
+0 & R
+\end{bmatrix}
+\right).
+$$
+
+This implies
+
+$$
+y \sim \mathcal{N}(X\beta, \, Z G Z^\top + R).
+$$
+
+The conditional mean and variance, given the random effects, 
+
+$$
+E(y \mid u) = X\beta + Zu,
+\qquad
+\operatorname{Var}(y \mid u) = R.
+$$
+
+
+## Example
+
+Suppose an experiment was conducted to compare the height of plants grown at two soil moisture levels (labeled 1 and 2).
+
+The soil moisture levels were randomly assigned to 4 pots, with 2 pots per moisture level. For each moisture level, 3 seeds were planted in one pot and 2 seeds were planted in the other.
+
+After a four-week growing period, the height of each seedling was measured.
+
+Let $y_{ijk}$ denote the height for soil moisture level $i$, pot $j$, and seedling $k$.
+
+### Covariance Structure
+
+Note that
+
+$$
+\operatorname{Var}(y_{ijk}) = \sigma_p^2 + \sigma_e^2,
+\qquad \forall i, j, k.
+$$
+
+For plants within the same pot,
+
+$$
+\operatorname{Cov}(y_{ijk}, y_{ijk^*}) = \sigma_p^2,
+\qquad \forall i, j, \text{ and } k \neq k^*.
+$$
+
+For plants from different pots,
+
+$$
+\operatorname{Cov}(y_{ijk}, y_{i^* j^* k^*}) = 0,
+\qquad \text{if } i \neq i^* \text{ or } j \neq j^*.
+$$
+
+Thus:
+
+- Any two observations from the same pot have covariance $\sigma_p^2$.
+- Any two observations from different pots are uncorrelated.
+
+### Estimation with Known Variance Components
+
+If $\sigma_p^2 / \sigma_e^2$ were known, we would use GLS to estimate any estimable $C\beta$ by
+
+$$
+C \hat\beta_V
+= C (X^\top V^{-1} X)^{-} X^\top V^{-1} y.
+$$
+
+However, we seldom know $\sigma_p^2 / \sigma_e^2$ or, more generally, $\Sigma$ or $V$.
+
+### Estimation with Unknown Variance Components
+
+For the general problem where
+
+$$
+\operatorname{Var}(y) = \Sigma
+$$
+
+is an unknown positive definite matrix, we can rewrite
+
+$$
+\Sigma = \sigma^2 V,
+$$
+
+where $\sigma^2$ is an unknown positive variance and $V$ is an unknown positive definite matrix.
+
+As in our simple example, each entry of $V$ is usually assumed to be a known function of a small number of unknown parameters.
+
+Thus, our strategy for estimating an estimable $C\beta$ involves estimating the unknown parameters in $V$ to obtain
+
+$$
+C \hat\beta_{\hat V}
+= C (X^\top \hat V^{-1} X)^{-} X^\top \hat V^{-1} y.
+$$
+
+In general,
+
+$$
+C \hat\beta_{\hat V}
+= C (X^\top \hat V^{-1} X)^{-} X^\top \hat V^{-1} y
+$$
+
+is a nonlinear estimator that is an approximation to
+
+$$
+C \hat\beta_V
+= C (X^\top V^{-1} X)^{-} X^\top V^{-1} y,
+$$
+
+which would be the BLUE of $C\beta$ if $V$ were known.
+
+# Experimental Design Terminology
+
+**Experiment** – An investigation in which the investigator applies some treatments to experimental units and then observes the effect of the treatments on the experimental units by measuring one or more response variables.
+
+**Treatment** – A condition or set of conditions applied to experimental units in an experiment.
+
+**Experimental Unit** – The physical entity to which a treatment is randomly assigned and independently applied.
+
+**Response Variable** – A characteristic of an experimental unit that is measured after treatment and analyzed to assess the effects of treatments on experimental units.
+
+**Observational Unit** – The unit on which a response variable is measured.
+
+There is often a one-to-one correspondence between experimental units and observational units, but that is not always true.
+
+## Example: Plant Heights and Soil Moisture
+
+In our example involving plant heights and soil moisture levels, pots were the experimental units because soil moisture levels were randomly assigned to pots.
+
+Seedlings were the observational units because the response was measured separately for each seedling.
+
+Whenever there is more than one observational unit for an experimental unit or whenever the response is measured multiple times for an experimental unit, we say we have **multiple observations per experimental unit**.
+
+This scenario is also referred to as **subsampling** or **pseudo-replication**.
+
+### Importance of Random Effects for Multiple Observations
+
+Whenever an experiment involves multiple observations per experimental unit, it is important to include a random effect for each experimental unit.
+
+Without a random effect for each experimental unit, a one-to-one correspondence between observations and experimental units is assumed.
+
+Including random effects in a model is one way to account for a lack of independence among observations that might be expected based on the design of an experiment.
+
+## Experimental Design Types
+
+**Completely Randomized Design (CRD)** – Experimental design in which, for given number of experimental units per treatment, all possible assignments of treatments to experimental units are equally likely.
+
+**Block** – A group of experimental units that, prior to treatment, are expected to be more like one another (with respect to one or more response variables) than experimental units in general.
+
+**Randomized Complete Block Design (RCBD)** – Experimental design in which separate and completely randomized treatment assignments are made for each of multiple blocks in such a way that all treatments have at least one experimental unit in each block.
+
+# ANOVA Mixed 
+
+# Cochran Satterthwaite
+
+# Split Plots 
 
