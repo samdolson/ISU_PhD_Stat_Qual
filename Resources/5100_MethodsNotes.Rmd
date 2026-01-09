@@ -7,7 +7,270 @@ output: pdf_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-Bookmark: Finished Ch11. Still need Ch1. 
+# Linear Algebra Overview 
+
+## Linear Independence and Linear Dependence
+
+The vectors $a_1, \ldots, a_n$ are **linearly independent (LI)** if and only if
+
+$$
+\sum_{i=1}^n c_i a_i = 0 \;\;\Rightarrow\;\; c_1 = \cdots = c_n = 0.
+$$
+
+The vectors $a_1, \ldots, a_n$ are **linearly dependent (LD)** if and only if there exists a set of coefficients $c_1, \ldots, c_n$, with $c_i \neq 0$ for at least one $i$, such that
+
+$$
+\sum_{i=1}^n c_i a_i = 0.
+$$
+
+## Orthogonality
+
+Two vectors $x$ and $y$ are **orthogonal** if their inner product is zero:
+
+$$
+x^\top y = y^\top x = \sum_{i=1}^n x_i y_i = 0.
+$$
+
+If, in addition, $a_i^\top a_i = 1$ for all $i = 1, \ldots, n$, then the set is said to be **orthonormal**.
+
+Any orthogonal set of nonnull vectors is linearly independent.
+
+The vectors $x_1, \ldots, x_n$ are **mutually orthogonal** if
+
+$$
+x_i^\top x_j = 0, \qquad \forall i \neq j.
+$$
+
+They are **mutually orthonormal** if
+
+$$
+x_i^\top x_j = 0 \;\; \forall i \neq j,
+\qquad
+\|x_i\| = 1 \;\; \forall i = 1, \ldots, n.
+$$
+
+## Column Space and Row Space
+
+Let $A$ denote an $m \times n$ matrix.
+
+- The **row space** of $A$ is the subspace of $\mathbb{R}^n$ spanned by the $m$ row vectors of $A$.
+- The **column space** of $A$ is the subspace of $\mathbb{R}^m$ spanned by the $n$ column vectors of $A$.
+
+The column space of $A$ is
+
+$$
+\mathcal{C}(A) = \{x \in \mathbb{R}^m : x = Ac \text{ for some } c \in \mathbb{R}^n\}.
+$$
+
+The row space of $A$ is
+
+$$
+\mathcal{R}(A) = \{x \in \mathbb{R}^n : x = A^\top d \text{ for some } d \in \mathbb{R}^m\}.
+$$
+
+Note that
+
+$$
+\mathcal{R}(A) = \mathcal{C}(A^\top),
+\qquad
+\mathcal{C}(A) \subseteq \mathbb{R}^m,
+\qquad
+\mathcal{R}(A) \subseteq \mathbb{R}^n.
+$$
+
+The row space and column space of $A$ have the same dimension.
+
+This dimension is called the **rank** of $A$, denoted $\operatorname{rank}(A)$.
+
+## Rank, Trace, and Idempotent Matrices
+
+The **rank** of a matrix $A$ is the maximum number of linearly independent rows (or columns) of $A$.
+
+The **trace** of an $n \times n$ matrix $A$ is
+
+$$
+\operatorname{trace}(A) = \sum_{i=1}^n a_{ii}.
+$$
+
+A matrix $A$ is **idempotent** if and only if
+
+$$
+A^2 = A.
+$$
+
+For an idempotent matrix,
+
+$$
+\operatorname{rank}(A) = \operatorname{trace}(A).
+$$
+
+## Orthogonal Matrices
+
+A square matrix $A$ with mutually orthonormal columns is called an **orthogonal matrix**, satisfying
+
+$$
+A^\top A = I.
+$$
+
+In $\mathbb{R}^n$, an orthogonal matrix $Q$ with determinant 1 is sometimes called a **rotation matrix**, since it rotates any vector $x$ into
+
+$$
+x^\ast = Qx.
+$$
+
+## Inverse and Generalized Inverses
+
+An $n \times n$ matrix $A$ is **nonsingular** if there exists a matrix $B$ such that
+
+$$
+AB = I.
+$$
+
+Such a matrix $B$ is unique and is called the **inverse** of $A$, written $A^{-1}$.
+
+If $\operatorname{rank}(A) < n$, then $A$ is **singular** and has no inverse.
+
+A matrix $G$ is a **generalized inverse** of $A$ if and only if
+
+$$
+AGA = A.
+$$
+
+If $A^{-1}$ exists, then it is the unique generalized inverse of $A$.
+
+If $A$ is singular, then there are infinitely many generalized inverses.
+
+## Quadratic Forms
+
+Let $x \in \mathbb{R}^m$, $y \in \mathbb{R}^n$, and $A$ be an $m \times n$ matrix. Then
+
+$$
+x^\top Ay = \sum_{i=1}^m \sum_{j=1}^n x_i y_j a_{ij}
+$$
+
+is a **bilinear form**.
+
+If $m = n$ and $x = y$, then
+
+$$
+x^\top A x
+$$
+
+is a **quadratic form** in $x$.
+
+Assuming $A$ is symmetric, the quadratic form is classified as:
+
+- **Positive definite** if $x^\top A x > 0$ for all $x \neq 0$.
+- **Positive semidefinite** if $x^\top A x \ge 0$ for all $x$, with equality for some $x \neq 0$.
+- **Negative definite** if $x^\top A x < 0$ for all $x \neq 0$.
+- **Negative semidefinite** if $x^\top A x \le 0$ for all $x$, with equality for some $x \neq 0$.
+- **Indefinite** if $x^\top A x$ takes both positive and negative values.
+
+Quadratic forms play a central role in inferential statistics.
+
+## Linear Transformations of Random Vectors
+
+Let $y$ be an $n \times 1$ random vector, $A$ an $m \times n$ matrix, and $b$ an $m \times 1$ vector. Then
+
+$$
+Ay + b
+$$
+
+is a linear transformation of $y$, with
+
+$$
+\mathbb{E}(Ay + b) = A \mathbb{E}(y) + b,
+$$
+
+$$
+\operatorname{Var}(Ay + b) = A \operatorname{Var}(y) A^\top,
+$$
+
+$$
+\operatorname{Cov}(Ay + b, Cy + d) = A \operatorname{Var}(y) C^\top.
+$$
+
+## Multivariate Normal Distributions
+
+If $z_1, \ldots, z_n \stackrel{\text{iid}}{\sim} \mathcal{N}(0,1)$, then
+
+$$
+z = \begin{bmatrix} z_1 \\ \vdots \\ z_n \end{bmatrix} \sim \mathcal{N}(0, I_n).
+$$
+
+If $A$ is an $m \times n$ matrix and $\mu \in \mathbb{R}^m$, then
+
+$$
+Az + \mu \sim \mathcal{N}(\mu, AA^\top).
+$$
+
+If $y \sim \mathcal{N}(\mu, \Sigma)$ and $\Sigma = AA^\top$, then
+
+$$
+y = Az + \mu.
+$$
+
+If $\Sigma$ is positive semidefinite, the distribution is **singular**, but $y$ can still be represented using standard normals.
+
+## Chi-Squared Distributions
+
+If $z \sim \mathcal{N}(0, I_n)$, then
+
+$$
+w = z^\top z = \sum_{i=1}^n z_i^2 \sim \chi^2_n.
+$$
+
+If $y \sim \mathcal{N}(\mu, I_n)$, then
+
+$$
+w = y^\top y \sim \chi^2_n\left(\frac{\mu^\top \mu}{2}\right).
+$$
+
+For $w \sim \chi^2_m(\theta)$,
+
+$$
+\mathbb{E}(w) = m + 2\theta,
+\qquad
+\operatorname{Var}(w) = 2m + 4\theta.
+$$
+
+## $t$- and $F$-Distributions
+
+If $y \sim \mathcal{N}(\delta,1)$ and $w \sim \chi^2_m$ are independent, then
+
+$$
+\frac{y}{\sqrt{w/m}} \sim t_m(\delta).
+$$
+
+If $z \sim \mathcal{N}(0,1)$ and $w \sim \chi^2_m$ are independent, then
+
+$$
+\frac{z}{\sqrt{w/m}} \sim t_m.
+$$
+
+If $w_1 \sim \chi^2_{m_1}(\theta)$ and $w_2 \sim \chi^2_{m_2}$ are independent, then
+
+$$
+\frac{w_1/m_1}{w_2/m_2} \sim F_{m_1,m_2}(\theta).
+$$
+
+In the central case,
+
+$$
+\frac{w_1/m_1}{w_2/m_2} \sim F_{m_1,m_2}.
+$$
+
+## Independence Results
+
+Suppose $y \sim \mathcal{N}(\mu, \Sigma)$.
+
+- If $A_1 \Sigma A_2^\top = 0$, then $A_1 y \perp A_2 y$.
+- If $A_1 \Sigma A_2 = 0$, then $A_1 y \perp y^\top A_2 y$.
+- If $A_1 \Sigma A_2 = 0$ and $A_1, A_2$ are symmetric, then
+
+$$
+y^\top A_1 y \perp y^\top A_2 y.
+$$
 
 # Key LM Results 
 
@@ -3292,9 +3555,1655 @@ Including random effects in a model is one way to account for a lack of independ
 
 **Randomized Complete Block Design (RCBD)** – Experimental design in which separate and completely randomized treatment assignments are made for each of multiple blocks in such a way that all treatments have at least one experimental unit in each block.
 
-# ANOVA Mixed 
+# Mixed Effects ANOVA 
 
-# Cochran Satterthwaite
+## A Simple Random Effects Model (CRD Setup)
+
+We begin with a relatively simple special case. Suppose:
+
+$$
+y_{ijk} = \mu + \tau_i + u_{ij} + e_{ijk},
+\qquad
+(i = 1,\ldots,t;\; j = 1,\ldots,n;\; k = 1,\ldots,m),
+$$
+
+where:
+
+- $\mu$ is the fixed overall mean
+- $\tau_i$ denotes the $i$th treatment effect
+- $u_{ij}$ is the random effect of the $j$th experimental unit within treatment $i$
+- $e_{ijk}$ is the observational error
+
+Define the parameter vectors:
+
+$$
+\boldsymbol{\beta} = (\mu, \tau_1, \ldots, \tau_t)^\top,
+\qquad
+\boldsymbol{u} = (u_{11}, u_{12}, \ldots, u_{tn})^\top,
+\qquad
+\boldsymbol{e} = (e_{111}, e_{112}, \ldots, e_{tnm})^\top.
+$$
+
+Then $\boldsymbol{\beta} \in \mathbb{R}^{t+1}$ is an unknown parameter vector, and:
+
+$$
+\begin{bmatrix}
+\boldsymbol{u} \\
+\boldsymbol{e}
+\end{bmatrix}
+\sim
+\mathcal{N}
+\left(
+\begin{bmatrix}
+0 \\
+0
+\end{bmatrix},
+\begin{bmatrix}
+\sigma_u^2 I & 0 \\
+0 & \sigma_e^2 I
+\end{bmatrix}
+\right),
+$$
+
+where $\sigma_u^2, \sigma_e^2 \in \mathbb{R}^+$ are unknown variance components.
+
+**Interpretation:** This is the standard model for a completely randomized design (CRD) with $t$ treatments, $n$ experimental units per treatment, and $m$ observations per experimental unit.
+
+## Matrix Form of the Model
+
+We can write the model as:
+
+$$
+\boldsymbol{y} = X \boldsymbol{\beta} + Z \boldsymbol{u} + \boldsymbol{e},
+$$
+
+where:
+
+$$
+X =
+\begin{bmatrix}
+\mathbf{1}_{tnm \times 1} &
+I_{t \times t} \otimes \mathbf{1}_{nm \times 1}
+\end{bmatrix},
+\qquad
+Z =
+I_{tn \times tn} \otimes \mathbf{1}_{m \times 1}.
+$$
+
+The matrix $X$ represents the intercept and treatment effects, while $Z$ accounts for replication within experimental units.
+
+## Connection to ANOVA
+
+Define the sequence of model matrices:
+
+$$
+X_1 = \mathbf{1}_{tnm \times 1},
+\qquad
+X_2 =
+\begin{bmatrix}
+\mathbf{1}_{tnm \times 1} &
+I_{t \times t} \otimes \mathbf{1}_{nm \times 1}
+\end{bmatrix},
+\qquad
+X_3 = I_{tn \times tn} \otimes \mathbf{1}_{m \times 1}.
+$$
+
+Note that:
+
+$$
+\mathcal{C}(X_1) \subset \mathcal{C}(X_2) \subset \mathcal{C}(X_3),
+\qquad
+X = X_2,
+\qquad
+Z = X_3.
+$$
+
+As usual, let:
+
+$$
+P_j = P_{X_j} = X_j (X_j^\top X_j)^{-} X_j^\top,
+\qquad j = 1,2,3.
+$$
+
+Here:
+
+- $X_1$ corresponds to the intercept-only model
+- $X_2$ accounts for treatment effects in addition to the intercept
+- $X_3$ accounts for random effects in addition to the intercept and treatments
+
+## ANOVA Table and Sums of Squares
+
+### Complete ANOVA Table
+
+| Source | Sum of Squares | Degrees of Freedom | Expected Mean Squares (EMS) |
+|--------|----------------|--------------------|-----------------------------|
+| Treatments (trt) | $y^\top (P_2 - P_1) y$ | $t - 1$ | $\sigma_e^2 + m\sigma_u^2 + \dfrac{nm}{t-1}\sum_{i=1}^t (\tau_i - \bar{\tau}_{\cdot})^2$ |
+| Exp. Units within Treatments (xu(trt)) | $y^\top (P_3 - P_2) y$ | $tn - t$ | $\sigma_e^2 + m\sigma_u^2$ |
+| Observations within Exp. Units (ou(xu,trt)) | $y^\top (I - P_3) y$ | $tnm - tn$ | $\sigma_e^2$ |
+| Corrected Total | $y^\top (I - P_1) y$ | $tnm - 1$ | |
+
+### Alternative Notation for Sums of Squares
+
+Sum of Squares Formulas:
+
+$$
+SS_{\text{trt}} = \sum_{i=1}^t \sum_{j=1}^n \sum_{k=1}^m (y_{ijk} - \overline{y}_i)^2
+$$
+
+## Expected Mean Squares and Distribution Theory
+
+### Key Distributional Results
+
+With some nontrivial work, it can be shown that:
+
+1. 
+
+$$
+\frac{y^\top (P_2 - P_1)y}{\sigma_e^2 + m\sigma_u^2}
+\sim
+\chi^2_{t-1}\!\left(
+\frac{nm}{2(\sigma_e^2 + m\sigma_u^2)}
+\sum_{i=1}^t (\tau_i - \bar{\tau}_{\cdot})^2
+\right),
+$$
+
+2. 
+
+$$
+\frac{y^\top (P_3 - P_2)y}{\sigma_e^2 + m\sigma_u^2}
+\sim
+\chi^2_{tn - t},
+$$
+
+3. 
+
+$$
+\frac{y^\top (I - P_3)y}{\sigma_e^2}
+\sim
+\chi^2_{tnm - tn}.
+$$
+
+These three $\chi^2$ random variables are independent.
+
+### F-Tests for Hypothesis Testing
+
+**Test for Treatment Effects:**
+
+$$
+F_1
+=
+\frac{MS_{\text{trt}}}{MS_{xu(\text{trt})}}
+=
+\frac{y^\top (P_2 - P_1)y/(t-1)}
+     {y^\top (P_3 - P_2)y/(tn - t)}
+\sim
+F_{t-1,\,tn-t}\!\left(
+\frac{nm}{2(\sigma_e^2 + m\sigma_u^2)}
+\sum_{i=1}^t (\tau_i - \bar{\tau}_{\cdot})^2
+\right).
+$$
+
+Use $F_1$ to test: $H_0:\; \tau_1 = \cdots = \tau_t$.
+
+**Test for Random Effects:**
+
+$$
+F_2
+=
+\frac{MS_{xu(\text{trt})}}{MS_{ou(xu,\text{trt})}}
+=
+\frac{y^\top (P_3 - P_2)y/(tn - t)}
+     {y^\top (I - P_3)y/(tnm - tn)}
+\sim
+\left(\frac{\sigma_e^2 + m\sigma_u^2}{\sigma_e^2}\right)
+F_{tn-t,\,tnm-tn}.
+$$
+
+Use $F_2$ to test: $H_0:\; \sigma_u^2 = 0$.
+
+## Estimation Procedures
+
+### Estimation of Estimable $C\beta$
+
+The marginal variance of $\mathbf{y}$ is:
+
+$$
+\Sigma = \mathrm{Var}(\mathbf{y})
+=
+\sigma_u^2 I_{tn \times tn} \otimes \mathbf{1}\mathbf{1}^\top_{m \times m}
++
+\sigma_e^2 I_{tnm \times tnm}.
+$$
+
+It follows that:
+
+$$
+\hat{\boldsymbol{\beta}}_\Sigma
+=
+(X^\top \Sigma^{-1} X)^{-} X^\top \Sigma^{-1} \mathbf{y}
+=
+(X^\top X)^{-} X^\top \mathbf{y}
+=
+\hat{\boldsymbol{\beta}}.
+$$
+
+Thus, the GLS estimator of any estimable $C\boldsymbol{\beta}$ equals the OLS estimator in this balanced case.
+
+### Variance Component Estimation
+
+To estimate $\sigma_u^2$, note that:
+
+$$
+E\left(\frac{MS_{xu(trt)} - MS_{ou(xu,trt)}}{m}\right) = \frac{(\sigma_e^2 + m\sigma_u^2) - \sigma_e^2}{m} = \sigma_u^2.
+$$
+
+Thus, an unbiased estimator of $\sigma_u^2$ is:
+
+$$
+\hat{\sigma}_u^2 = \frac{MS_{xu(trt)} - MS_{ou(xu,trt)}}{m}.
+$$
+
+**Note:** This estimator can be negative, which is undesirable since $\sigma_u^2 \geq 0$.
+
+## Analysis Using Experimental Unit Averages
+
+### Model Transformation
+
+Define the experimental-unit average:
+
+$$
+\bar{y}_{ij\cdot}
+=
+\mu + \tau_i + u_{ij} + \bar{e}_{ij\cdot}.
+$$
+
+Let:
+
+$$
+\varepsilon_{ij} = u_{ij} + \bar{e}_{ij\cdot},
+\qquad
+\sigma^2 = \sigma_u^2 + \frac{\sigma_e^2}{m}.
+$$
+
+Then:
+
+$$
+\bar{y}_{ij\cdot} = \mu + \tau_i + \varepsilon_{ij},
+\qquad
+\varepsilon_{ij} \stackrel{iid}{\sim} \mathcal{N}(0, \sigma^2).
+$$
+
+Thus, averaging over $m$ observations per experimental unit yields a standard Gaussian linear model for the averages.
+
+### Key Properties
+
+1. **Inference Equivalence:** Inferences about estimable functions of $\beta$ obtained by analyzing these averages are identical to those from the ANOVA approach, provided the number of observations per experimental unit is constant.
+
+2. **Variance Estimation:** When using averages, $\hat{\sigma}^2$ estimates $\sigma_u^2 + \frac{\sigma_e^2}{m}$.
+
+3. **Separability:** We cannot separately estimate $\sigma_u^2$ and $\sigma_e^2$ from averages alone, but this is irrelevant for inference on $C\beta$.
+
+### Practical Applications
+
+**Confidence Interval for $\tau_1 - \tau_2$:**
+
+$$
+\overline{y}_{1..} - \overline{y}_{2..} \pm t_{t(n-1),1-\alpha/2} \sqrt{\frac{2MS_{xu(trt)}}{nm}}.
+$$
+
+**Test Statistic for $H_0 : \tau_1 = \tau_2$:**
+
+$$
+t = \frac{\overline{y}_{1..} - \overline{y}_{2..}}{\sqrt{\frac{2MS_{xu(trt)}}{nm}}} \sim t_{t(n-1)} \left( \frac{\tau_1 - \tau_2}{\sqrt{\frac{2(\sigma_e^2 + m\sigma_u^2)}{nm}}} \right).
+$$
+
+## General Principle: BLUE as Weighted Average
+
+**The BLUE is a weighted average of independent linear unbiased estimators** with weights proportional to the inverse variances of the estimators.
+
+## Unbalanced Data Considerations
+
+When data are unbalanced, analysis becomes more complex:
+
+1. **Approximate F-Tests:** Form linear combinations of Mean Squares to obtain denominators for test statistics.
+
+2. **Nonlinear Estimators:** $C\hat{\beta}_{\hat{\Sigma}}$ may be a nonlinear estimator of $C\beta$ with unknown exact distribution.
+
+3. **Approximate Inference:** Often obtained by using the distribution of $C\hat{\beta}_{\hat{\Sigma}}$ with unknown parameters replaced by estimates.
+
+### Example: Unbalanced Case with $t=2$, Unequal Replications
+
+For unbalanced designs, the test statistic used for balanced data is no longer F-distributed. For instance:
+
+$$
+\frac{MS_{\text{trt}}}{MS_{xu(\text{trt})}} \sim \frac{1.5\sigma_u^2 + \sigma_e^2}{\sigma_u^2 + \sigma_e^2} F_{1,1} \left( \frac{(\tau_1 - \tau_2)^2}{3\sigma_u^2 + 2\sigma_e^2} \right).
+$$
+
+An approximate F-statistic can be constructed using:
+
+$$
+\frac{MS_{\text{trt}}}{1.5MS_{xu(\text{trt})} - 0.5MS_{ou(xu,\text{trt})}},
+$$
+
+with denominator DF obtained via the Cochran-Satterthwaite method.
+
+## Key Points
+
+**Advantages of Balanced Designs**
+
+1. **Simplicity:** Easy determination of degrees of freedom, sums of squares, and expected mean squares.
+2. **Exact Tests:** Ratios of appropriate mean squares yield exact F-tests.
+3. **Estimation Equivalence:** For estimable $C\beta$, $C\hat{\beta}_{\hat{\Sigma}} = C\hat{\beta}$ (OLS = GLS).
+4. **Exact Inference:** When $\operatorname{Var}(c^\top \hat{\beta}) = \text{constant} \times E(MS)$, exact t-tests and confidence intervals are available.
+5. **Analysis Flexibility:** Simple analyses based on experimental unit averages give identical results to full mixed-model analyses.
+
+**Unbalanced Data Reality**
+
+1. **Approximation Required:** Analysis relies on approximate methods.
+2. **Distributional Complexity:** Exact distributions are generally unknown.
+3. **Variance Estimation:** Unbiased estimators of variance components can still be obtained using linear combinations of mean squares.
+
+**Key Takeaway:** While balanced designs facilitate exact inference through simple ANOVA methods, unbalanced designs require more sophisticated approximate methods but still allow for valid statistical analysis of mixed effects models.
+
+# Cochran–Satterthwaite Approximation 
+
+## Motivation: Why Do We Need This Approximation?
+
+The Cochran–Satterthwaite approximation becomes necessary in **unbalanced mixed-effects models** when:
+
+1. **Correlated error components** are present due to complex variance structures.
+2. **Exact F-tests no longer hold** because balance conditions are violated.
+3. **Denominators involve linear combinations of mean squares** rather than a single error term.
+4. **The exact sampling distribution is unknown or intractable**.
+
+**Key insight:**  
+In balanced designs, ratios of mean squares follow exact F-distributions. In unbalanced designs, this property breaks down, requiring approximation methods.
+
+## Mathematical Setup
+
+Suppose $M_1, \ldots, M_k$ are independent mean squares such that
+
+$$
+\frac{d_i M_i}{\mathbb{E}(M_i)} \sim \chi^2_{d_i},
+\qquad i = 1, \ldots, k.
+$$
+
+Then
+
+$$
+\mathbb{E}\!\left[\frac{d_i M_i}{\mathbb{E}(M_i)}\right] = d_i,
+\qquad
+\operatorname{Var}\!\left[\frac{d_i M_i}{\mathbb{E}(M_i)}\right] = 2d_i,
+$$
+
+and
+
+$$
+M_i \sim \frac{\mathbb{E}(M_i)}{d_i}\,\chi^2_{d_i}.
+$$
+
+Thus, each $M_i$ is a **scaled chi-square random variable**.
+
+## Linear Combination of Mean Squares
+
+Consider the random variable
+
+$$
+M = a_1 M_1 + a_2 M_2 + \cdots + a_k M_k,
+$$
+
+where $a_1, a_2, \ldots, a_k \in \mathbb{R}$ are known constants.
+
+Hence, $M$ is a **linear combination of scaled $\chi^2$ random variables**.
+
+## Cochran–Satterthwaite Approximation Principle
+
+The Cochran–Satterthwaite method assumes that $M$ can itself be approximated by a scaled chi-square distribution:
+
+$$
+\frac{d M}{\mathbb{E}(M)} \;\dot{\sim}\; \chi^2_d
+\qquad \Longleftrightarrow \qquad
+M \;\dot{\sim}\; \frac{\mathbb{E}(M)}{d}\,\chi^2_d.
+$$
+
+The goal is to select $d$ so that this approximation is reasonable.
+
+## Derivation of the Degrees of Freedom Formula
+
+### Variance Matching
+
+Under the approximation,
+
+$$
+\operatorname{Var}(M)
+\approx
+\left(\frac{\mathbb{E}(M)}{d}\right)^2 2d
+=
+\frac{2[\mathbb{E}(M)]^2}{d}
+\approx
+\frac{2M^2}{d}.
+$$
+
+From the definition of $M$ and independence of the $M_i$,
+
+$$
+\operatorname{Var}(M)
+=
+\sum_{i=1}^k a_i^2 \operatorname{Var}(M_i)
+=
+2 \sum_{i=1}^k \frac{a_i^2 [\mathbb{E}(M_i)]^2}{d_i}
+\approx
+2 \sum_{i=1}^k \frac{a_i^2 M_i^2}{d_i}.
+$$
+
+### Solving for Degrees of Freedom
+
+Equating variances yields
+
+$$
+\frac{2M^2}{d}
+=
+2 \sum_{i=1}^k \frac{a_i^2 M_i^2}{d_i},
+$$
+
+so
+
+$$
+d
+=
+\frac{M^2}{\sum_{i=1}^k a_i^2 M_i^2 / d_i}
+=
+\frac{\left(\sum_{i=1}^k a_i M_i\right)^2}
+     {\sum_{i=1}^k a_i^2 M_i^2 / d_i}.
+$$
+
+This is the **Cochran–Satterthwaite degrees of freedom formula**.
+
+## Application to Unbalanced Mixed Models
+
+In unbalanced mixed models, expected mean squares for fixed effects often involve **multiple variance components**. No single mean square serves as a valid denominator.
+
+Instead, valid denominators must be constructed as **linear combinations** of mean squares whose expectations match the required error structure.
+
+### Approximate F-Test Construction
+
+For testing $H_0 : \tau_1 = \tau_2$, consider the statistic
+
+$$
+F
+=
+\frac{MS_{\text{trt}}}
+     {1.5\,MS_{\text{xu(trt)}} - 0.5\,MS_{\text{ou(xu,trt)}}}.
+$$
+
+The denominator is a linear combination with
+- $a_1 = 1.5$, $M_1 = MS_{\text{xu(trt)}}$
+- $a_2 = -0.5$, $M_2 = MS_{\text{ou(xu,trt)}}$
+
+The approximate denominator degrees of freedom are
+
+$$
+d_{\text{denom}}
+=
+\frac{\left(1.5\,MS_{\text{xu(trt)}} - 0.5\,MS_{\text{ou(xu,trt)}}\right)^2}
+     {(1.5)^2 [MS_{\text{xu(trt)}}]^2/d_1
+      +
+      (-0.5)^2 [MS_{\text{ou(xu,trt)}}]^2/d_2}.
+$$
+
+## Example
+
+Given
+
+- $MS_{\text{xu(trt)}} = 2.42$, $d_1 = 1$
+- $MS_{\text{ou(xu,trt)}} = 0.18$, $d_2 = 1$
+
+Then
+
+$$
+\begin{aligned}
+d_{\text{denom}}
+&=
+\frac{(1.5 \times 2.42 - 0.5 \times 0.18)^2}
+     {(1.5)^2 (2.42)^2 + (-0.5)^2 (0.18)^2} \\
+&=
+\frac{(3.54)^2}{13.1769 + 0.0081} \\
+&=
+0.9504.
+\end{aligned}
+$$
+
+## Practical Considerations
+
+**When the Approximation Is Appropriate**
+
+- Unbalanced experimental designs
+- Multiple or correlated variance components
+- No exact F-test available
+- Denominators involving linear combinations of mean squares
+
+**Limitations**
+
+- Accuracy improves with larger sample sizes
+- Mixed-sign coefficients can degrade approximation quality
+- Assumes approximate independence of mean squares
+
+## Connection to Mixed Model Theory
+
+| Aspect | Balanced Design | Unbalanced Design |
+|------|----------------|------------------|
+| F-tests | Exact | Approximate |
+| Denominator | Single mean square | Linear combination |
+| Degrees of freedom | Closed form | Cochran–Satterthwaite |
+| Distribution | Exact F | Approximate F |
+
+Unbalanced designs produce **complex expected mean squares** involving multiple variance components, making approximation unavoidable.
+
+## Key Points
+
+- Cochran–Satterthwaite approximates linear combinations of mean squares using scaled $\chi^2$ distributions.
+- Degrees of freedom are chosen by **variance matching**.
+- The method enables approximate F-tests when no exact test exists.
+- Reliability improves with larger samples and well-behaved coefficients.
 
 # Split Plots 
 
+Split-plot designs arise when experimental constraints require treatments to be randomized at **different physical scales**, leading to **multiple experimental units** and **multiple error terms**. As a result, different effects are tested using different denominators in F-tests, and different variance components appear in confidence intervals.
+
+## A Model for Data from the Traditional Split-Plot Experiment
+
+Consider a traditional split-plot design with:
+
+- Genotype (whole-plot factor): $i = 1, \dots, w$
+- Fertilizer (split-plot factor): $j = 1, \dots, s$
+- Block: $k = 1, \dots, b$
+
+The model is
+
+$$
+y_{ijk} = \mu_{ij} + b_k + w_{ik} + e_{ijk},
+$$
+
+where:
+
+- $\mu_{ij}$ is the mean for Genotype $i$, Fertilizer $j$
+- $b_k$ is the random block effect
+- $w_{ik}$ is the random whole-plot experimental unit effect
+- $e_{ijk}$ is the random split-plot experimental unit (residual) effect
+
+This decomposition reflects the hierarchical experimental structure: split plots are nested within whole plots, which are nested within blocks.
+
+## Structure and Experimental Units
+
+Split-plot designs involve **two stages of randomization**:
+
+1. Whole-plot treatments (Genotype) are randomized to **whole plots within blocks**
+2. Split-plot treatments (Fertilizer) are randomized **within each whole plot**
+
+As a consequence:
+
+- Whole-plot effects are subject to whole-plot error ($\sigma_w^2$)
+- Split-plot effects are subject only to split-plot error ($\sigma_e^2$)
+
+This leads directly to different F-tests and confidence intervals for whole-plot and split-plot effects.
+
+## Best Linear Unbiased Estimators
+
+Because the design is **balanced**, the generalized least squares (GLS) estimator coincides with the ordinary least squares (OLS) estimator for any estimable $C\beta$:
+
+$$
+C\hat{\beta}_{\Sigma}
+=
+C(X^\top \Sigma^{-1} X)^{-} X^\top \Sigma^{-1} y
+=
+C(X^\top X)^{-} X^\top y
+=
+C\hat{\beta}.
+$$
+
+The elements of $E(y)$ are the cell means
+
+$$
+\{\mu_{ij} : i = 1,\dots,w;\; j = 1,\dots,s\}.
+$$
+
+Thus, all estimable functions are linear combinations of cell means. The BLUE of
+
+$$
+\sum_{i=1}^w \sum_{j=1}^s c_{ij} \mu_{ij}
+$$
+
+is
+
+$$
+\sum_{i=1}^w \sum_{j=1}^s c_{ij} \bar{y}_{ij\cdot}.
+$$
+
+## Notation for General Split-Plot Designs
+
+Let:
+
+- $w$ = number of levels of the whole-plot factor
+- $s$ = number of levels of the split-plot factor
+- $b$ = number of blocks
+
+### ANOVA Table for the Traditional Split-Plot Design
+
+| Source | DF |
+|------|----|
+| Blocks | $b - 1$ |
+| Genotypes (Whole Plot) | $w - 1$ |
+| Blocks $\times$ Genotypes | $(b - 1)(w - 1)$ |
+| Fertilizer (Split Plot) | $s - 1$ |
+| Genotype $\times$ Fertilizer | $(w - 1)(s - 1)$ |
+| Error | $w(b - 1)(s - 1)$ |
+| C.Total | $bws - 1$ |
+
+### Simplified ANOVA Table: Sums of Squares
+
+| Source | Sum of Squares |
+|------|----------------|
+| Block | $ws \sum_{k=1}^b (\bar{y}_{\cdot\cdot k} - \bar{y}_{\cdots})^2$ |
+| Geno | $sb \sum_{i=1}^w (\bar{y}_{i\cdot\cdot} - \bar{y}_{\cdots})^2$ |
+| Block $\times$ Geno | $s \sum_{i=1}^w \sum_{k=1}^b (\bar{y}_{i\cdot k} - \bar{y}_{i\cdot\cdot} - \bar{y}_{\cdot\cdot k} + \bar{y}_{\cdots})^2$ |
+| Fert | $wb \sum_{j=1}^s (\bar{y}_{\cdot j \cdot} - \bar{y}_{\cdots})^2$ |
+| Geno $\times$ Fert | $b \sum_{i=1}^w \sum_{j=1}^s (\bar{y}_{ij\cdot} - \bar{y}_{i\cdot\cdot} - \bar{y}_{\cdot j \cdot} + \bar{y}_{\cdots})^2$ |
+| Error | $\sum_{i=1}^w \sum_{j=1}^s \sum_{k=1}^b (y_{ijk} - \bar{y}_{i\cdot k} - \bar{y}_{ij\cdot} + \bar{y}_{i\cdot\cdot})^2$ |
+| C.Total | $\sum_{i=1}^w \sum_{j=1}^s \sum_{k=1}^b (y_{ijk} - \bar{y}_{\cdots})^2$ |
+
+### Full Table of Expected Mean Squares
+
+| Source | Expected Mean Squares |
+|------|------------------------|
+| Block | $ws\sigma_b^2 + s\sigma_w^2 + \sigma_e^2$ |
+| Geno | $s\sigma_w^2 + \sigma_e^2 + \dfrac{sb}{w-1} \sum_{i=1}^w (\bar{\mu}_{i\cdot} - \bar{\mu}_{\cdots})^2$ |
+| Block $\times$ Geno | $s\sigma_w^2 + \sigma_e^2$ |
+| Fert | $\sigma_e^2 + \dfrac{wb}{s-1} \sum_{j=1}^s (\bar{\mu}_{\cdot j} - \bar{\mu}_{\cdots})^2$ |
+| Geno $\times$ Fert | $\sigma_e^2 + \dfrac{b}{(w-1)(s-1)} \sum_{i=1}^w \sum_{j=1}^s (\mu_{ij} - \bar{\mu}_{i\cdot} - \bar{\mu}_{\cdot j} + \bar{\mu}_{\cdots})^2$ |
+| Error | $\sigma_e^2$ |
+
+## F-Tests in Split-Plot Designs
+
+Because of multiple error terms, different effects are tested using different denominators:
+
+| Effect | F-Test |
+|------|--------|
+| Whole-plot factor (Geno) | $MS_{\text{Geno}} / MS_{\text{Block} \times \text{Geno}}$ |
+| Split-plot factor (Fert) | $MS_{\text{Fert}} / MS_{\text{Error}}$ |
+| Interaction (Geno $\times$ Fert) | $MS_{\text{Geno} \times \text{Fert}} / MS_{\text{Error}}$ |
+
+Whole-plot effects are tested against whole-plot error because both share $\sigma_w^2$ and $\sigma_e^2$. Split-plot effects are tested against split-plot error because they depend only on $\sigma_e^2$.
+
+## Crossed vs Nested Factors in Split-Plot Designs
+
+- Whole-plot treatments are **nested within blocks**
+- Split-plot treatments are **crossed with whole-plot treatments**
+- Experimental units are nested hierarchically: split plots $\subset$ whole plots $\subset$ blocks
+
+This nesting structure is what induces multiple error strata.
+
+## Inference 
+
+### Cell Means $\mu_{ij}$
+
+$$
+\text{Var}(\bar{y}_{ij\cdot})
+=
+\frac{\sigma_b^2}{b}
++
+\frac{\sigma_w^2}{b}
++
+\frac{\sigma_e^2}{b}.
+$$
+
+An unbiased estimator is
+
+$$
+\widehat{\text{Var}}(\bar{y}_{ij\cdot})
+=
+\frac{1}{wbs}
+\left[
+MS_{\text{Block}}
++
+(w-1)MS_{\text{Block}\times\text{Geno}}
++
+w(s-1)MS_{\text{Error}}
+\right],
+$$
+
+with degrees of freedom obtained via Cochran–Satterthwaite.
+
+### Whole-Plot Means $\bar{\mu}_i$
+
+$$
+\text{Var}(\bar{y}_{i\cdot\cdot})
+=
+\frac{\sigma_b^2}{b}
++
+\frac{\sigma_w^2}{b}
++
+\frac{\sigma_e^2}{sb}.
+$$
+
+Whole-plot means involve **both whole-plot and split-plot variance components**, leading to wider confidence intervals.
+
+### Split-Plot Means $\bar{\mu}_j$
+
+If blocks are random:
+
+$$
+\text{Var}(\bar{y}_{\cdot j \cdot})
+=
+\frac{\sigma_b^2}{b}
++
+\frac{\sigma_w^2}{wb}
++
+\frac{\sigma_e^2}{wb}.
+$$
+
+If blocks are fixed:
+
+$$
+\text{Var}(\bar{y}_{\cdot j \cdot})
+=
+\frac{\sigma_w^2}{wb}
++
+\frac{\sigma_e^2}{wb}.
+$$
+
+Split-plot means are driven primarily by split-plot error and therefore have smaller standard errors than whole-plot means.
+
+## Key Points
+
+- Split-plot designs arise from multi-level randomization
+- Different effects are tested against different error terms
+- Whole-plot effects are less precise than split-plot effects
+- EMS determine both F-tests and confidence intervals
+- Nesting and crossing structure explains the ANOVA decomposition
+
+# MLE for GLM
+
+## Likelihood Functions
+
+Suppose $f(y \mid \theta)$ is the probability density function (pdf) or probability mass function (pmf) of a random vector $y$, where $\theta$ is a $k \times 1$ vector of parameters.
+
+For a fixed value of the parameter vector $\theta$, the function $f(y \mid \theta)$ is a real-valued function of $y$.
+
+The likelihood function is defined as
+
+$$
+\mathcal{L}(\theta \mid y) = f(y \mid \theta),
+$$
+
+which is a real-valued function of $\theta$ for a fixed observed value of $y$.
+
+## Maximum Likelihood Estimators
+
+For any potential observed vector of values $y$, define $\hat{\theta}(y)$ to be a value of $\theta$ at which the likelihood function $\mathcal{L}(\theta \mid y)$ attains its maximum.
+
+If $y$ is a random vector distributed according to $f(y \mid \theta)$, then the random variable $\hat{\theta}(y)$ is called the **maximum likelihood estimator (MLE)** of $\theta$.
+
+### Invariance Property of MLEs
+
+Let $g(\theta)$ be a function of the parameter vector $\theta$.
+
+The MLE of $g(\theta)$ is given by evaluating $g$ at the MLE of $\theta$:
+
+$$
+\widehat{g(\theta)} = g(\hat{\theta}).
+$$
+
+This property allows MLEs of derived parameters to be obtained directly from the MLE of $\theta$.
+
+### Log-Likelihood Functions
+
+It is often more convenient to work with the **log-likelihood function**
+
+$$
+\ell(\theta \mid y) = \ln \mathcal{L}(\theta \mid y).
+$$
+
+The maximizers of $\ell(\theta \mid y)$ and $\mathcal{L}(\theta \mid y)$ are the same because the logarithm is a strictly increasing function:
+
+$$
+u < v \;\Longleftrightarrow\; \ln(u) < \ln(v), \quad u,v > 0.
+$$
+
+## The Score Function
+
+If the log-likelihood function $\ell(\theta \mid y)$ is differentiable, the **score function** is defined as the vector of partial derivatives:
+
+$$
+\frac{\partial \ell(\theta \mid y)}{\partial \theta}
+=
+\begin{bmatrix}
+\frac{\partial \ell(\theta \mid y)}{\partial \theta_1} \\
+\vdots \\
+\frac{\partial \ell(\theta \mid y)}{\partial \theta_k}
+\end{bmatrix}.
+$$
+
+Each component is the partial derivative of the log-likelihood with respect to one parameter, holding all other parameters constant.
+
+## The Score Equations
+
+The **score equations** are obtained by setting the score function equal to zero:
+$$
+\frac{\partial \ell(\theta \mid y)}{\partial \theta} = 0
+\;\Longleftrightarrow\;
+\frac{\partial \ell(\theta \mid y)}{\partial \theta_j} = 0,
+\quad j = 1,\dots,k.
+$$
+
+One strategy for obtaining an MLE is to solve the score equations and verify that at least one solution maximizes the log-likelihood over the parameter space.
+
+## MLEs in the Normal Linear Model
+
+In the normal linear model
+
+$$
+y \sim N(X\beta, \sigma^2 I),
+$$
+
+it can be shown that
+
+$$
+\begin{bmatrix}
+\hat{\beta} \\
+\frac{(y - X\hat{\beta})^\top (y - X\hat{\beta})}{n}
+\end{bmatrix}
+$$
+
+is the MLE of
+
+$$
+\begin{bmatrix}
+\beta \\
+\sigma^2
+\end{bmatrix}.
+$$
+
+If $C\beta$ is estimable, then by the invariance property of MLEs,
+
+$$
+\widehat{C\beta} = C\hat{\beta}.
+$$
+
+Since $C\hat{\beta}$ is also the BLUE of $C\beta$, the MLE and BLUE coincide for estimable linear functions in the normal linear model.
+ 
+## Bias of the MLE for $\sigma^2$
+
+The MLE of $\sigma^2$ is
+
+$$
+\hat{\sigma}^2_{\text{MLE}} = \frac{(y - X\hat{\beta})^\top (y - X\hat{\beta})}{n}
+= \frac{SSE}{n}.
+$$
+
+However,
+
+$$
+\mathbb{E}\!\left( \frac{SSE}{n} \right)
+=
+\frac{n - r}{n} \sigma^2
+<
+\sigma^2,
+$$
+
+where $r = \text{rank}(X)$.
+
+Thus, the MLE of $\sigma^2$ **underestimates $\sigma^2$ on average**, which can lead to inflated Type I error rates when used in hypothesis testing.
+
+## Key Points
+
+- The likelihood function treats the data as fixed and the parameters as variable
+- MLEs maximize the likelihood (or equivalently, the log-likelihood)
+- The score function is the gradient of the log-likelihood
+- The invariance property allows transformation of MLEs
+- In the normal linear model, MLEs coincide with BLUEs for estimable functions
+- The MLE of $\sigma^2$ is biased downward
+
+# REML 
+
+Consider the general linear model
+
+$$
+y = X\beta + \varepsilon, \qquad \varepsilon \sim \mathcal{N}(0, \Sigma),
+$$
+
+where $\Sigma$ is an $n \times n$ positive definite variance matrix that depends on unknown parameters organized in a vector $\gamma$.
+
+## Background: ML Estimation of Variance Components
+
+In the previous set of slides, we considered maximum likelihood (ML) estimation of the parameter vectors $\beta$ and $\gamma$.
+
+We saw by example that the MLE of the variance component vector $\gamma$ can be biased.
+
+In particular, the MLE of $\sigma^2$ is often criticized for *failing to account for the loss of degrees of freedom needed to estimate $\beta$*.
+
+## The REML Method
+
+### Step 1: Construct Error Contrasts
+
+Find
+
+$$
+n - \operatorname{rank}(X) = n - r
+$$
+
+linearly independent vectors $a_1, \ldots, a_{n-r}$ such that
+
+$$
+a_i^\top X = 0^\top, \qquad i = 1, \ldots, n - r.
+$$
+
+### Step 2: Define New Data via Error Contrasts
+
+Define
+
+$$
+w_1 = a_1^\top y, \quad \ldots, \quad w_{n-r} = a_{n-r}^\top y
+$$
+
+and treat these quantities as the data.
+
+Let
+
+$$
+A = [a_1, \ldots, a_{n-r}], \qquad
+w =
+\begin{bmatrix}
+w_1 \\
+\vdots \\
+w_{n-r}
+\end{bmatrix}
+= A^\top y.
+$$
+
+If $a^\top X = 0^\top$, then $a^\top y$ is known as an **error contrast**.
+
+Thus, $w_1, \ldots, w_{n-r}$ comprise a set of $n - r$ error contrasts.
+
+## Connection to Residuals
+
+Because
+
+$$
+(I - P_X) X = X - P_X X = X - X = 0,
+$$
+
+the elements of
+
+$$
+(I - P_X) y = y - P_X y = y - \hat{y}
+$$
+
+are each error contrasts.
+
+## Rank Argument
+
+Because
+
+$$
+\operatorname{rank}(I - P_X) = n - r,
+$$
+
+there exists a set of $n - r$ linearly independent rows of $I - P_X$ that can be used in Step 1 of the REML method to obtain $a_1, \ldots, a_{n-r}$.
+
+If we use a subset of rows of $I - P_X$ to obtain $a_1, \ldots, a_{n-r}$, then the resulting error contrasts
+
+$$
+w_1 = a_1^\top y, \ldots, w_{n-r} = a_{n-r}^\top y
+$$
+
+will be a subset of the elements of the residual vector
+
+$$
+(I - P_X)y = y - \hat{y}.
+$$
+
+This explains why the procedure is called **Residual Maximum Likelihood**.
+
+## REML in the Normal Linear Model
+
+For the normal-theory Gauss–Markov linear model
+
+$$
+y = X\beta + \varepsilon, \qquad \varepsilon \sim \mathcal{N}(0, \sigma^2 I),
+$$
+
+the REML estimator of $\sigma^2$ is
+
+$$
+\hat{\sigma}^2
+=
+\frac{y^\top (I - P_X) y}{n - r},
+$$
+
+which is the unbiased estimator used previously.
+
+## REML and ANOVA-Based Estimators
+
+For linear mixed effects models, the REML estimators of variance components produce the same estimates as the unbiased ANOVA-based estimators formed by taking appropriate linear combinations of mean squares, **when the latter are positive and the data are balanced**.
+
+### Estimation of Fixed Effects after REML
+
+Once a REML estimate of $\gamma$ (and thus $\Sigma$) has been obtained, the BLUE of an estimable $C\beta$ can be approximated by
+
+$$
+C\hat{\beta}_{\hat{\Sigma}}
+=
+C (X^\top \hat{\Sigma}^{-1} X)^{-} X^\top \hat{\Sigma}^{-1} y,
+$$
+
+where $\hat{\Sigma}$ is $\Sigma$ with the REML estimate $\hat{\gamma}$ substituted for $\gamma$.
+
+# BLUP 
+
+## Linear Mixed Effects Model
+
+Consider the linear mixed effects model
+
+$$
+y = X\beta + Zu + e,
+$$
+
+where
+
+$$
+\begin{bmatrix}
+u \\
+e
+\end{bmatrix}
+\sim \mathcal{N}\!\left(
+\begin{bmatrix}
+0 \\
+0
+\end{bmatrix},
+\begin{bmatrix}
+G & 0 \\
+0 & R
+\end{bmatrix}
+\right).
+$$
+
+Here,
+- $G = \operatorname{Var}(u)$,
+- $R = \operatorname{Var}(e)$, and
+
+$$
+\Sigma = \operatorname{Var}(y) = ZGZ^\top + R.
+$$
+
+Given data $y$, what is our best guess for the unobserved vector $u$?
+
+## Prediction Versus Estimation
+
+Because $u$ is a random vector rather than a fixed parameter, we talk about **predicting** $u$ rather than **estimating** $u$.
+
+We seek a **Best Linear Unbiased Predictor (BLUP)** for $u$, which we denote by $\hat{u}$.
+
+## Definition of a BLUP
+
+To be a BLUP, we require:
+
+1. $\hat{u}$ to be a **linear function of $y$**;
+
+2. $\hat{u}$ to be **unbiased for $u$**, so that
+
+$$
+\mathbb{E}(\hat{u} - u) = 0;
+$$
+
+3. $\operatorname{Var}(\hat{u} - u)$ to be no larger than
+
+$$
+\operatorname{Var}(v - u),
+$$
+
+where $v$ is any other linear and unbiased predictor.
+
+Under joint normality, the BLUP coincides with the conditional expectation
+
+$$
+\hat{u} = \mathbb{E}(u \mid y).
+$$
+
+## EBLUP
+
+When $G$ and $\Sigma$ are unknown, we replace them by estimates and approximate the BLUP of $u$ by
+
+$$
+\hat{u}
+=
+\hat{G} Z^\top \hat{\Sigma}^{-1}
+\left(y - X \hat{\beta}_{\hat{\Sigma}}\right).
+$$
+
+This approximation is called an **empirical BLUP (EBLUP)**, where “E” stands for *empirical*.
+
+## Prediction of Linear Combinations
+
+Often we wish to predict quantities of the form
+
+$$
+C\beta + Du,
+$$
+
+where $C\beta$ is estimable.
+
+The BLUP of such a quantity is
+
+$$
+C\hat{\beta}_{\Sigma} + D\hat{u},
+$$
+
+that is, the BLUE of $C\beta$ plus $D$ times the BLUP of $u$.
+
+## Example
+
+Suppose reading ability for a population of students is normally distributed with mean $\mu$ and variance $\sigma_u^2$.
+
+Suppose a reading ability test was given to an i.i.d. sample of such students.
+
+Suppose that, given the true reading ability of a student at that time, the test score for that student is normally distributed with mean equal to the student’s reading ability and variance $\sigma_e^2$, and is independent of the test score of any other student.
+
+Suppose it is known that
+
+$$
+\frac{\sigma_u^2}{\sigma_e^2} = 9.
+$$
+
+If the sample mean of the students’ test scores was $86$, what is the best prediction of the reading ability of a student who scored $96$ on the test?
+
+### Model Specification
+
+Assume
+
+$$
+u_1, \ldots, u_n \stackrel{\text{i.i.d.}}{\sim} \mathcal{N}(0, \sigma_u^2),
+\qquad
+e_1, \ldots, e_n \stackrel{\text{i.i.d.}}{\sim} \mathcal{N}(0, \sigma_e^2),
+$$
+
+independent of each other.
+
+Let $\mu + u_i$ denote the reading ability of student $i$, $(i = 1, \ldots, n)$. Then reading abilities follow
+
+$$
+\mathcal{N}(\mu, \sigma_u^2).
+$$
+
+Let
+
+$$
+y_i = \mu + u_i + e_i
+$$
+
+denote the test score of student $i$. Then
+
+$$
+(y_i \mid \mu + u_i) \sim \mathcal{N}(\mu + u_i, \sigma_e^2).
+$$
+### BLUP for the Random Effect
+
+The BLUP for $u$ is
+
+$$
+\hat{u}
+=
+G Z^\top \Sigma^{-1}
+\left(y - X\hat{\beta}_{\Sigma}\right)
+=
+\frac{\sigma_u^2}{\sigma_u^2 + \sigma_e^2}
+\left(y - \mathbf{1}\bar{y}\right).
+$$
+
+The $i$th element is
+
+$$
+\hat{u}_i
+=
+\frac{\sigma_u^2}{\sigma_u^2 + \sigma_e^2}
+\left(y_i - \bar{y}\right).
+$$
+
+### BLUP for Reading Ability
+
+The BLUP for $\mu + u_i$ is
+
+$$
+\hat{\mu} + \hat{u}_i
+=
+\bar{y}
++
+\frac{\sigma_u^2}{\sigma_u^2 + \sigma_e^2}
+\left(y_i - \bar{y}\right)
+=
+\frac{\sigma_u^2}{\sigma_u^2 + \sigma_e^2} y_i
++
+\frac{\sigma_e^2}{\sigma_u^2 + \sigma_e^2} \bar{y}.
+$$
+
+### Numerical Evaluation
+
+Since
+
+$$
+\frac{\sigma_u^2}{\sigma_e^2} = 9,
+$$
+
+the weights are
+
+$$
+\frac{\sigma_u^2}{\sigma_u^2 + \sigma_e^2} = \frac{9}{10} = 0.9,
+\qquad
+\frac{\sigma_e^2}{\sigma_u^2 + \sigma_e^2} = 0.1.
+$$
+
+Thus, the predicted reading ability is
+
+$$
+0.9(96) + 0.1(86) = 95.
+$$
+
+## Interpretation of the BLUP (Convex Combination)
+
+The BLUP for $\mu + u_i$ is a **convex combination** of the individual score $y_i$ and the overall mean $\bar{y}$:
+
+$$
+\hat{\mu} + \hat{u}_i
+=
+\frac{\sigma_u^2}{\sigma_u^2 + \sigma_e^2}\, y_i
++
+\frac{\sigma_e^2}{\sigma_u^2 + \sigma_e^2}\, \bar{y}.
+$$
+
+The weights are nonnegative and sum to one, so the BLUP shrinks individual observations toward the population mean.
+
+This phenomenon is known as **shrinkage**.
+
+- When $\sigma_u^2 \gg \sigma_e^2$, little shrinkage occurs.
+- When $\sigma_u^2 \ll \sigma_e^2$, strong shrinkage toward $\bar{y}$ occurs.
+
+When variance components are estimated rather than known, this predictor is called an **empirical BLUP (EBLUP)**.
+
+# Repeated Measures
+
+Repeated measures studies arise when the **same experimental unit is measured multiple times**.
+
+Key features include:
+
+- The same experimental unit is measured repeatedly;
+- Measurements are often taken over time (not necessarily equally spaced);
+- Observations on the same unit are typically correlated;
+- Designs may be longitudinal or crossover in nature;
+- Repeated measures analyses explicitly account for within-unit correlation.
+
+A key point is that **repeated measures do not fundamentally change the mean model**.
+Instead, they change the **variance–covariance structure** of the observations.
+
+## Example
+
+In an exercise therapy study, subjects were assigned to one of three weightlifting programs:
+
+- $i = 1$: The number of repetitions was increased as subjects became stronger;
+- $i = 2$: The amount of weight was increased as subjects became stronger;
+- $i = 3$: Subjects did not participate in weightlifting.
+
+Strength measurements were taken repeatedly over time for each subject.
+
+### A Linear Mixed-Effects Model
+
+Let $y_{ijk}$ denote the strength measurement for program $i$, subject $j$, and time point $k$.
+Consider the model
+
+$$
+y_{ijk} = \mu + \alpha_i + s_{ij} + \tau_k + \gamma_{ik} + e_{ijk},
+$$
+
+where:
+
+- $\mu$ is an overall mean;
+- $\alpha_i$ is the fixed effect of program $i$;
+- $\tau_k$ is the fixed effect of time point $k$;
+- $\gamma_{ik}$ is the program-by-time interaction;
+- $s_{ij}$ is a subject-specific random effect;
+- $e_{ijk}$ is the residual error.
+
+The fixed effects
+
+$$
+\mu,\; \alpha_1,\alpha_2,\alpha_3,\; \tau_1,\ldots,\tau_T,\; \gamma_{ik}
+$$
+
+are unknown real-valued parameters.
+
+The random components satisfy
+
+$$
+s_{ij} \stackrel{\text{i.i.d.}}{\sim} \mathcal{N}(0, \sigma_s^2),
+\qquad
+e_{ijk} \stackrel{\text{i.i.d.}}{\sim} \mathcal{N}(0, \sigma_e^2),
+$$
+
+with $s_{ij}$ independent of $e_{ijk}$.
+
+## Connection to Split-Plot Designs
+
+This is the same model structure used for a split-plot experiment in which the whole-plot portion of the experiment has a completely randomized design.
+
+- Subjects act as whole-plot experimental units;
+- Measurement occasions within subjects act like split-plot units.
+
+Unlike a true split-plot experiment, the time points (e.g., weeks 2, 4, …, 14) are **not randomly assigned** to measurement occasions.
+
+Nevertheless, this split-plot-style model is often reasonable for experiments in which experimental units are measured repeatedly over time.
+
+### Correlation Induced by Repeated Measures
+
+For measurements taken on the same subject,
+
+$$
+\operatorname{Corr}(y_{ijk}, y_{ij\ell})
+=
+\frac{\sigma_s^2}{\sigma_s^2 + \sigma_e^2}
+\equiv \rho,
+\qquad k \neq \ell.
+$$
+
+This correlation is the same for all pairs of time points within a subject.
+
+Observations taken on different subjects are uncorrelated.
+
+This corresponds to a **compound symmetry (CS)** correlation structure.
+
+### Covariance Structure for a Single Subject
+
+For the vector of observations on subject $j$ in program $i$,
+
+$$
+y_{ij} =
+\begin{bmatrix}
+y_{ij1} \\
+y_{ij2} \\
+\vdots \\
+y_{ij7}
+\end{bmatrix},
+$$
+
+we have
+
+$$
+\operatorname{Var}(y_{ij})
+=
+\begin{bmatrix}
+\sigma_e^2 + \sigma_s^2 & \sigma_s^2 & \cdots & \sigma_s^2 \\
+\sigma_s^2 & \sigma_e^2 + \sigma_s^2 & \cdots & \sigma_s^2 \\
+\vdots & \vdots & \ddots & \vdots \\
+\sigma_s^2 & \sigma_s^2 & \sigma_s^2 & \sigma_e^2 + \sigma_s^2
+\end{bmatrix}
+=
+\sigma_e^2 I_{7 \times 7} + \sigma_s^2 \mathbf{1}\mathbf{1}^\top_{7 \times 7}.
+$$
+
+This is a **compound symmetric covariance matrix**, with two variance parameters:
+$\sigma_e^2$ and $\sigma_s^2$.
+
+## Matrix Formulation
+
+Let $n_i$ denote the number of subjects in program $i$, and let $n_\cdot = n_1 + n_2 + n_3$.
+
+The model can be written as
+
+$$
+y = X\beta + Zu + e,
+$$
+
+where
+
+$$
+G = \operatorname{Var}(u) = \sigma_s^2 I_{n_\cdot \times n_\cdot},
+\qquad
+R = \operatorname{Var}(e) = \sigma_e^2 I_{(7n_\cdot) \times (7n_\cdot)}.
+$$
+
+Then
+
+$$
+\Sigma = \operatorname{Var}(y) = ZGZ^\top + R
+$$
+
+is block diagonal, with one block of the form
+
+$$
+\sigma_s^2 \mathbf{1}\mathbf{1}^\top + \sigma_e^2 I
+$$
+
+for each subject.
+
+## Repeated Measures as a General Linear Model
+
+If prediction of subject-specific random effects is not of interest, the same model may be written as
+
+$$
+y = X\beta + \epsilon,
+$$
+
+with
+
+$$
+\operatorname{Var}(y) = \operatorname{Var}(\epsilon) =
+\begin{bmatrix}
+W & 0 & \cdots & 0 \\
+0 & W & \cdots & 0 \\
+\vdots & \vdots & \ddots & \vdots \\
+0 & 0 & \cdots & W
+\end{bmatrix}.
+$$
+
+Here, each subject shares the same within-subject covariance matrix $W$.
+
+**This is the key distinction in repeated measures:**  
+the **mean model $X\beta$ stays the same**, but the **covariance structure $W$ becomes more flexible**.
+
+## Common Choices for the Covariance Structure $W$
+
+- **Compound Symmetry (CS):** constant variance and constant correlation.
+- **Unstructured (UN):** all variances and covariances freely estimated.
+- **First-order Autoregressive (AR(1)):** correlations decay with time separation.
+
+### AR(1): First-Order Autoregressive Structure
+
+When measurements are equally spaced in time, a common choice is AR(1):
+
+$$
+W = \sigma^2
+\begin{bmatrix}
+1 & \phi & \phi^2 & \cdots & \phi^{t-1} \\
+\phi & 1 & \phi & \cdots & \phi^{t-2} \\
+\phi^2 & \phi & 1 & \cdots & \phi^{t-3} \\
+\vdots & \vdots & \vdots & \ddots & \vdots \\
+\phi^{t-1} & \phi^{t-2} & \phi^{t-3} & \cdots & 1
+\end{bmatrix},
+$$
+
+where $\sigma^2 > 0$ and $\phi \in (-1,1)$.
+
+### Compound Symmetry (CS)
+
+A simple but more flexible alternative to independence is the **compound symmetry (CS)** covariance structure.
+
+Under compound symmetry, all repeated measurements on a subject have the same variance, and all pairs of measurements on the same subject have the same correlation, regardless of time separation.
+
+For $t$ repeated measurements on a subject,
+
+$$
+W =
+\begin{bmatrix}
+\sigma_e^2 + \sigma_s^2 & \sigma_s^2 & \cdots & \sigma_s^2 \\
+\sigma_s^2 & \sigma_e^2 + \sigma_s^2 & \cdots & \sigma_s^2 \\
+\vdots & \vdots & \ddots & \vdots \\
+\sigma_s^2 & \sigma_s^2 & \cdots & \sigma_e^2 + \sigma_s^2
+\end{bmatrix}
+=
+\sigma_e^2 I_{t \times t} + \sigma_s^2 \mathbf{1}\mathbf{1}^\top_{t \times t}.
+$$
+
+Equivalently, the correlation between any two distinct measurements on the same subject is
+
+$$
+\operatorname{Corr}(y_{ij k}, y_{ij \ell})
+=
+\frac{\sigma_s^2}{\sigma_s^2 + \sigma_e^2}
+\equiv \rho,
+\qquad k \neq \ell.
+$$
+
+**Comment on complexity.**  
+Compound symmetry is **more complex than assuming independent errors**, since it introduces correlation among repeated measurements, but **less complex than AR(1) or an unstructured covariance**, because all within-subject correlations are constrained to be equal.
+
+As a result, CS is often used as a baseline covariance structure when comparing more flexible alternatives using likelihood-based criteria such as AIC or BIC.
+
+## Model Comparison Using REML
+
+Because all candidate models share the **same mean structure** $X\beta$ (i.e., $\operatorname{rank}(X)$ is fixed), covariance structures can be compared using **REML-based likelihoods**.
+
+Model comparison can be based on:
+
+- REML log-likelihood;
+- AIC;
+- BIC;
+- Likelihood ratio tests (for nested covariance models).
+
+### AIC and BIC for Repeated Measures
+
+$$
+\text{AIC} = -2\ell(\hat{\theta}) + 2k,
+\qquad
+\text{BIC} = -2\ell(\hat{\theta}) + k \log(n),
+$$
+
+where:
+
+- $k =$ number of mean parameters $+$ number of variance parameters;
+- For REML: $n = \text{total observations} - \operatorname{rank}(X)$;
+- For ML: $n = \text{total observations}$.
+
+## Key Points
+
+- More complex covariance structures (e.g., UN) often improve log-likelihood;
+- However, they introduce many additional parameters;
+- AIC and BIC penalize unnecessary complexity;
+- The preferred covariance structure balances **fit** and **parsimony**.
+
+**Bottom line:**  
+In repeated measures analysis, *the modeling challenge is not the mean structure — it is choosing an appropriate covariance structure for $\Sigma$.*
+
+# GLM  
+
+Note: GLMs are covered in greater detail in 5200. For that reason, a high level overview is provided here but nothing more. 
+
+A **Generalized Linear Model (GLM)** consists of three components:
+
+## 1. Random Component
+
+The **random component** specifies the probability distribution of the response variable $Y$.
+
+We assume
+
+$$
+Y_1, \ldots, Y_n
+$$
+
+are independent and each follows a distribution from the **exponential family**, such as:
+
+- Normal (classical linear regression),
+- Binomial (binary or grouped logistic regression),
+- Poisson (count data),
+- Multinomial, Gamma, etc.
+
+## 2. Systematic Component
+
+The **systematic component** specifies the explanatory variables through a linear predictor:
+
+$$
+\eta_i = \beta_0 + \beta_1 x_{i1} + \cdots + \beta_p x_{ip}.
+$$
+
+In matrix form,
+
+$$
+\boldsymbol{\eta} = X \boldsymbol{\beta}.
+$$
+
+## 3. Link Function
+
+The **link function** $g(\cdot)$ specifies the relationship between the mean of the response (expectation function) and the linear predictor:
+
+$$
+g\!\left( \mathbb{E}(Y_i) \right) = \eta_i.
+$$
+
+Equivalently,
+
+$$
+\mathbb{E}(Y_i) = g^{-1}(\eta_i).
+$$
+
+The link function determines how the expected value of the response relates to the linear combination of explanatory variables.
+
+## Assumptions of a Generalized Linear Model
+
+A GLM relies on the following assumptions:
+
+1. **Independence and Distributional Form**
+
+$Y_1, \ldots, Y_n$ are independently distributed and each follows a distribution from the exponential family.
+
+2. **Correct Link–Mean Relationship**
+
+There exists a known link function $g(\cdot)$ such that
+
+$$
+g\!\left( \mathbb{E}(Y_i) \right) = \beta_0 + \beta_1 x_{i1}.
+$$
+
+For example, in binary logistic regression,
+
+$$
+logit(\pi_i) = \beta_0 + \beta_1 x_{i1}.
+$$
+
+3. **Variance as a Function of the Mean**
+
+The variance of $Y_i$ is a function of its mean:
+
+$$
+\operatorname{Var}(Y_i) = \phi \, V(\mu_i),
+$$
+
+where $V(\cdot)$ is the variance function implied by the exponential family and $\phi$ is a dispersion parameter (when applicable).
+
+Consequently, **homogeneity of variance is not required**.
+
+4. **Likelihood-Based Estimation**
+
+Model parameters are estimated using **maximum likelihood estimation (MLE)** rather than ordinary least squares (OLS).
+
+## Why Use Generalized Linear Models?
+
+GLMs extend classical linear regression by providing:
+
+1. **Flexible choices for the distribution of $Y$**, allowing modeling of non-normal responses such as binary, count, and skewed data.
+
+2. **Separation of the link function from the random component**, offering flexibility in how predictors relate to the mean response.
+
+3. **Likelihood-based inference**, enabling:
+
+   - asymptotic normality of estimators,
+   - likelihood ratio tests,
+   - Wald tests,
+   - deviance-based model comparison.
+
+Together, these features allow GLMs to handle a wide range of data structures while retaining a coherent probabilistic framework.
